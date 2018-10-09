@@ -27,7 +27,6 @@ import * as vendorActions from '../actions/vendorActions';
 // Components
 import DiscussionList from '../components/DiscussionList';
 import SelectOption from '../components/SelectOption';
-import InAppPayment from '../components/InAppPayment';
 import InputOption from '../components/InputOption';
 import QtyOption from '../components/QtyOption';
 import SwitchOption from '../components/SwitchOption';
@@ -800,7 +799,6 @@ class ProductDetail extends Component {
             {this.renderFeatures()}
             {this.renderVendorInfo()}
             {this.renderShare()}
-            <InAppPayment />
           </ScrollView>
           {this.renderAddToCart()}
         </KeyboardAvoidingView>

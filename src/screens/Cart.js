@@ -17,10 +17,11 @@ import debounce from 'lodash/debounce';
 import * as cartActions from '../actions/cartActions';
 
 // Components
+import Icon from '../components/Icon';
 import Spinner from '../components/Spinner';
 import QtyOption from '../components/QtyOption';
 import CartFooter from '../components/CartFooter';
-import Icon from '../components/Icon';
+import InAppPayment from '../components/InAppPayment';
 
 // theme
 import theme from '../config/theme';
@@ -196,6 +197,7 @@ class Cart extends Component {
       result.cartId = key;
       return result;
     });
+
     this.setState({
       products,
       fetching: false,
@@ -204,9 +206,9 @@ class Cart extends Component {
   }
 
   onNavigatorEvent(event) {
+    const { navigator, cartActions } = this.props;
     // handle a deep link
-    registerDrawerDeepLinks(event, this.props.navigator);
-    const { navigator } = this.props;
+    registerDrawerDeepLinks(event, navigator);
     if (event.type === 'NavBarButtonPress') {
       if (event.id === 'close') {
         navigator.dismissModal();
@@ -222,7 +224,7 @@ class Cart extends Component {
             },
             {
               text: i18n.gettext('Ok'),
-              onPress: () => this.props.cartActions.clear(),
+              onPress: () => cartActions.clear(),
             },
           ],
           { cancelable: true }
@@ -230,6 +232,11 @@ class Cart extends Component {
       }
     }
   }
+
+  handleRemoveProduct = (product) => {
+    const { cartActions } = this.props;
+    cartActions.remove(product.cartId);
+  };
 
   handleRefresh() {
     const { cartActions } = this.props;
@@ -266,11 +273,6 @@ class Cart extends Component {
       });
     }
   }
-
-  handleRemoveProduct = (product) => {
-    const { cartActions } = this.props;
-    cartActions.remove(product.cartId);
-  };
 
   renderProductItem = (item) => {
     let productImage = null;
@@ -363,11 +365,15 @@ class Cart extends Component {
     );
   };
 
+  renderFooter = () => (<InAppPayment />);
+
   renderList() {
-    const { products } = this.state;
-    if (this.state.fetching) {
+    const { products, fetching, refreshing } = this.state;
+
+    if (fetching) {
       return null;
     }
+
     return (
       <View style={styles.container}>
         <FlatList
@@ -375,8 +381,9 @@ class Cart extends Component {
           keyExtractor={(item, index) => `${index}`}
           renderItem={({ item }) => this.renderProductItem(item)}
           onRefresh={() => this.handleRefresh()}
-          refreshing={this.state.refreshing}
+          refreshing={refreshing}
           ListEmptyComponent={() => this.renderEmptyList()}
+          ListFooterComponent={() => this.renderFooter()}
         />
         {this.renderPlaceOrder()}
       </View>
@@ -384,10 +391,13 @@ class Cart extends Component {
   }
 
   renderSpinner = () => {
+    const { refreshing } = this.state;
     const { cart } = this.props;
-    if (this.state.refreshing) {
+
+    if (refreshing) {
       return false;
     }
+
     return (
       <Spinner visible={cart.fetching} mode="content" />
     );

@@ -1,63 +1,153 @@
 import React from 'react';
+import { Platform } from 'react-native';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { PaymentRequest, ApplePayButton } from 'react-native-payments';
 
-export default class InAppPayment extends React.Component {
+import config from '../config';
+
+import * as ordersActions from '../actions/ordersActions';
+import * as cartActions from '../actions/cartActions';
+
+class InAppPayment extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.paymentRequest = null;
+    this.methodData = [];
+    this.details = {};
+    this.options = {};
   }
 
-  handleApplePay = () => {
-    const METHOD_DATA = [{
+  componentDidMount() {
+    if (Platform.OS === 'ios' && config.applePay) {
+      this.initPayment();
+    }
+  }
+
+  componentWillUnmount() {
+    // this.paymentRequest.removeEventListener('shippingaddresschange', this.handleShippingAddressChange);
+    // this.paymentRequest.removeEventListener('shippingoptionchange', this.handleShippingOptionChange);
+  }
+
+  initPayment = () => {
+    const { cart } = this.props;
+    const vendorNames = [];
+
+    this.methodData = [{
       supportedMethods: ['apple-pay'],
       data: {
-        merchantIdentifier: 'merchant.com.cscart',
-        supportedNetworks: ['visa'],
+        merchantIdentifier: config.applePayMerchantIdentifier,
+        supportedNetworks: config.applePaySupportedNetworks,
         countryCode: 'US',
         currencyCode: 'USD'
       }
     }];
 
-    const DETAILS = {
-      id: 'basic-example',
-      displayItems: [
-        {
-          label: 'Movie Ticket',
-          amount: { currency: 'USD', value: '15.00' }
+    const shippingOptions = [];
+    const displayItems = [];
+    cart.product_groups.forEach((group) => {
+      vendorNames.push(group.name);
+
+      Object.keys(group.shippings)
+        .forEach((k) => {
+          const shipping = group.shippings[k];
+          shippingOptions.push({
+            id: k,
+            label: shipping.shipping,
+            amount: {
+              currency: 'USD',
+              value: shipping.rate,
+            },
+            detail: shipping.delivery_time,
+          });
+        });
+
+      Object.keys(group.products)
+        .map(k => group.products[k])
+        .forEach((p) => {
+          displayItems.push({
+            label: p.product,
+            amount: {
+              currency: 'USD',
+              value: p.price,
+            },
+          });
+        });
+    });
+
+    if (cart.discount) {
+      displayItems.push({
+        label: 'Discount',
+        amount: {
+          currency: 'USD',
+          value: cart.discount,
         }
-      ],
-      shippingOptions: [{
-        id: 'economy',
-        label: 'Economy Shipping',
-        amount: { currency: 'USD', value: '0.00' },
-        detail: 'Arrives in 3-5 days' // `detail` is specific to React Native Payments
-      },
-      {
-        id: 'economy2',
-        label: 'Economy Shipping3',
-        amount: { currency: 'USD', value: '10.00' },
-        detail: 'Arrives in 3-5 days' // `detail` is specific to React Native Payments
-      },
-      {
-        id: 'economy3',
-        label: 'Economy Shipping3',
-        amount: { currency: 'USD', value: '20.00' },
-        detail: 'Arrives in 3-5 days' // `detail` is specific to React Native Payments
-      }],
+      });
+    }
+    if (cart.tax_subtotal) {
+      displayItems.push({
+        label: 'Tax',
+        amount: {
+          currency: 'USD',
+          value: cart.tax_subtotal,
+        },
+      });
+    }
+    if (cart.subtotal) {
+      displayItems.push({
+        label: 'Subtotal',
+        amount: {
+          currency: 'USD',
+          value: cart.subtotal,
+        },
+      });
+    }
+
+    this.details = {
+      id: vendorNames.join(', '),
+      displayItems,
+      shippingOptions,
       total: {
-        label: 'CSCartmultivendor',
-        amount: { currency: 'USD', value: '15.00' }
+        label: config.applePayMerchantName,
+        amount: {
+          currency: 'USD',
+          value: 14
+        },
       }
     };
-    const OPTIONS = {
+
+    this.options = {
       requestShipping: true,
     };
-    const paymentRequest = new PaymentRequest(METHOD_DATA, DETAILS, OPTIONS);
-    paymentRequest.show().then((paymentResponse) => {
+
+    this.paymentRequest = new PaymentRequest(this.methodData, this.details, this.options);
+
+    this.paymentRequest.addEventListener('shippingaddresschange', this.handleShippingAddressChange);
+    this.paymentRequest.addEventListener('shippingoptionchange', this.handleShippingOptionChange);
+  };
+
+  handleShippingAddressChange = (event) => {
+    const { cartActions, cart } = this.props;
+    
+    cartActions.saveUserData({
+      ...cart.user_data,
+    });
+
+    // event.updateWith(this.details);
+  }
+
+  handleShippingOptionChange = (event) => {
+    console.log(event, 'handleShippingOptionChange', this.paymentRequest.shippingOption);
+    // event.updateWith(this.paymentRequest.shippingOption);
+  };
+
+  handleApplePay = () => {
+    this.paymentRequest.show().then((paymentResponse) => {
       const { transactionIdentifier, paymentData } = paymentResponse.details;
       console.log(transactionIdentifier, paymentData, paymentResponse);
-      paymentResponse.complete('success');
-    });
+      setTimeout(() => paymentResponse.complete('success'), 400);
+    }).catch((error) => console.log(error, 'error'));
   };
 
   render() {
@@ -70,3 +160,13 @@ export default class InAppPayment extends React.Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    cart: state.cart,
+  }),
+  dispatch => ({
+    ordersActions: bindActionCreators(ordersActions, dispatch),
+    cartActions: bindActionCreators(cartActions, dispatch),
+  })
+)(InAppPayment);
