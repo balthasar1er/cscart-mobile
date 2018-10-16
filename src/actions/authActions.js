@@ -13,6 +13,10 @@ import {
   REGISTER_DEVICE_SUCCESS,
   REGISTER_DEVICE_FAIL,
 
+  FETCH_PROFILE_FIELDS_REQUEST,
+  FETCH_PROFILE_FIELDS_SUCCESS,
+  FETCH_PROFILE_FIELDS_FAIL,
+
   AUTH_LOGOUT,
 } from '../constants';
 import Api from '../services/api';
@@ -21,6 +25,37 @@ import store from '../store';
 
 import * as cartActions from './cartActions';
 import * as wishListActions from './wishListActions';
+
+export function profileFields(data = {}, cb = () => {}) {
+  const sl = DeviceInfo.getDeviceLocale().split('-')[0];
+  const params = {
+    location: 'profile',
+    action: 'add',
+    lang_code: sl,
+    ...data,
+  };
+
+  return (dispatch) => {
+    dispatch({ type: FETCH_PROFILE_FIELDS_REQUEST });
+    return Api.get('/sra_profile_fields', { params })
+      .then((response) => {
+        cb(response.data);
+        dispatch({
+          type: FETCH_PROFILE_FIELDS_SUCCESS,
+          payload: {
+            ...data,
+            ...response.data,
+          },
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: FETCH_PROFILE_FIELDS_FAIL,
+          payload: error,
+        });
+      });
+  };
+}
 
 export function deviceInfo(data) {
   return (dispatch) => {
@@ -110,4 +145,3 @@ export function logout() {
 export function resetState() {
   return dispatch => dispatch({ type: AUTH_RESET_STATE });
 }
-

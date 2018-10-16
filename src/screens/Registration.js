@@ -4,10 +4,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   View,
-  WebView,
+  Text,
+  TouchableOpacity,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import qs from 'shitty-qs';
+import * as t from 'tcomb-form-native';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
@@ -23,9 +24,7 @@ import {
 
 // Components
 import Spinner from '../components/Spinner';
-
 import i18n from '../utils/i18n';
-import config from '../config';
 
 const styles = EStyleSheet.create({
   container: {
@@ -33,6 +32,27 @@ const styles = EStyleSheet.create({
     backgroundColor: '#fff',
   }
 });
+
+const Form = t.form.Form;
+const FormFields = t.struct({
+  email: t.String,
+  password: t.String,
+});
+const options = {
+  disableOrder: true,
+  fields: {
+    email: {
+      label: i18n.gettext('Email'),
+      keyboardType: 'email-address',
+      clearButtonMode: 'while-editing',
+    },
+    password: {
+      label: i18n.gettext('Password'),
+      secureTextEntry: true,
+      clearButtonMode: 'while-editing',
+    },
+  }
+};
 
 class Registration extends Component {
   static propTypes = {
@@ -64,15 +84,19 @@ class Registration extends Component {
   constructor(props) {
     super(props);
 
-    props.navigator.setTitle({
-      title: i18n.gettext('Registration')
-    });
-
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    this.state = {
+      fetching: true,
+    };
   }
 
   componentWillMount() {
     const { navigator, showClose } = this.props;
+
+    navigator.setTitle({
+      title: i18n.gettext('Registration')
+    });
+    navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+
     if (showClose) {
       iconsLoaded.then(() => {
         navigator.setButtons({
@@ -88,9 +112,15 @@ class Registration extends Component {
   }
 
   componentDidMount() {
-    const { navigator } = this.props;
+    const { navigator, authActions } = this.props;
     navigator.setTitle({
       title: i18n.gettext('Registration').toUpperCase(),
+    });
+    authActions.profileFields({}, (fields) => {
+      console.log('fields', fields);
+      this.setState({
+        fetching: false,
+      });
     });
   }
 
@@ -103,32 +133,25 @@ class Registration extends Component {
     }
   }
 
-  onNavigationStateChange(e) {
-    const { url } = e;
-    let response = {};
-    response = qs(url);
-    if (response.token != undefined) {
-      this.props.authActions.registration(response.token);
-    }
-  }
-
   render() {
-    const { auth } = this.props;
-    let url = `${config.siteUrl}index.php?dispatch=profiles.add.get_auth_token&s_layout=${config.layoutId}`;
-    if (!auth.logged) {
-      url = `${config.siteUrl}index.php?dispatch=auth.logout&redirect_url=index.php?dispatch=profiles.add.get_auth_token`;
-    }
+    const { fetching } = this.state;
+
     return (
       <View style={styles.container}>
-        <WebView
-          scalesPageToFit
-          startInLoadingState
-          source={{
-            uri: url,
-          }}
-          onNavigationStateChange={e => this.onNavigationStateChange(e)}
+        <Form
+          ref="form"
+          type={FormFields}
+          options={options}
+          value={{}}
         />
-        <Spinner visible={auth.fetching} />
+        <TouchableOpacity
+          style={styles.btn}
+        >
+          <Text style={styles.btnText}>
+            {i18n.gettext('Register')}
+          </Text>
+        </TouchableOpacity>
+        <Spinner visible={fetching} />
       </View>
     );
   }
