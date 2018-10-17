@@ -21,20 +21,16 @@ class InAppPayment extends React.Component {
 
   componentDidMount() {
     if (Platform.OS === 'ios' && config.applePay) {
-      this.initPayment();
+      if (!this.paymentRequest) {
+        this.initPaymentRequest();
+      }
     }
   }
 
-  componentWillUnmount() {
-    // this.paymentRequest.removeEventListener('shippingaddresschange', this.handleShippingAddressChange);
-    // this.paymentRequest.removeEventListener('shippingoptionchange', this.handleShippingOptionChange);
-  }
-
-  initPayment = () => {
-    const { cart } = this.props;
+  getPaymentData = (cart) => {
     const vendorNames = [];
 
-    this.methodData = [{
+    const methodData = [{
       supportedMethods: ['apple-pay'],
       data: {
         merchantIdentifier: config.applePayMerchantIdentifier,
@@ -104,7 +100,7 @@ class InAppPayment extends React.Component {
       });
     }
 
-    this.details = {
+    const details = {
       id: vendorNames.join(', '),
       displayItems,
       shippingOptions,
@@ -112,42 +108,71 @@ class InAppPayment extends React.Component {
         label: config.applePayMerchantName,
         amount: {
           currency: 'USD',
-          value: 14
+          value: cart.total,
         },
       }
     };
 
-    this.options = {
+    const options = {
       requestShipping: true,
     };
 
-    this.paymentRequest = new PaymentRequest(this.methodData, this.details, this.options);
+    return {
+      methodData,
+      details,
+      options,
+    };
+  };
+
+  initPaymentRequest = () => {
+    const { cart } = this.props;
+    const { methodData, details, options } = this.getPaymentData(cart);
+    this.paymentRequest = new PaymentRequest(methodData, details, options);
 
     this.paymentRequest.addEventListener('shippingaddresschange', this.handleShippingAddressChange);
     this.paymentRequest.addEventListener('shippingoptionchange', this.handleShippingOptionChange);
-  };
+  }
 
   handleShippingAddressChange = (event) => {
-    const { cartActions, cart } = this.props;
-    
-    cartActions.saveUserData({
+    const { cart, cartActions } = this.props;
+    const { shippingAddress } = this.paymentRequest;
+    const data = {
       ...cart.user_data,
+      b_county: shippingAddress.country,
+      s_county: shippingAddress.country,
+      b_city: shippingAddress.city,
+      s_city: shippingAddress.city,
+      b_address: shippingAddress.addressLine,
+      s_address: shippingAddress.addressLine,
+      phone: shippingAddress.phone,
+      s_phone: shippingAddress.phone,
+      b_phone: shippingAddress.phone,
+      b_zipcode: shippingAddress.postalCode,
+      s_zipcode: shippingAddress.postalCode,
+    };
+    cartActions.getUpdatedDetailsForShippingAddress(data, (result) => {
+      const updatedDetail = this.getPaymentData(result).details;
+      event.updateWith(updatedDetail);
     });
-
-    // event.updateWith(this.details);
   }
 
   handleShippingOptionChange = (event) => {
-    console.log(event, 'handleShippingOptionChange', this.paymentRequest.shippingOption);
+    console.log(this.paymentRequest.shippingOption);
+    // console.log(event, 'handleShippingOptionChange', this.paymentRequest.shippingOption);
     // event.updateWith(this.paymentRequest.shippingOption);
   };
 
   handleApplePay = () => {
-    this.paymentRequest.show().then((paymentResponse) => {
-      const { transactionIdentifier, paymentData } = paymentResponse.details;
-      console.log(transactionIdentifier, paymentData, paymentResponse);
-      setTimeout(() => paymentResponse.complete('success'), 400);
-    }).catch((error) => console.log(error, 'error'));
+    this.paymentRequest.show()
+      .then((paymentResponse) => {
+        const { transactionIdentifier, paymentData } = paymentResponse.details;
+        console.log(transactionIdentifier, paymentData, paymentResponse);
+        setTimeout(() => paymentResponse.complete('success'), 400);
+      }).catch((error) => {
+        this.paymentRequest.abort();
+        this.initPaymentRequest();
+        console.log(error, 'error');
+      });
   };
 
   render() {

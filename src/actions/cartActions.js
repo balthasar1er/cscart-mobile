@@ -103,6 +103,19 @@ export function saveUserData(data) {
   };
 }
 
+export function getUpdatedDetailsForShippingAddress(data, cb) {
+  return () => {
+    return Api.put('/sra_cart_content/', { user_data: data })
+      .then(() => Api.get('/sra_cart_content/', { params: { calculate_shipping: 'A' } }))
+      .then((response) => {
+        cb(response.data);
+      })
+      .catch((error) => {
+        console.log(error, 'err');
+      });
+  };
+}
+
 export function add(data) {
   return (dispatch) => {
     dispatch({ type: ADD_TO_CART_REQUEST });

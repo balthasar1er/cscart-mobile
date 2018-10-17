@@ -115,7 +115,11 @@ const styles = EStyleSheet.create({
     position: 'absolute',
     right: 14,
     bottom: 0,
-  }
+  },
+  inAppPaymentWrapper: {
+    marginLeft: 14,
+    marginRight: 14,
+  },
 });
 
 class Cart extends Component {
@@ -365,7 +369,11 @@ class Cart extends Component {
     );
   };
 
-  renderFooter = () => (<InAppPayment />);
+  renderFooter = () => (
+    <View style={styles.inAppPaymentWrapper}>
+      <InAppPayment />
+    </View>
+  );
 
   renderList() {
     const { products, fetching, refreshing } = this.state;
