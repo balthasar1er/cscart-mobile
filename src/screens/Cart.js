@@ -369,11 +369,19 @@ class Cart extends Component {
     );
   };
 
-  renderFooter = () => (
-    <View style={styles.inAppPaymentWrapper}>
-      <InAppPayment navigator={this.props.navigator} />
-    </View>
-  );
+  renderFooter = () => {
+    const { products } = this.state;
+
+    if (!products.length) {
+      return null;
+    }
+
+    return (
+      <View style={styles.inAppPaymentWrapper}>
+        <InAppPayment navigator={this.props.navigator} />
+      </View>
+    );
+  }
 
   renderList() {
     const { products, fetching, refreshing } = this.state;
