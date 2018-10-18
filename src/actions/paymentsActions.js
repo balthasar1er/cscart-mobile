@@ -12,6 +12,7 @@ import {
 
 import Api from '../services/api';
 import i18n from '../utils/i18n';
+import { Promise } from 'core-js';
 
 export function fetchAll() {
   return (dispatch) => {
@@ -29,6 +30,13 @@ export function fetchAll() {
           error,
         });
       });
+  };
+}
+export function applePay(transactionIdentifier, paymentData) {
+  return (dispatch) => {
+    return new Promise((resolve, resect) => {
+      resolve(paymentData);
+    });
   };
 }
 

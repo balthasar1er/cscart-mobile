@@ -1,13 +1,15 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, Alert } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { PaymentRequest, ApplePayButton } from 'react-native-payments';
 
 import config from '../config';
+import i18n from '../utils/i18n';
 
 import * as ordersActions from '../actions/ordersActions';
 import * as cartActions from '../actions/cartActions';
+import * as paymentsActions from '../actions/paymentsActions';
 
 class InAppPayment extends React.Component {
   constructor(props) {
@@ -167,24 +169,43 @@ class InAppPayment extends React.Component {
   };
 
   handleApplePay = () => {
+    const { cartActions, paymentsActions, navigator } = this.props;
     this.paymentRequest.show()
       .then((paymentResponse) => {
         const { transactionIdentifier, paymentData } = paymentResponse.details;
-        console.log(transactionIdentifier, paymentData, paymentResponse);
-        setTimeout(() => paymentResponse.complete('success'), 400);
-      }).catch((error) => {
-        this.paymentRequest.abort();
-        this.initPaymentRequest();
-        console.log(error, 'error');
+        paymentsActions
+          .applePay(transactionIdentifier, paymentData)
+          .then((data) => {
+            paymentResponse.complete('success');
+            cartActions.clear();
+            navigator.push({
+              screen: 'CheckoutComplete',
+              backButtonTitle: '',
+              backButtonHidden: true,
+              passProps: {
+                orderId: 104, // FIXME
+              }
+            });
+          })
+          .catch((error) => {
+            this.paymentRequest.abort();
+            Alert.alert(
+              i18n.gettext('Error'),
+              i18n.gettext('There was an error processing your payment.'),
+              { cancelable: true }
+            );
+          });
+        return true;
+      })
+      .catch((error) => {
+        console.log('canceled', error);
       });
   };
 
   handlePayPresed = () => {
     if (Platform.OS === 'ios' && config.applePay) {
-      if (!this.paymentRequest) {
-        this.initPaymentRequest();
-        this.handleApplePay();
-      }
+      this.initPaymentRequest();
+      this.handleApplePay();
     }
   }
 
@@ -206,5 +227,6 @@ export default connect(
   dispatch => ({
     ordersActions: bindActionCreators(ordersActions, dispatch),
     cartActions: bindActionCreators(cartActions, dispatch),
+    paymentsActions: bindActionCreators(paymentsActions, dispatch),
   })
 )(InAppPayment);

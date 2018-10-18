@@ -371,7 +371,7 @@ class Cart extends Component {
 
   renderFooter = () => (
     <View style={styles.inAppPaymentWrapper}>
-      <InAppPayment />
+      <InAppPayment navigator={this.props.navigator} />
     </View>
   );
 
