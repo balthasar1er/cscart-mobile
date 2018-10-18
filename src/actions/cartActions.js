@@ -108,10 +108,22 @@ export function getUpdatedDetailsForShippingAddress(data, cb) {
     return Api.put('/sra_cart_content/', { user_data: data })
       .then(() => Api.get('/sra_cart_content/', { params: { calculate_shipping: 'A' } }))
       .then((response) => {
-        cb(response.data);
+        cb(false, response.data);
       })
       .catch((error) => {
-        console.log(error, 'err');
+        cb(true, error);
+      });
+  };
+}
+
+export function getUpdatedDetailsForShippingOption(ids, cb) {
+  return () => {
+    return Api.get('/sra_cart_content/', { params: { shipping_ids: ids, calculate_shipping: 'E' } })
+      .then((response) => {
+        cb(false, response.data);
+      })
+      .catch((error) => {
+        cb(true, error);
       });
   };
 }

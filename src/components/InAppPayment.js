@@ -19,14 +19,6 @@ class InAppPayment extends React.Component {
     this.options = {};
   }
 
-  componentDidMount() {
-    if (Platform.OS === 'ios' && config.applePay) {
-      if (!this.paymentRequest) {
-        this.initPaymentRequest();
-      }
-    }
-  }
-
   getPaymentData = (cart) => {
     const vendorNames = [];
 
@@ -150,16 +142,28 @@ class InAppPayment extends React.Component {
       b_zipcode: shippingAddress.postalCode,
       s_zipcode: shippingAddress.postalCode,
     };
-    cartActions.getUpdatedDetailsForShippingAddress(data, (result) => {
+    cartActions.getUpdatedDetailsForShippingAddress(data, (error, result) => {
+      if (error) {
+        this.paymentRequest.fail();
+        return;
+      }
       const updatedDetail = this.getPaymentData(result).details;
       event.updateWith(updatedDetail);
     });
   }
 
   handleShippingOptionChange = (event) => {
-    console.log(this.paymentRequest.shippingOption);
-    // console.log(event, 'handleShippingOptionChange', this.paymentRequest.shippingOption);
-    // event.updateWith(this.paymentRequest.shippingOption);
+    const { cartActions } = this.props;
+    const { shippingOption } = this.paymentRequest;
+    cartActions.getUpdatedDetailsForShippingOption([shippingOption], (error, result) => {
+      if (error) {
+        this.paymentRequest.fail();
+        return;
+      }
+
+      const updatedDetail = this.getPaymentData(result).details;
+      event.updateWith(updatedDetail);
+    });
   };
 
   handleApplePay = () => {
@@ -175,12 +179,21 @@ class InAppPayment extends React.Component {
       });
   };
 
+  handlePayPresed = () => {
+    if (Platform.OS === 'ios' && config.applePay) {
+      if (!this.paymentRequest) {
+        this.initPaymentRequest();
+        this.handleApplePay();
+      }
+    }
+  }
+
   render() {
     return (
       <ApplePayButton
         buttonStyle="black"
         buttonType="buy"
-        onPress={this.handleApplePay}
+        onPress={this.handlePayPresed}
       />
     );
   }

@@ -187,7 +187,6 @@ class CheckoutShipping extends Component {
     // Get selected ids
     const selectedIds = {};
     selectedIds[`${itemIndex}`] = `${shipping.shipping_id}`;
-
     cartActions.recalculateTotal(selectedIds);
 
     this.setState({
