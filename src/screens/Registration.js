@@ -93,7 +93,6 @@ class Registration extends Component {
     authActions
       .profileFields()
       .then((fields) => {
-        console.log(fields);
         this.setState({
           fetching: false,
           forms: fields,
