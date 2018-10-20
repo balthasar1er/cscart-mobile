@@ -6,7 +6,10 @@ import {
   AUTH_LOGIN_FAIL,
   AUTH_RESET_STATE,
 
+  AUTH_REGESTRATION_REQUEST,
   AUTH_REGESTRATION_SUCCESS,
+  AUTH_REGESTRATION_FAIL,
+
   NOTIFICATION_SHOW,
 
   REGISTER_DEVICE_REQUEST,
@@ -26,7 +29,7 @@ import store from '../store';
 import * as cartActions from './cartActions';
 import * as wishListActions from './wishListActions';
 
-export function profileFields(data = {}, cb = () => {}) {
+export function profileFields(data = {}) {
   const sl = DeviceInfo.getDeviceLocale().split('-')[0];
   const params = {
     location: 'profile',
@@ -39,7 +42,6 @@ export function profileFields(data = {}, cb = () => {}) {
     dispatch({ type: FETCH_PROFILE_FIELDS_REQUEST });
     return Api.get('/sra_profile_fields', { params })
       .then((response) => {
-        cb(response.data);
         dispatch({
           type: FETCH_PROFILE_FIELDS_SUCCESS,
           payload: {
@@ -47,11 +49,55 @@ export function profileFields(data = {}, cb = () => {}) {
             ...response.data,
           },
         });
+        return response.data;
       })
       .catch((error) => {
         dispatch({
           type: FETCH_PROFILE_FIELDS_FAIL,
           payload: error,
+        });
+      });
+  };
+}
+
+export function createProfile(data) {
+  return (dispatch) => {
+    dispatch({ type: AUTH_REGESTRATION_REQUEST });
+    return Api.post('/sra_profile', data)
+      .then((response) => {
+        dispatch({
+          type: AUTH_REGESTRATION_SUCCESS,
+          payload: {
+            token: response.data.auth.token,
+            ttl: response.data.auth.ttl,
+            profile_id: response.data.profile_id,
+            user_id: response.data.user_id,
+          },
+        });
+        dispatch({
+          type: NOTIFICATION_SHOW,
+          payload: {
+            type: 'success',
+            title: i18n.gettext('Registration'),
+            text: i18n.gettext('Registration complete.'),
+            closeLastModal: true,
+          },
+        });
+      })
+      .then(() => cartActions.fetch(false)(dispatch))
+      .catch((error) => {
+        dispatch({
+          type: AUTH_REGESTRATION_FAIL,
+          payload: error,
+        });
+        dispatch({
+          type: NOTIFICATION_SHOW,
+          payload: {
+            type: 'warning',
+            title: i18n.gettext('Registration fail'),
+            text: error.response.data.message,
+            closeLastModal: false,
+          },
         });
       });
   };

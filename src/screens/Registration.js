@@ -4,16 +4,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   View,
-  Text,
-  TouchableOpacity,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import * as t from 'tcomb-form-native';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
 
-// theme
+// Theme
 import theme from '../config/theme';
 
 // Icons
@@ -23,38 +20,26 @@ import {
 } from '../utils/navIcons';
 
 // Components
-import Spinner from '../components/Spinner';
 import i18n from '../utils/i18n';
+import Spinner from '../components/Spinner';
+import ProfileForm from '../components/ProfileForm';
 
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  }
+  },
 });
-
-const Form = t.form.Form;
-const FormFields = t.struct({
-  email: t.String,
-  password: t.String,
-});
-const options = {
-  disableOrder: true,
-  fields: {
-    email: {
-      label: i18n.gettext('Email'),
-      keyboardType: 'email-address',
-      clearButtonMode: 'while-editing',
-    },
-    password: {
-      label: i18n.gettext('Password'),
-      secureTextEntry: true,
-      clearButtonMode: 'while-editing',
-    },
-  }
-};
 
 class Registration extends Component {
+  static navigatorStyle = {
+    navBarBackgroundColor: theme.$navBarBackgroundColor,
+    navBarButtonColor: theme.$navBarButtonColor,
+    navBarButtonFontSize: theme.$navBarButtonFontSize,
+    navBarTextColor: theme.$navBarTextColor,
+    screenBackgroundColor: theme.$screenBackgroundColor,
+  };
+
   static propTypes = {
     authActions: PropTypes.shape({
       registration: PropTypes.func,
@@ -66,19 +51,7 @@ class Registration extends Component {
       showInAppNotification: PropTypes.func,
       push: PropTypes.func,
     }),
-    auth: PropTypes.shape({
-      logged: PropTypes.bool,
-      fetching: PropTypes.bool,
-    }),
     showClose: PropTypes.bool,
-  };
-
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
   constructor(props) {
@@ -86,6 +59,7 @@ class Registration extends Component {
 
     this.state = {
       fetching: true,
+      forms: [],
     };
   }
 
@@ -116,12 +90,15 @@ class Registration extends Component {
     navigator.setTitle({
       title: i18n.gettext('Registration').toUpperCase(),
     });
-    authActions.profileFields({}, (fields) => {
-      console.log('fields', fields);
-      this.setState({
-        fetching: false,
+    authActions
+      .profileFields()
+      .then((fields) => {
+        console.log(fields);
+        this.setState({
+          fetching: false,
+          forms: fields,
+        });
       });
-    });
   }
 
   onNavigatorEvent(event) {
@@ -133,25 +110,30 @@ class Registration extends Component {
     }
   }
 
+  handleRegister = (values) => {
+    const { authActions } = this.props;
+    if (values) {
+      authActions.createProfile(values);
+    }
+  }
+
   render() {
-    const { fetching } = this.state;
+    const { fetching, forms } = this.state;
+
+    if (fetching) {
+      return (
+        <View style={styles.container}>
+          <Spinner visible mode="content" />
+        </View>
+      );
+    }
 
     return (
       <View style={styles.container}>
-        <Form
-          ref="form"
-          type={FormFields}
-          options={options}
-          value={{}}
+        <ProfileForm
+          fields={forms}
+          onSubmit={values => this.handleRegister(values)}
         />
-        <TouchableOpacity
-          style={styles.btn}
-        >
-          <Text style={styles.btnText}>
-            {i18n.gettext('Register')}
-          </Text>
-        </TouchableOpacity>
-        <Spinner visible={fetching} />
       </View>
     );
   }
