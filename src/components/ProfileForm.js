@@ -90,7 +90,8 @@ export default class ProfileForm extends Component {
 
     if (field.field_type === 'S' || field.field_type === 'R') {
       // Selectbox
-      const Enums = t.enums(field.values);
+      const values = Array.isArray(field.values) ? {} : field.values;
+      const Enums = t.enums(values);
       return {
         type: field.required ? Enums : t.maybe(Enums),
         options: {
@@ -135,7 +136,6 @@ export default class ProfileForm extends Component {
     const formFields = {};
     const formOptions = {
       disableOrder: true,
-      auto: 'placeholders',
       fields: {},
     };
 
