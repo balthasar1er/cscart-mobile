@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import {
   View,
   Text,
+  Platform,
   TouchableOpacity,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as t from 'tcomb-form-native';
+import format from 'date-fns/format';
 
 // Components
 import i18n from '../utils/i18n';
@@ -73,7 +75,11 @@ export default class ProfileForm extends Component {
         type: field.required ? t.Date : t.maybe(t.Date),
         options: {
           label: field.description,
-          defaultValueText: 'select date',
+          defaultValueText: i18n.gettext('Select date'),
+          mode: 'date',
+          config: {
+            format: date => format(date, 'YYYY/MM/DD'),
+          }
         },
       };
     }
