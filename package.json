@@ -32,12 +32,12 @@
     "redux-persist": "4.10.1",
     "redux-thunk": "2.3.0",
     "shitty-qs": "1.0.1",
-    "babel-plugin-transform-remove-console": "^6.9.4",
     "tcomb-form-native": "0.6.15"
   },
   "devDependencies": {
     "babel-eslint": "8.2.6",
     "babel-jest": "23.4.2",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "babel-preset-react-native": "4.0.0",
     "enzyme": "3.3.0",
     "enzyme-adapter-react-16": "1.1.1",
