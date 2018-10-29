@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {
   View,
   Text,
-  Platform,
   TouchableOpacity,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -69,17 +68,21 @@ export default class ProfileForm extends Component {
   }
 
   getFieldType = (field) => {
+    const label = field.description;
+    const help = !field.required ? `${i18n.gettext('(Optional)')}` : '';
+
     if (field.field_type === 'D') {
       // Date field
       return {
         type: field.required ? t.Date : t.maybe(t.Date),
         options: {
-          label: field.description,
+          label,
+          help,
           defaultValueText: i18n.gettext('Select date'),
           mode: 'date',
           config: {
-            format: date => format(date, 'YYYY/MM/DD'),
-          }
+            format: date => format(date, 'MM/DD/YYYY'),
+          },
         },
       };
     }
@@ -89,7 +92,8 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? t.Boolean : t.maybe(t.Boolean),
         options: {
-          label: field.description,
+          label,
+          help,
         },
       };
     }
@@ -101,7 +105,8 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? Enums : t.maybe(Enums),
         options: {
-          label: field.description,
+          label,
+          help,
         },
       };
     }
@@ -111,7 +116,8 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? t.String : t.maybe(t.String),
         options: {
-          label: field.description,
+          label,
+          help,
           secureTextEntry: true,
           clearButtonMode: 'while-editing',
         },
@@ -123,7 +129,8 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? t.String : t.maybe(t.String),
         options: {
-          label: field.description,
+          label,
+          help,
           clearButtonMode: 'while-editing',
         },
       };
@@ -132,7 +139,8 @@ export default class ProfileForm extends Component {
     return {
       type: field.required ? t.String : t.maybe(t.String),
       options: {
-        label: field.description,
+        label,
+        help,
         clearButtonMode: 'while-editing',
       },
     };
@@ -141,7 +149,6 @@ export default class ProfileForm extends Component {
   convertFieldsToTcomb = (fields) => {
     const formFields = {};
     const formOptions = {
-      disableOrder: true,
       fields: {},
     };
 

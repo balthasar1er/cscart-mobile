@@ -1,5 +1,8 @@
 import { Platform } from 'react-native';
+import isDate from 'date-fns/is_date';
+import format from 'date-fns/format';
 import DeviceInfo from 'react-native-device-info';
+
 import {
   AUTH_LOGIN_REQUEST,
   AUTH_LOGIN_SUCCESS,
@@ -62,7 +65,14 @@ export function profileFields(data = {}) {
   };
 }
 
-export function createProfile(data) {
+export function createProfile(params) {
+  const data = { ...params };
+  Object.keys(data).forEach((key) => {
+    if (isDate(data[key])) {
+      data[key] = format(data[key], 'MM/DD/YYYY');
+    }
+  });
+
   return (dispatch) => {
     dispatch({ type: AUTH_REGESTRATION_REQUEST });
     return Api.post('/sra_profile', data)
