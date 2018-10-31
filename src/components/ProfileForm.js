@@ -27,11 +27,6 @@ const styles = EStyleSheet.create({
     fontSize: '1rem',
     textAlign: 'center',
   },
-  header: {
-    fontSize: '1.1rem',
-    marginTop: 6,
-    marginBottom: 12,
-  },
 });
 
 const { Form } = t.form;
@@ -55,6 +50,7 @@ export default class ProfileForm extends Component {
     const forms = [];
 
     Object.keys(fields)
+      .sort()
       .forEach((key) => {
         forms.push({
           type: key,
@@ -197,11 +193,6 @@ export default class ProfileForm extends Component {
       <KeyboardAwareScrollView contentContainerStyle={styles.contentContainer}>
         {forms.map(form => (
           <View key={form.type}>
-            {form.description !== '' && (
-              <Text style={styles.header}>
-                {form.description}
-              </Text>
-            )}
             <Form
               ref={(ref) => { this.formsRef[form.type] = ref; }}
               type={form.formFields}
