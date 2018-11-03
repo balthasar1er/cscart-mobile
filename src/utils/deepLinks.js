@@ -86,7 +86,7 @@ export const registerDrawerDeepLinks = (event, navigator) => {
         animated: false,
       });
     } else if (params.dispatch === 'orders.search') {
-      navigator.resetTo({
+      navigator.push({
         screen: 'Orders',
         animated: false,
       });

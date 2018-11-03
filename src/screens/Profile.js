@@ -4,41 +4,34 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   View,
-  WebView,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Import actions.
-import * as notificationsActions from '../actions/notificationsActions';
+import * as authActions from '../actions/authActions';
 
-// theme
+// Theme
 import theme from '../config/theme';
 
-import { registerDrawerDeepLinks } from '../utils/deepLinks';
-import config from '../config';
+// Icons
+import {
+  iconsMap,
+  iconsLoaded,
+} from '../utils/navIcons';
+
+// Components
 import i18n from '../utils/i18n';
+import Spinner from '../components/Spinner';
+import ProfileForm from '../components/ProfileForm';
 
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '$screenBackgroundColor',
+    backgroundColor: '#fff',
   },
 });
 
 class Profile extends Component {
-  static propTypes = {
-    navigator: PropTypes.shape({
-      setOnNavigatorEvent: PropTypes.func,
-      pop: PropTypes.func,
-    }),
-    auth: PropTypes.shape({
-      token: PropTypes.string,
-    }),
-    notificationsActions: PropTypes.shape({
-      show: PropTypes.func,
-    })
-  };
-
   static navigatorStyle = {
     navBarBackgroundColor: theme.$navBarBackgroundColor,
     navBarButtonColor: theme.$navBarButtonColor,
@@ -47,49 +40,94 @@ class Profile extends Component {
     screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
-  componentDidMount() {
+  static propTypes = {
+    authActions: PropTypes.shape({
+      registration: PropTypes.func,
+    }),
+    navigator: PropTypes.shape({
+      setOnNavigatorEvent: PropTypes.func,
+      setTitle: PropTypes.func,
+      dismissModal: PropTypes.func,
+      showInAppNotification: PropTypes.func,
+      push: PropTypes.func,
+    }),
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      fetching: true,
+      profile: {},
+      forms: [],
+    };
+  }
+
+  componentWillMount() {
     const { navigator } = this.props;
-    // FIXME: Set title
-    navigator.setTitle({
-      title: i18n.gettext('Profile').toUpperCase(),
-    });
+
     navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+
+    iconsLoaded.then(() => {
+      navigator.setButtons({
+        leftButtons: [
+          {
+            id: 'close',
+            icon: iconsMap.close,
+          },
+        ],
+      });
+    });
+  }
+
+  componentDidMount() {
+    const { authActions } = this.props;
+
+    authActions
+      .fetchProfile()
+      .then((profile) => {
+        this.setState({
+          profile,
+          fetching: false,
+          forms: profile.fields,
+        });
+      });
   }
 
   onNavigatorEvent(event) {
     const { navigator } = this.props;
-    registerDrawerDeepLinks(event, navigator);
+    if (event.type === 'NavBarButtonPress') {
+      if (event.id === 'close') {
+        navigator.dismissModal();
+      }
+    }
   }
 
-  onNavigationStateChange = (e) => {
-    const { url } = e;
-    if (url === `${this.redirectUrl}&selected_section=general`) {
-      this.props.notificationsActions.show({
-        type: 'success',
-        title: i18n.gettext('Information'),
-        text: i18n.gettext('The profile data has been updated successfully.'),
-        closeLastModal: false,
-      });
-      this.props.navigator.pop();
+  handleSave = (values) => {
+    const { profile } = this.state;
+    const { authActions } = this.props;
+    if (values) {
+      authActions.updateProfile(profile.user_id, values);
     }
   }
 
   render() {
-    const { auth } = this.props;
-    this.redirectUrl = `${config.siteUrl}index.php?dispatch=profiles.update`;
-    const url = `${config.siteUrl}index.php?dispatch=auth.token_login&token=${auth.token}&redirect_url=${this.redirectUrl}&s_layout=${config.layoutId}`;
+    const { fetching, forms } = this.state;
+
+    if (fetching) {
+      return (
+        <View style={styles.container}>
+          <Spinner visible mode="content" />
+        </View>
+      );
+    }
+
     return (
       <View style={styles.container}>
-        <WebView
-          automaticallyAdjustContentInsets={false}
-          javaScriptEnabled
-          scalesPageToFit
-          startInLoadingState
-          userAgent="Mozilla/5.0 (Linux; Android 6.0.1; SM-G920V Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36"
-          source={{
-            uri: url,
-          }}
-          onNavigationStateChange={e => this.onNavigationStateChange(e)}
+        <ProfileForm
+          fields={forms}
+          isEdit
+          onSubmit={values => this.handleSave(values)}
         />
       </View>
     );
@@ -101,6 +139,6 @@ export default connect(
     auth: state.auth,
   }),
   dispatch => ({
-    notificationsActions: bindActionCreators(notificationsActions, dispatch),
+    authActions: bindActionCreators(authActions, dispatch),
   })
 )(Profile);

@@ -27,6 +27,11 @@ const styles = EStyleSheet.create({
     fontSize: '1rem',
     textAlign: 'center',
   },
+  header: {
+    fontSize: '1.2rem',
+    marginTop: 10,
+    marginBottom: 10,
+  },
 });
 
 const { Form } = t.form;
@@ -35,6 +40,11 @@ export default class ProfileForm extends Component {
   static propTypes = {
     fields: PropTypes.shape().isRequired,
     onSubmit: PropTypes.func.isRequired,
+    isEdit: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    isEdit: false,
   };
 
   constructor(props) {
@@ -55,7 +65,7 @@ export default class ProfileForm extends Component {
         forms.push({
           type: key,
           description: fields[key].description,
-          ...this.convertFieldsToTcomb(fields[key]),
+          ...this.convertFieldsToTcomb(fields[key].fields),
         });
       });
     this.setState({
@@ -63,7 +73,7 @@ export default class ProfileForm extends Component {
     });
   }
 
-  getFieldType = (field) => {
+  getFieldType = (field, allFields) => {
     const label = field.description;
     const help = !field.required ? `${i18n.gettext('(Optional)')}` : '';
 
@@ -132,6 +142,52 @@ export default class ProfileForm extends Component {
       };
     }
 
+    if (field.field_type === 'O') {
+      // Country field
+      return {
+        type: field.required ? t.enums(field.values) : t.maybe(t.enums(field.values)),
+        options: {
+          label,
+          help,
+          defaultValueText: i18n.gettext('Select country'),
+        },
+      };
+    }
+
+    if (field.field_type === 'A') {
+      // State field
+      let countryCode = null;
+      let values = null;
+
+      if ('s_country' in allFields) {
+        countryCode = allFields.s_country.value;
+      }
+
+      if ('b_country' in allFields) {
+        countryCode = allFields.b_country.value;
+      }
+
+      if (countryCode in field.values) {
+        values = field.values[countryCode];
+      }
+
+      let type = field.required ? t.String : t.maybe(t.String);
+      if (values) {
+        type = field.required ? t.enums(values) : t.maybe(t.enums(values));
+      }
+
+      console.log(values, countryCode, allFields, 'asd');
+
+      return {
+        type,
+        options: {
+          label,
+          help,
+          defaultValueText: i18n.gettext('Select state'),
+        },
+      };
+    }
+
     return {
       type: field.required ? t.String : t.maybe(t.String),
       options: {
@@ -143,22 +199,26 @@ export default class ProfileForm extends Component {
   };
 
   convertFieldsToTcomb = (fields) => {
+    const formValues = {};
     const formFields = {};
     const formOptions = {
       fields: {},
     };
 
-    Object.keys(fields.fields)
+    Object.keys(fields)
       .forEach((key) => {
-        const item = fields.fields[key];
-        const itedData = this.getFieldType(item);
+        const item = fields[key];
+        const itedData = this.getFieldType(item, fields);
         formFields[key] = itedData.type;
         formOptions.fields[key] = itedData.options;
+        formValues[key] = item.value;
       });
 
     return {
+      fields,
       formFields: t.struct(formFields),
       formOptions,
+      formValues,
     };
   }
 
@@ -186,18 +246,47 @@ export default class ProfileForm extends Component {
     }
   }
 
+  handleChange = (values, index) => {
+    const { forms } = this.state;
+    const newForms = [...forms];
+    const fields = {};
+
+    newForms[index].formValues = values;
+
+    Object.keys(newForms[index].fields)
+      .forEach((key) => {
+        const item = newForms[index].fields[key];
+        fields[key] = item;
+        fields[key].value = values[key];
+      });
+    newForms[index].formFields = this.convertFieldsToTcomb(fields).formFields;
+
+    this.setState({
+      forms: newForms,
+    });
+  };
+
   render() {
     const { forms } = this.state;
+    const { isEdit } = this.props;
 
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.contentContainer}>
-        {forms.map(form => (
+        {forms.map((form, index) => (
           <View key={form.type}>
+            {(isEdit && form.description !== '') && (
+              <View>
+                <Text style={styles.header}>
+                  {form.description}
+                </Text>
+              </View>
+            )}
             <Form
               ref={(ref) => { this.formsRef[form.type] = ref; }}
               type={form.formFields}
               options={form.formOptions}
-              value={{}}
+              value={form.formValues}
+              onChange={values => this.handleChange(values, index)}
             />
           </View>
         ))}
@@ -206,7 +295,7 @@ export default class ProfileForm extends Component {
           onPress={this.handleValidate}
         >
           <Text style={styles.btnText}>
-            {i18n.gettext('Register')}
+            {isEdit ? i18n.gettext('Save') : i18n.gettext('Register')}
           </Text>
         </TouchableOpacity>
       </KeyboardAwareScrollView>

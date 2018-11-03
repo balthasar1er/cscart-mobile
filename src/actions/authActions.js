@@ -23,6 +23,14 @@ import {
   FETCH_PROFILE_FIELDS_SUCCESS,
   FETCH_PROFILE_FIELDS_FAIL,
 
+  FETCH_PROFILE_REQUEST,
+  FETCH_PROFILE_SUCCESS,
+  FETCH_PROFILE_FAIL,
+
+  UPDATE_PROFILE_REQUEST,
+  UPDATE_PROFILE_SUCCESS,
+  UPDATE_PROFILE_FAIL,
+
   AUTH_LOGOUT,
 } from '../constants';
 import Api from '../services/api';
@@ -33,6 +41,33 @@ import store from '../store';
 import * as cartActions from './cartActions';
 import * as layoutsActions from './layoutsActions';
 import * as wishListActions from './wishListActions';
+
+export function fetchProfile() {
+  const sl = DeviceInfo.getDeviceLocale().split('-')[0];
+  const params = {
+    lang_code: sl,
+  };
+
+  return (dispatch) => {
+    dispatch({ type: FETCH_PROFILE_REQUEST });
+    return Api.get('/sra_profile', { params })
+      .then((response) => {
+        dispatch({
+          type: FETCH_PROFILE_SUCCESS,
+          payload: {
+            ...response.data,
+          },
+        });
+        return response.data;
+      })
+      .catch((error) => {
+        dispatch({
+          type: FETCH_PROFILE_FAIL,
+          payload: error,
+        });
+      });
+  };
+}
 
 export function profileFields(data = {}) {
   const sl = DeviceInfo.getDeviceLocale().split('-')[0];
@@ -60,6 +95,53 @@ export function profileFields(data = {}) {
         dispatch({
           type: FETCH_PROFILE_FIELDS_FAIL,
           payload: error,
+        });
+      });
+  };
+}
+
+export function updateProfile(id, params) {
+  const data = { ...params };
+  Object.keys(data).forEach((key) => {
+    if (isDate(data[key])) {
+      data[key] = format(data[key], 'MM/DD/YYYY');
+    }
+  });
+
+  console.log(data);
+
+  return (dispatch) => {
+    dispatch({ type: UPDATE_PROFILE_REQUEST });
+    return Api.put(`/sra_profile/${id}`, data)
+      .then((response) => {
+        dispatch({
+          type: UPDATE_PROFILE_SUCCESS,
+          payload: {},
+        });
+        dispatch({
+          type: NOTIFICATION_SHOW,
+          payload: {
+            type: 'success',
+            title: i18n.gettext('Profile'),
+            text: i18n.gettext('The profile data has been updated successfully'),
+            closeLastModal: true,
+          },
+        });
+      })
+      .then(() => cartActions.fetch(false)(dispatch))
+      .catch((error) => {
+        dispatch({
+          type: UPDATE_PROFILE_FAIL,
+          payload: error,
+        });
+        dispatch({
+          type: NOTIFICATION_SHOW,
+          payload: {
+            type: 'warning',
+            title: i18n.gettext('Profile update fail'),
+            text: error.response.data.message,
+            closeLastModal: false,
+          },
         });
       });
   };
