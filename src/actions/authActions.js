@@ -108,8 +108,6 @@ export function updateProfile(id, params) {
     }
   });
 
-  console.log(data);
-
   return (dispatch) => {
     dispatch({ type: UPDATE_PROFILE_REQUEST });
     return Api.put(`/sra_profile/${id}`, data)

@@ -150,6 +150,10 @@ export default class ProfileForm extends Component {
           label,
           help,
           defaultValueText: i18n.gettext('Select country'),
+          nullOption: {
+            value: '',
+            text: i18n.gettext('Select country')
+          },
         },
       };
     }
@@ -176,14 +180,16 @@ export default class ProfileForm extends Component {
         type = field.required ? t.enums(values) : t.maybe(t.enums(values));
       }
 
-      console.log(values, countryCode, allFields, 'asd');
-
       return {
         type,
         options: {
           label,
           help,
           defaultValueText: i18n.gettext('Select state'),
+          nullOption: {
+            value: '',
+            text: i18n.gettext('Select state')
+          },
         },
       };
     }
@@ -208,9 +214,9 @@ export default class ProfileForm extends Component {
     Object.keys(fields)
       .forEach((key) => {
         const item = fields[key];
-        const itedData = this.getFieldType(item, fields);
-        formFields[key] = itedData.type;
-        formOptions.fields[key] = itedData.options;
+        const itemData = this.getFieldType(item, fields);
+        formFields[key] = itemData.type;
+        formOptions.fields[key] = itemData.options;
         formValues[key] = item.value;
       });
 
@@ -246,12 +252,28 @@ export default class ProfileForm extends Component {
     }
   }
 
-  handleChange = (values, index) => {
+  handleChange(values, index) {
     const { forms } = this.state;
     const newForms = [...forms];
     const fields = {};
+    const newFormValues = { ...values };
 
-    newForms[index].formValues = values;
+    Object.keys(newForms[index].formValues)
+      .forEach((key) => {
+        if (key === 's_country') {
+          const item = newForms[index].formValues[key];
+          if (item !== values.s_country) {
+            newFormValues.s_state = '';
+          }
+        }
+        if (key === 'b_country') {
+          const item = newForms[index].formValues[key];
+          if (item !== values.b_country) {
+            newFormValues.b_state = '';
+          }
+        }
+      });
+    newForms[index].formValues = newFormValues;
 
     Object.keys(newForms[index].fields)
       .forEach((key) => {
@@ -259,12 +281,12 @@ export default class ProfileForm extends Component {
         fields[key] = item;
         fields[key].value = values[key];
       });
-    newForms[index].formFields = this.convertFieldsToTcomb(fields).formFields;
 
+    newForms[index].formFields = this.convertFieldsToTcomb(fields).formFields;
     this.setState({
       forms: newForms,
     });
-  };
+  }
 
   render() {
     const { forms } = this.state;
