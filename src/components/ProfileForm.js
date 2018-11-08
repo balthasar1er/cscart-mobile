@@ -13,6 +13,15 @@ import format from 'date-fns/format';
 // Components
 import i18n from '../utils/i18n';
 
+const FIELD_DATE = 'D';
+const FIELD_CHECKBOX = 'C';
+const FIELD_SELECTBOX = 'S';
+const FIELD_RADIO = 'R';
+const FIELD_PASSWORD = 'W';
+const FIELD_INPUT = 'I';
+const FIELD_COUNTRY = 'O';
+const FIELD_STATE = 'A';
+
 const styles = EStyleSheet.create({
   contentContainer: {
     padding: 12,
@@ -59,8 +68,13 @@ export default class ProfileForm extends Component {
     const { fields } = this.props;
     const forms = [];
 
+    function sortFunc(a, b) {
+      const sortingArr = ['E', 'C', 'B', 'S'];
+      return sortingArr.indexOf(a[1]) - sortingArr.indexOf(b[1]);
+    }
+
     Object.keys(fields)
-      .sort()
+      .sort(sortFunc)
       .forEach((key) => {
         forms.push({
           type: key,
@@ -77,7 +91,7 @@ export default class ProfileForm extends Component {
     const label = field.description;
     const help = !field.required ? `${i18n.gettext('(Optional)')}` : '';
 
-    if (field.field_type === 'D') {
+    if (field.field_type === FIELD_DATE) {
       // Date field
       return {
         type: field.required ? t.Date : t.maybe(t.Date),
@@ -93,7 +107,7 @@ export default class ProfileForm extends Component {
       };
     }
 
-    if (field.field_type === 'C') {
+    if (field.field_type === FIELD_CHECKBOX) {
       // Checkbox field
       return {
         type: field.required ? t.Boolean : t.maybe(t.Boolean),
@@ -104,7 +118,7 @@ export default class ProfileForm extends Component {
       };
     }
 
-    if (field.field_type === 'S' || field.field_type === 'R') {
+    if (field.field_type === FIELD_SELECTBOX || field.field_type === FIELD_RADIO) {
       // Selectbox
       const values = Array.isArray(field.values) ? {} : field.values;
       const Enums = t.enums(values);
@@ -117,7 +131,7 @@ export default class ProfileForm extends Component {
       };
     }
 
-    if (field.field_type === 'W') {
+    if (field.field_type === FIELD_PASSWORD) {
       // Password field
       return {
         type: field.required ? t.String : t.maybe(t.String),
@@ -130,7 +144,7 @@ export default class ProfileForm extends Component {
       };
     }
 
-    if (field.field_type === 'I') {
+    if (field.field_type === FIELD_INPUT) {
       // Text field
       return {
         type: field.required ? t.String : t.maybe(t.String),
@@ -142,7 +156,7 @@ export default class ProfileForm extends Component {
       };
     }
 
-    if (field.field_type === 'O') {
+    if (field.field_type === FIELD_COUNTRY) {
       // Country field
       return {
         type: field.required ? t.enums(field.values) : t.maybe(t.enums(field.values)),
@@ -158,7 +172,7 @@ export default class ProfileForm extends Component {
       };
     }
 
-    if (field.field_type === 'A') {
+    if (field.field_type === FIELD_STATE) {
       // State field
       let countryCode = null;
       let values = null;
@@ -218,6 +232,10 @@ export default class ProfileForm extends Component {
         formFields[key] = itemData.type;
         formOptions.fields[key] = itemData.options;
         formValues[key] = item.value;
+
+        if (item.field_type === FIELD_DATE) { // Date field
+          formValues[key] = new Date(item.value * 1000);
+        }
       });
 
     return {
