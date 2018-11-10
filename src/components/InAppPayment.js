@@ -1,8 +1,16 @@
 import React from 'react';
-import { Platform, Alert } from 'react-native';
+import {
+  Alert,
+  Platform,
+  View,
+  Image,
+  TouchableOpacity,
+  Text
+} from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { PaymentRequest, ApplePayButton } from 'react-native-payments';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 import config from '../config';
 import i18n from '../utils/i18n';
@@ -10,6 +18,28 @@ import i18n from '../utils/i18n';
 import * as ordersActions from '../actions/ordersActions';
 import * as cartActions from '../actions/cartActions';
 import * as paymentsActions from '../actions/paymentsActions';
+
+const styles = EStyleSheet.create({
+  androidPayBtn: {
+    backgroundColor: 'black',
+    padding: 12,
+    borderRadius: 4,
+  },
+  androidPayBtnWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  androidPayBtnIco: {
+    width: 60,
+    height: 24,
+    marginLeft: 6,
+  },
+  androidPayBtnText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: '1rem',
+  }
+});
 
 class InAppPayment extends React.Component {
   constructor(props) {
@@ -23,16 +53,38 @@ class InAppPayment extends React.Component {
 
   getPaymentData = (cart) => {
     const vendorNames = [];
+    const methodData = [];
 
-    const methodData = [{
-      supportedMethods: ['apple-pay'],
-      data: {
-        merchantIdentifier: config.applePayMerchantIdentifier,
-        supportedNetworks: config.applePaySupportedNetworks,
-        countryCode: 'US',
-        currencyCode: 'USD'
-      }
-    }];
+    if (Platform.OS === 'ios') {
+      methodData.push(
+        {
+          supportedMethods: ['apple-pay'],
+          data: {
+            merchantIdentifier: config.applePayMerchantIdentifier,
+            supportedNetworks: config.applePaySupportedNetworks,
+            countryCode: 'US',
+            currencyCode: 'USD'
+          }
+        }
+      );
+    } else {
+      methodData.push(
+        {
+          supportedMethods: ['android-pay'],
+          data: {
+            supportedNetworks: config.googlePaySupportedNetworks,
+            currencyCode: 'USD',
+            environment: 'TEST', // defaults to production
+            paymentMethodTokenizationParameters: {
+              tokenizationType: 'NETWORK_TOKEN',
+              parameters: {
+                publicKey: config.googlePayApiKey
+              }
+            }
+          }
+        }
+      );
+    }
 
     const shippingOptions = [];
     const displayItems = [];
@@ -202,20 +254,76 @@ class InAppPayment extends React.Component {
       });
   };
 
+  handleGooglePay = () => {
+    const { cartActions, paymentsActions, navigator } = this.props;
+    console.log(this.paymentRequest);
+    this.paymentRequest.show()
+      .then((paymentResponse) => {
+        const { transactionIdentifier, paymentData } = paymentResponse.details;
+        paymentsActions
+          .applePay(transactionIdentifier, paymentData)
+          .then((data) => {
+            paymentResponse.complete('success');
+            cartActions.clear();
+            navigator.push({
+              screen: 'CheckoutComplete',
+              backButtonTitle: '',
+              backButtonHidden: true,
+              passProps: {
+                orderId: 104, // FIXME
+              }
+            });
+          })
+          .catch((error) => {
+            this.paymentRequest.abort();
+            Alert.alert(
+              i18n.gettext('Error'),
+              i18n.gettext('There was an error processing your payment.'),
+              { cancelable: true }
+            );
+          });
+        return true;
+      })
+      .catch((error) => {
+        console.log('canceled', error);
+      });
+  }
+
   handlePayPresed = () => {
     if (Platform.OS === 'ios' && config.applePay) {
       this.initPaymentRequest();
       this.handleApplePay();
+    } else if (config.googlePay) {
+      this.initPaymentRequest();
+      this.handleGooglePay();
     }
   }
 
   render() {
+    if (Platform.OS === 'ios') {
+      return (
+        <ApplePayButton
+          buttonStyle="black"
+          buttonType="buy"
+          onPress={this.handlePayPresed}
+        />
+      );
+    }
     return (
-      <ApplePayButton
-        buttonStyle="black"
-        buttonType="buy"
+      <TouchableOpacity
+        style={styles.androidPayBtn}
         onPress={this.handlePayPresed}
-      />
+      >
+        <View style={styles.androidPayBtnWrapper}>
+          <Text style={styles.androidPayBtnText}>
+            {i18n.gettext('Buy with')}
+          </Text>
+          <Image
+            source={require('../assets/google_pay.png')}
+            style={styles.androidPayBtnIco}
+          />
+        </View>
+      </TouchableOpacity>
     );
   }
 }

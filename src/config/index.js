@@ -26,4 +26,9 @@ export default {
   applePayMerchantIdentifier: 'merchant.com.cscart',
   applePayMerchantName: 'CSCartmultivendor',
   applePaySupportedNetworks: ['visa'],
+
+  // Google pay payments
+  googlePay: true,
+  googlePayApiKey: 'api-key',
+  googlePaySupportedNetworks: ['visa'],
 };
