@@ -20,6 +20,8 @@ const styles = EStyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     height: 240,
+    flex: 2,
+    maxWidth: '50%',
   },
   productImage: {
     width: PRODUCT_IMAGE_WIDTH,
