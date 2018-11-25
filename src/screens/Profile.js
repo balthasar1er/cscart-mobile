@@ -6,6 +6,7 @@ import {
   View,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import omit from 'lodash/omit';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
@@ -20,7 +21,6 @@ import {
 } from '../utils/navIcons';
 
 // Components
-import i18n from '../utils/i18n';
 import Spinner from '../components/Spinner';
 import ProfileForm from '../components/ProfileForm';
 
@@ -125,7 +125,7 @@ class Profile extends Component {
     return (
       <View style={styles.container}>
         <ProfileForm
-          fields={forms}
+          fields={omit(forms, 'B')}
           isEdit
           onSubmit={values => this.handleSave(values)}
         />
