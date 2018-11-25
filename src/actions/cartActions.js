@@ -60,16 +60,20 @@ export function fetch(fetching = true, calculateShipping = 'A') {
 }
 
 export function recalculateTotal(ids) {
+  const shippingIds = Object.values(ids);
+
   return (dispatch) => {
     dispatch({
       type: CART_RECALCULATE_REQUEST,
     });
-    return Api.get('/sra_cart_content/', { params: { shipping_ids: ids, calculate_shipping: 'E' } })
+    return Api.get('/sra_cart_content/', { params: { shipping_ids: shippingIds, calculate_shipping: 'E' } })
       .then((response) => {
         dispatch({
           type: CART_RECALCULATE_SUCCESS,
           payload: response.data,
         });
+
+        return response.data;
       })
       .catch((error) => {
         dispatch({
@@ -175,8 +179,8 @@ export function change(id, data) {
           payload: response.data,
         });
         // Calculate cart
-        setTimeout(() => fetch(false)(dispatch), 50);
       })
+      .then(() => fetch(false)(dispatch))
       .catch((error) => {
         dispatch({
           type: CART_CHANGE_FAIL,

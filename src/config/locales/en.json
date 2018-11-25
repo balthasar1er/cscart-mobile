@@ -839,5 +839,19 @@
     "Zimbabwe": "Zimbabwe",
     "Register": "Register",
     "(Optional)": "(Optional)",
-    "The profile data has been updated successfully": "The profile data has been updated successfully"
+    "The profile data has been updated successfully": "The profile data has been updated successfully",
+    "Processed": "Processed",
+    "Complete": "Complete",
+    "Open": "Open",
+    "Failed": "Failed",
+    "Declined": "Declined",
+    "Backordered": "Backordered",
+    "Canceled": "Canceled",
+    "First name": "First name",
+    "Last name": "Last name",
+    "E-mail": "E-mail",
+    "Phone": "Phone",
+    "City": "City",
+    "Country": "Country",
+    "State": "State"
 }

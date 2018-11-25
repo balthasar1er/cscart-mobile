@@ -15,8 +15,7 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
-import { has } from 'lodash';
-import { stripTags, formatPrice } from '../utils';
+import { stripTags, formatPrice, getProductImagesPaths } from '../utils';
 
 // Import actions.
 import * as cartActions from '../actions/cartActions';
@@ -296,23 +295,13 @@ class ProductDetail extends Component {
       productDetail, navigator, vendors, discussion, auth,
     } = nextProps;
     const product = productDetail;
-    const images = [];
 
     if (!product) {
       return;
     }
 
     // If we haven't images put main image.
-    if (has(product, 'main_pair.detailed.image_path')) {
-      images.push(product.main_pair.detailed.image_path);
-      Object.values(product.image_pairs).map((img) => {
-        if (has(img, 'detailed.image_path')) {
-          images.push(img.detailed.image_path);
-        } else if (has(img, 'icon.image_path')) {
-          images.push(img.icon.image_path);
-        }
-      });
-    }
+    const images = getProductImagesPaths(product);
 
     // Fixme
     if (
@@ -345,6 +334,7 @@ class ProductDetail extends Component {
     }
 
     this.setState({
+      amount: parseInt(product.qty_step, 10) || 1,
       images,
       product,
       discussion: activeDiscussion,
@@ -380,11 +370,15 @@ class ProductDetail extends Component {
     const { selectedOptions, product, amount } = this.state;
     const { productDetail } = this.props;
     let newPrice = 0;
-    newPrice += +productDetail.price;
+    newPrice += parseInt(productDetail.price, 10);
     Object.keys(selectedOptions).forEach((key) => {
       newPrice += +selectedOptions[key].modifier;
     });
-    newPrice *= amount;
+
+    if (amount) {
+      newPrice *= amount;
+    }
+
     this.setState({
       product: {
         ...product,
@@ -419,6 +413,7 @@ class ProductDetail extends Component {
         product_options: productOptions,
       },
     };
+
     return cartActions.add({ products });
   }
 
@@ -491,13 +486,13 @@ class ProductDetail extends Component {
         >
           {productImages}
         </Swiper>
-        {product.list_discount_prc && (
+        {product.list_discount_prc ? (
           <View style={styles.listDiscountWrapper}>
             <Text style={styles.listDiscountText}>
               {`${i18n.gettext('Save')} ${product.list_discount_prc}%`}
             </Text>
           </View>
-        )}
+        ) : null}
       </View>
     );
   }
@@ -545,17 +540,21 @@ class ProductDetail extends Component {
 
   renderPrice() {
     const { product } = this.state;
+
     if (!product.price) {
       return null;
     }
+
     return (
       <View>
-        <Text>
-          {`${i18n.gettext('List price')}: `}
-          <Text style={styles.listPriceText}>
-            {formatPrice(product.list_price_formatted.price)}
+        {parseInt(product.list_price, 10) ? (
+          <Text>
+            {`${i18n.gettext('List price')}: `}
+            <Text style={styles.listPriceText}>
+              {formatPrice(product.list_price_formatted.price)}
+            </Text>
           </Text>
-        </Text>
+        ) : null}
         <Text style={styles.priceText}>
           {formatPrice(product.price_formatted.price)}
         </Text>
@@ -663,15 +662,14 @@ class ProductDetail extends Component {
   }
 
   renderOptions() {
-    const { product } = this.state;
-    if (!product.options.length) {
-      return null;
-    }
+    const { product, amount } = this.state;
+
     return (
       <Section>
         {product.options.map(o => this.renderOptionItem(o))}
         <QtyOption
-          value={this.state.amount}
+          value={amount}
+          step={parseInt(product.qty_step, 10) || 1}
           onChange={(val) => {
             this.setState({
               amount: val,
