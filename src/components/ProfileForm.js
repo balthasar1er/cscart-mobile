@@ -225,18 +225,16 @@ export default class ProfileForm extends Component {
       fields: {},
     };
 
-    Object.keys(fields)
-      .forEach((key) => {
-        const item = fields[key];
-        const itemData = this.getFieldType(item, fields);
-        formFields[key] = itemData.type;
-        formOptions.fields[key] = itemData.options;
-        formValues[key] = item.value;
+    fields.forEach((item, index) => {
+      const itemData = this.getFieldType(item, fields);
+      formFields[index] = itemData.type;
+      formOptions.fields[index] = itemData.options;
+      formValues[index] = item.value;
 
-        if (item.field_type === FIELD_DATE) { // Date field
-          formValues[key] = new Date(item.value * 1000);
-        }
-      });
+      if (item.field_type === FIELD_DATE) { // Date field
+        formValues[index] = new Date(item.value * 1000);
+      }
+    });
 
     return {
       fields,
