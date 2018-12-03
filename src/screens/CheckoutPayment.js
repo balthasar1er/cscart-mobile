@@ -187,6 +187,7 @@ class CheckoutStepThree extends Component {
       orderInfo.products[p.product_id] = {
         product_id: p.product_id,
         amount: p.amount,
+        product_options: p.product_options,
       };
       return orderInfo;
     });
