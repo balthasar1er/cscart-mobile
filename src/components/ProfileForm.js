@@ -225,14 +225,14 @@ export default class ProfileForm extends Component {
       fields: {},
     };
 
-    fields.forEach((item, index) => {
+    fields.forEach((item) => {
       const itemData = this.getFieldType(item, fields);
-      formFields[index] = itemData.type;
-      formOptions.fields[index] = itemData.options;
-      formValues[index] = item.value;
+      formFields[item.field_id] = itemData.type;
+      formOptions.fields[item.field_id] = itemData.options;
+      formValues[item.field_id] = item.value;
 
       if (item.field_type === FIELD_DATE) { // Date field
-        formValues[index] = new Date(item.value * 1000);
+        formValues[item.field_id] = new Date(item.value * 1000);
       }
     });
 
@@ -271,7 +271,7 @@ export default class ProfileForm extends Component {
   handleChange(values, index) {
     const { forms } = this.state;
     const newForms = [...forms];
-    const fields = {};
+    const fields = [];
     const newFormValues = { ...values };
 
     Object.keys(newForms[index].formValues)

@@ -108,6 +108,16 @@ export function updateProfile(id, params) {
     }
   });
 
+  data.b_address = data.s_address;
+  data.b_address_2 = data.s_address_2;
+  data.b_city = data.s_city;
+  data.b_country = data.s_country;
+  data.b_firstname = data.s_firstname;
+  data.b_lastname = data.s_lastname;
+  data.b_phone = data.s_phone;
+  data.b_state = data.s_state;
+  data.b_zipcode = data.s_zipcode;
+
   return (dispatch) => {
     dispatch({ type: UPDATE_PROFILE_REQUEST });
     return Api.put(`/sra_profile/${id}`, data)
