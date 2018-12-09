@@ -223,6 +223,7 @@ export default class ProfileForm extends Component {
     const formFields = {};
     const formOptions = {
       fields: {},
+      order: fields.map(field => field.field_id),
     };
 
     fields.forEach((item) => {
