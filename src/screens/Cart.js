@@ -154,6 +154,7 @@ class Cart extends Component {
       refreshing: false,
     };
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    this.handleChangeAmountRequest = debounce(this.handleChangeAmountRequest, 2000);
   }
 
   componentWillMount() {
@@ -236,6 +237,11 @@ class Cart extends Component {
     cartActions.remove(product.cartId);
   };
 
+  handleChangeAmountRequest(item) {
+    const { cartActions } = this.props;
+    cartActions.change(item.cartId, item);
+  }
+
   renderProductItem = (item) => {
     const { cartActions } = this.props;
     let productImage = null;
@@ -281,10 +287,12 @@ class Cart extends Component {
                 noTitle
                 value={item.amount}
                 step={parseInt(item.qty_step, 10) || 1}
-                onChange={debounce((val) => {
-                  cartActions.changeAmount(item.cartId, val);
-                  cartActions.change(item.cartId, item);
-                }, 600)}
+                onChange={(val) => {
+                  if (val <= parseInt(item.in_stock, 10)) {
+                    cartActions.changeAmount(item.cartId, val);
+                    this.handleChangeAmountRequest(item);
+                  }
+                }}
               />
             </View>
           </View>
