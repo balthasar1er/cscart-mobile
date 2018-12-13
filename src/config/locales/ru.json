@@ -75,7 +75,7 @@
     "Registration": "Регистрация",
     "Registration complete.": "Регистрация завершена.",
     "Reviews (%1)": "Отзывы (%1)",
-    "Save": "Сохранить",
+    "Save": "Скидка",
     "Search": "Найти",
     "Send review": "Отправить отзыв",
     "Share product": "Поделиться",
@@ -955,5 +955,6 @@
     "Canceled": "Аннулирован",
     "E-mail": "E-mail",
     "Payment metho": "Способ оплаты",
-    "Awaiting call": "Ожидание звонка"
+    "Awaiting call": "Ожидание звонка",
+    "List price": "Рекомендованная цена"
 }
