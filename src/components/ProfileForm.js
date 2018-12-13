@@ -232,7 +232,7 @@ export default class ProfileForm extends Component {
       formOptions.fields[item.field_id] = itemData.options;
       formValues[item.field_id] = item.value;
 
-      if (item.field_type === FIELD_DATE && item.required) { // Date field
+      if (item.field_type === FIELD_DATE) { // Date field
         formValues[item.field_id] = item.value ? new Date(item.value * 1000) : undefined;
       }
     });
