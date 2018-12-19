@@ -7,7 +7,6 @@ import {
   AUTH_REGESTRATION_SUCCESS,
 
   REGISTER_DEVICE_SUCCESS,
-  REGISTER_DEVICE_FAIL,
 } from '../constants';
 
 const initialState = {
@@ -19,6 +18,8 @@ const initialState = {
   error: null,
   errorStatus: null,
   deviceToken: null,
+  profile_id: null,
+  user_id: null,
 };
 
 export default function (state = initialState, action) {

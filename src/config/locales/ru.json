@@ -75,7 +75,7 @@
     "Registration": "Регистрация",
     "Registration complete.": "Регистрация завершена.",
     "Reviews (%1)": "Отзывы (%1)",
-    "Save": "Сохранить",
+    "Save": "Скидка",
     "Search": "Найти",
     "Send review": "Отправить отзыв",
     "Share product": "Поделиться",
@@ -946,6 +946,9 @@
     "Zaire": "Заир",
     "Zambia": "Замбия",
     "Zimbabwe": "Зимбабве",
+    "Register": "Регистрация",
+    "(Optional)": "(Не обязательное)",
+    "The profile data has been updated successfully": "Данные профиля успешно обновлены",
     "Processed": "Обработан",
     "Complete": "Выполнен",
     "Open": "Открыт",
@@ -954,5 +957,7 @@
     "Backordered": "Отложен",
     "Canceled": "Аннулирован",
     "E-mail": "E-mail",
-    "Payment metho": "Способ оплаты"
+    "Payment metho": "Способ оплаты",
+    "Awaiting call": "Ожидание звонка",
+    "List price": "Рекомендованная цена"
 }

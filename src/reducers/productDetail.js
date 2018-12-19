@@ -7,6 +7,12 @@ import {
 const initialState = {
   fetching: true,
   options: [],
+  price_formatted: {
+    price: '',
+  },
+  list_price_formatted: {
+    price: '',
+  },
 };
 
 export default function (state = initialState, action) {

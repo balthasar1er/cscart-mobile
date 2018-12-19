@@ -269,6 +269,7 @@ class Drawer extends Component {
               });
               this.props.navigator.showModal({
                 screen: 'Registration',
+                title: i18n.gettext('Registration'),
                 passProps: {
                   showClose: true,
                 },
@@ -388,69 +389,76 @@ class Drawer extends Component {
             </TouchableOpacity>
 
             {auth.logged &&
-              <TouchableOpacity
-                style={styles.itemBtn}
-                onPress={() => {
-                  navigator.showModal({
-                    screen: 'WishList',
-                  });
-                  navigator.toggleDrawer({
-                    side: 'left',
-                  });
-                }}
-              >
-                <View style={styles.itemBtnWrapper}>
-                  <Icon name="favorite" style={styles.itemBtnIcon} />
-                  <Text style={styles.itemBtnText}>
-                    {i18n.gettext('Wish List')}
-                  </Text>
-                  {this.renderBadge(this.props.wishList.items.length)}
-                </View>
-              </TouchableOpacity>
+              (
+                <TouchableOpacity
+                  style={styles.itemBtn}
+                  onPress={() => {
+                    navigator.showModal({
+                      screen: 'WishList',
+                    });
+                    navigator.toggleDrawer({
+                      side: 'left',
+                    });
+                  }}
+                >
+                  <View style={styles.itemBtnWrapper}>
+                    <Icon name="favorite" style={styles.itemBtnIcon} />
+                    <Text style={styles.itemBtnText}>
+                      {i18n.gettext('Wish List')}
+                    </Text>
+                    {this.renderBadge(this.props.wishList.items.length)}
+                  </View>
+                </TouchableOpacity>
+              )
             }
 
             {auth.logged &&
-              <TouchableOpacity
-                style={styles.itemBtn}
-                onPress={() => {
-                  navigator.handleDeepLink({
-                    link: 'dispatch=profiles.update',
-                    payload: {},
-                  });
-                  navigator.toggleDrawer({
-                    side: 'left',
-                  });
-                }}
-              >
-                <View style={styles.itemBtnWrapper}>
-                  <Icon name="person" style={styles.itemBtnIcon} />
-                  <Text style={styles.itemBtnText}>
-                    {i18n.gettext('My Profile')}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+              (
+                <TouchableOpacity
+                  style={styles.itemBtn}
+                  onPress={() => {
+                    navigator.showModal({
+                      screen: 'Profile',
+                      title: i18n.gettext('Profile'),
+                      passProps: {},
+                    });
+                    navigator.toggleDrawer({
+                      side: 'left',
+                    });
+                  }}
+                >
+                  <View style={styles.itemBtnWrapper}>
+                    <Icon name="person" style={styles.itemBtnIcon} />
+                    <Text style={styles.itemBtnText}>
+                      {i18n.gettext('My Profile')}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )
             }
 
             {auth.logged &&
-              <TouchableOpacity
-                style={styles.itemBtn}
-                onPress={() => {
-                  navigator.handleDeepLink({
-                    link: 'dispatch=orders.search',
-                    payload: {},
-                  });
-                  navigator.toggleDrawer({
-                    side: 'left',
-                  });
-                }}
-              >
-                <View style={styles.itemBtnWrapper}>
-                  <Icon name="receipt" style={styles.itemBtnIcon} />
-                  <Text style={styles.itemBtnText}>
-                    {i18n.gettext('Orders')}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+              (
+                <TouchableOpacity
+                  style={styles.itemBtn}
+                  onPress={() => {
+                    navigator.handleDeepLink({
+                      link: 'dispatch=orders.search',
+                      payload: {},
+                    });
+                    navigator.toggleDrawer({
+                      side: 'left',
+                    });
+                  }}
+                >
+                  <View style={styles.itemBtnWrapper}>
+                    <Icon name="receipt" style={styles.itemBtnIcon} />
+                    <Text style={styles.itemBtnText}>
+                      {i18n.gettext('Orders')}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )
             }
           </View>
           <View style={styles.devider} />

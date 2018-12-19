@@ -159,6 +159,7 @@ class Cart extends Component {
       refreshing: false,
     };
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    this.handleChangeAmountRequest = debounce(this.handleChangeAmountRequest, 2000);
   }
 
   componentWillMount() {
@@ -242,43 +243,13 @@ class Cart extends Component {
     cartActions.remove(product.cartId);
   };
 
-  handleRefresh() {
+  handleChangeAmountRequest(item) {
     const { cartActions } = this.props;
-    this.setState(
-      { refreshing: true },
-      () => cartActions.fetch(),
-    );
-  }
-
-  handlePlaceOrder() {
-    const { auth, navigator } = this.props;
-    const products = {};
-    this.state.products.forEach((p) => {
-      products[p.product_id] = {
-        product_id: p.product_id,
-        amount: p.amount,
-      };
-    });
-    if (!auth.logged) {
-      navigator.push({
-        screen: 'CheckoutAuth',
-        backButtonTitle: '',
-        passProps: {
-          products,
-        },
-      });
-    } else {
-      navigator.push({
-        screen: 'CheckoutDelivery',
-        backButtonTitle: '',
-        passProps: {
-          products,
-        },
-      });
-    }
+    cartActions.change(item.cartId, item);
   }
 
   renderProductItem = (item) => {
+    const { cartActions } = this.props;
     let productImage = null;
     const imageUri = getImagePath(item);
     if (imageUri) {
@@ -321,13 +292,12 @@ class Cart extends Component {
               <QtyOption
                 noTitle
                 value={item.amount}
-                step={1}
+                step={parseInt(item.qty_step, 10) || 1}
                 onChange={(val) => {
-                  const debounceFunc = debounce(() => {
-                    this.props.cartActions.changeAmount(item.cartId, val);
-                    this.props.cartActions.change(item.cartId, item);
-                  }, 2000);
-                  debounceFunc();
+                  if (val <= parseInt(item.in_stock, 10)) {
+                    cartActions.changeAmount(item.cartId, val);
+                    this.handleChangeAmountRequest(item);
+                  }
                 }}
               />
             </View>
@@ -337,9 +307,46 @@ class Cart extends Component {
     );
   }
 
+  handleRefresh() {
+    const { cartActions } = this.props;
+    this.setState(
+      { refreshing: true },
+      () => cartActions.fetch(),
+    );
+  }
+
+  handlePlaceOrder() {
+    const { auth, navigator } = this.props;
+    const products = {};
+    this.state.products.forEach((p) => {
+      products[p.product_id] = {
+        product_id: p.product_id,
+        amount: p.amount,
+      };
+    });
+    if (!auth.logged) {
+      navigator.push({
+        screen: 'CheckoutAuth',
+        backButtonTitle: '',
+        passProps: {
+          products,
+        },
+      });
+    } else {
+      navigator.push({
+        screen: 'CheckoutDelivery',
+        backButtonTitle: '',
+        passProps: {
+          products,
+        },
+      });
+    }
+  }
+
   renderPlaceOrder() {
     const { cart } = this.props;
-    if (!this.state.products.length) {
+    const { products } = this.state;
+    if (!products.length) {
       return null;
     }
     return (
@@ -352,7 +359,8 @@ class Cart extends Component {
   }
 
   renderEmptyList = () => {
-    if (this.state.fetching) {
+    const { fetching } = this.state;
+    if (fetching) {
       return null;
     }
     return (

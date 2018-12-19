@@ -41,7 +41,7 @@ class Spinner extends Component {
     super(props);
 
     this.state = {
-      visible: false,
+      visible: true,
     };
   }
 

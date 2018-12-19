@@ -316,7 +316,17 @@ class ProductDetail extends Component {
 
     const defaultOptions = { ...this.state.selectedOptions };
     product.options.forEach((option) => {
-      defaultOptions[option.option_id] = option.variants[option.value];
+
+      // Fixme: Server returned inconsistent data.
+      if (!option.variants) {
+        option.variants = [];
+      }
+
+      if (option.variants[option.value]) {
+        defaultOptions[option.option_id] = option.variants[option.value];
+      } else if (Object.values(option.variants).length) {
+        defaultOptions[option.option_id] = Object.values(option.variants)[0];
+      }
     });
 
     // Get active discussion.
@@ -370,19 +380,34 @@ class ProductDetail extends Component {
     const { selectedOptions, product, amount } = this.state;
     const { productDetail } = this.props;
     let newPrice = 0;
+    let newListPrice = 0;
     newPrice += parseInt(productDetail.price, 10);
+    newListPrice += parseInt(productDetail.list_price, 10);
     Object.keys(selectedOptions).forEach((key) => {
       newPrice += +selectedOptions[key].modifier;
+      newListPrice += +selectedOptions[key].modifier;
     });
 
     if (amount) {
       newPrice *= amount;
+      newListPrice *= amount;
     }
+
+    const priceFormated = product.price_formatted.price.replace(/[\s\d]+/, `${newPrice} `);
+    const newListPriceFormated = product.list_price_formatted.price.replace(/[\s\d]+/, `${newListPrice} `);
 
     this.setState({
       product: {
         ...product,
         price: newPrice,
+        price_formatted: {
+          ...product.price_formatted,
+          price: `${priceFormated}`,
+        },
+        list_price_formatted: {
+          ...product.list_price_formatted,
+          price: `${newListPriceFormated}`
+        }
       },
     });
   }
@@ -625,6 +650,7 @@ class ProductDetail extends Component {
     // FIXME: Brainfuck code to convert object to array.
     option.variants = Object.keys(option.variants).map(k => option.variants[k]);
     const defaultValue = selectedOptions[option.option_id];
+
     switch (item.option_type) {
       case 'I':
       case 'T':
@@ -638,6 +664,7 @@ class ProductDetail extends Component {
         );
 
       case 'S':
+      case 'R':
         return (
           <SelectOption
             option={option}

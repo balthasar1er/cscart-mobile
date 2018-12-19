@@ -238,7 +238,7 @@ class Categories extends Component {
     }
 
     let vendorHeader = null;
-    if (vendors.items[companyId] && !vendors.fetching) {
+    if (companyId && vendors.items[companyId] && !vendors.fetching) {
       const vendor = vendors.items[companyId];
       vendorHeader = (
         <VendorInfo

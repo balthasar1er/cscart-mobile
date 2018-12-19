@@ -837,6 +837,9 @@
     "Zaire": "Zaire",
     "Zambia": "Zambia",
     "Zimbabwe": "Zimbabwe",
+    "Register": "Register",
+    "(Optional)": "(Optional)",
+    "The profile data has been updated successfully": "The profile data has been updated successfully",
     "Processed": "Processed",
     "Complete": "Complete",
     "Open": "Open",
@@ -850,5 +853,7 @@
     "Phone": "Phone",
     "City": "City",
     "Country": "Country",
-    "State": "State"
+    "State": "State",
+    "Awaiting call": "Awaiting call",
+    "List price": "List price"
 }
