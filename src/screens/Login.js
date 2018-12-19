@@ -75,6 +75,14 @@ const options = {
 };
 
 class Login extends Component {
+  static navigatorStyle = {
+    navBarBackgroundColor: theme.$navBarBackgroundColor,
+    navBarButtonColor: theme.$navBarButtonColor,
+    navBarButtonFontSize: theme.$navBarButtonFontSize,
+    navBarTextColor: theme.$navBarTextColor,
+    screenBackgroundColor: theme.$screenBackgroundColor,
+  };
+
   static propTypes = {
     authActions: PropTypes.shape({
       login: PropTypes.func,
@@ -92,14 +100,6 @@ class Login extends Component {
       error: PropTypes.shape({}),
       fetching: PropTypes.bool,
     }),
-  };
-
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
   constructor(props) {

@@ -4,15 +4,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   View,
-  WebView,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import qs from 'shitty-qs';
 
 // Import actions.
 import * as authActions from '../actions/authActions';
 
-// theme
+// Theme
 import theme from '../config/theme';
 
 // Icons
@@ -22,19 +20,26 @@ import {
 } from '../utils/navIcons';
 
 // Components
-import Spinner from '../components/Spinner';
-
 import i18n from '../utils/i18n';
-import config from '../config';
+import Spinner from '../components/Spinner';
+import ProfileForm from '../components/ProfileForm';
 
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  }
+  },
 });
 
 class Registration extends Component {
+  static navigatorStyle = {
+    navBarBackgroundColor: theme.$navBarBackgroundColor,
+    navBarButtonColor: theme.$navBarButtonColor,
+    navBarButtonFontSize: theme.$navBarButtonFontSize,
+    navBarTextColor: theme.$navBarTextColor,
+    screenBackgroundColor: theme.$screenBackgroundColor,
+  };
+
   static propTypes = {
     authActions: PropTypes.shape({
       registration: PropTypes.func,
@@ -46,33 +51,26 @@ class Registration extends Component {
       showInAppNotification: PropTypes.func,
       push: PropTypes.func,
     }),
-    auth: PropTypes.shape({
-      logged: PropTypes.bool,
-      fetching: PropTypes.bool,
-    }),
     showClose: PropTypes.bool,
-  };
-
-  static navigatorStyle = {
-    navBarBackgroundColor: theme.$navBarBackgroundColor,
-    navBarButtonColor: theme.$navBarButtonColor,
-    navBarButtonFontSize: theme.$navBarButtonFontSize,
-    navBarTextColor: theme.$navBarTextColor,
-    screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
   constructor(props) {
     super(props);
 
-    props.navigator.setTitle({
-      title: i18n.gettext('Registration')
-    });
-
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    this.state = {
+      fetching: true,
+      forms: [],
+    };
   }
 
   componentWillMount() {
     const { navigator, showClose } = this.props;
+
+    navigator.setTitle({
+      title: i18n.gettext('Registration')
+    });
+    navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+
     if (showClose) {
       iconsLoaded.then(() => {
         navigator.setButtons({
@@ -88,10 +86,18 @@ class Registration extends Component {
   }
 
   componentDidMount() {
-    const { navigator } = this.props;
+    const { navigator, authActions } = this.props;
     navigator.setTitle({
       title: i18n.gettext('Registration').toUpperCase(),
     });
+    authActions
+      .profileFields()
+      .then((fields) => {
+        this.setState({
+          fetching: false,
+          forms: fields,
+        });
+      });
   }
 
   onNavigatorEvent(event) {
@@ -103,32 +109,30 @@ class Registration extends Component {
     }
   }
 
-  onNavigationStateChange(e) {
-    const { url } = e;
-    let response = {};
-    response = qs(url);
-    if (response.token != undefined) {
-      this.props.authActions.registration(response.token);
+  handleRegister = (values) => {
+    const { authActions } = this.props;
+    if (values) {
+      authActions.createProfile(values);
     }
   }
 
   render() {
-    const { auth } = this.props;
-    let url = `${config.siteUrl}index.php?dispatch=profiles.add.get_auth_token&s_layout=${config.layoutId}`;
-    if (!auth.logged) {
-      url = `${config.siteUrl}index.php?dispatch=auth.logout&redirect_url=index.php?dispatch=profiles.add.get_auth_token`;
+    const { fetching, forms } = this.state;
+
+    if (fetching) {
+      return (
+        <View style={styles.container}>
+          <Spinner visible mode="content" />
+        </View>
+      );
     }
+
     return (
       <View style={styles.container}>
-        <WebView
-          scalesPageToFit
-          startInLoadingState
-          source={{
-            uri: url,
-          }}
-          onNavigationStateChange={e => this.onNavigationStateChange(e)}
+        <ProfileForm
+          fields={forms}
+          onSubmit={values => this.handleRegister(values)}
         />
-        <Spinner visible={auth.fetching} />
       </View>
     );
   }
