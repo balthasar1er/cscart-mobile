@@ -10,6 +10,7 @@ export function fetch(layoutId, location = 'index.index') {
     dispatch({ type: FETCH_LAYOUTS_BLOCKS_REQUEST });
     return Api.get(`/sra_bm_layouts/${layoutId}/sra_bm_locations/${location}/sra_bm_blocks`)
       .then((response) => {
+        console.log(response);
         dispatch({
           type: FETCH_LAYOUTS_BLOCKS_SUCCESS,
           payload: {
