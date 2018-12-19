@@ -854,5 +854,6 @@
     "City": "City",
     "Country": "Country",
     "State": "State",
-    "Awaiting call": "Awaiting call"
+    "Awaiting call": "Awaiting call",
+    "List price": "List price"
 }

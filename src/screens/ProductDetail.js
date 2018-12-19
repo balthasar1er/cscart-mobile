@@ -316,6 +316,12 @@ class ProductDetail extends Component {
 
     const defaultOptions = { ...this.state.selectedOptions };
     product.options.forEach((option) => {
+
+      // Fixme: Server returned inconsistent data.
+      if (!option.variants) {
+        option.variants = [];
+      }
+
       if (option.variants[option.value]) {
         defaultOptions[option.option_id] = option.variants[option.value];
       } else if (Object.values(option.variants).length) {
