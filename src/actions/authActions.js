@@ -1,6 +1,8 @@
 import { Platform } from 'react-native';
 import isDate from 'date-fns/is_date';
 import format from 'date-fns/format';
+import pickBy from 'lodash/pickBy';
+import identity from 'lodash/identity';
 import DeviceInfo from 'react-native-device-info';
 
 import {
@@ -121,7 +123,7 @@ export function updateProfile(id, params) {
   return (dispatch) => {
     dispatch({ type: UPDATE_PROFILE_REQUEST });
     return Api.put(`/sra_profile/${id}`, data)
-      .then((response) => {
+      .then(() => {
         dispatch({
           type: UPDATE_PROFILE_SUCCESS,
           payload: {},
@@ -156,12 +158,15 @@ export function updateProfile(id, params) {
 }
 
 export function createProfile(params) {
-  const data = { ...params };
+  let data = { ...params };
   Object.keys(data).forEach((key) => {
     if (isDate(data[key])) {
       data[key] = format(data[key], 'MM/DD/YYYY');
     }
   });
+
+  // Remove all null and undefined values.
+  data = pickBy(data, identity);
 
   return (dispatch) => {
     dispatch({ type: AUTH_REGESTRATION_REQUEST });
@@ -188,6 +193,7 @@ export function createProfile(params) {
       })
       .then(() => cartActions.fetch(false)(dispatch))
       .catch((error) => {
+        console.log(error, error.response, 'error');
         dispatch({
           type: AUTH_REGESTRATION_FAIL,
           payload: error,
