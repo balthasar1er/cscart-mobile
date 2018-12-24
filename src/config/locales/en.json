@@ -855,5 +855,7 @@
     "Country": "Country",
     "State": "State",
     "Awaiting call": "Awaiting call",
-    "List price": "List price"
+    "List price": "List price",
+    "Discount": "Discount",
+    "Save": "Save"
 }

@@ -514,7 +514,7 @@ class ProductDetail extends Component {
         {product.list_discount_prc ? (
           <View style={styles.listDiscountWrapper}>
             <Text style={styles.listDiscountText}>
-              {`${i18n.gettext('Save')} ${product.list_discount_prc}%`}
+              {`${i18n.gettext('Discount')} ${product.list_discount_prc}%`}
             </Text>
           </View>
         ) : null}
