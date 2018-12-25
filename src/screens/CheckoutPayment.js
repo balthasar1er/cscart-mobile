@@ -20,7 +20,6 @@ import * as paymentsActions from '../actions/paymentsActions';
 import CheckoutSteps from '../components/CheckoutSteps';
 import CartFooter from '../components/CartFooter';
 import FormBlock from '../components/FormBlock';
-import CouponCodes from '../components/CouponCodes';
 import PaymentPhoneForm from '../components/PaymentPhoneForm';
 import PaymentCreditCardForm from '../components/PaymentCreditCardForm';
 import PaymentEmpty from '../components/PaymentEmpty';
@@ -29,7 +28,6 @@ import PaymentPaypalForm from '../components/PaymentPaypalForm';
 import PaymentYandexKassaForm from '../components/PaymentYandexKassaForm';
 import Spinner from '../components/Spinner';
 import Icon from '../components/Icon';
-
 import { stripTags, formatPrice } from '../utils';
 import i18n from '../utils/i18n';
 
@@ -165,11 +163,7 @@ class CheckoutStepThree extends Component {
 
   placeOrderAndComplete() {
     const {
-      cart,
-      shipping_id,
-      ordersActions,
-      navigator,
-      cartActions,
+      cart, shipping_id, ordersActions, navigator, cartActions
     } = this.props;
     const values = this.paymentFormRef.getValue();
 
@@ -303,17 +297,11 @@ class CheckoutStepThree extends Component {
   );
 
   renderFooter() {
-    const {
-      cart,
-      cartActions,
-      shipping_id,
-    } = this.props;
+    const { cart } = this.props;
     const { selectedItem } = this.state;
-
     if (!selectedItem) {
       return null;
     }
-
     let form = null;
     // FIXME: HARDCODE
     switch (selectedItem.template) {
@@ -387,18 +375,6 @@ class CheckoutStepThree extends Component {
             {stripTags(selectedItem.instructions)}
           </Text>
         </FormBlock>
-        <CouponCodes
-          items={cart.added_coupons}
-          onAddPress={(value) => {
-            cartActions.addCoupon(value);
-            setTimeout(() => {
-              cartActions.recalculateTotal(
-                shipping_id,
-                this.props.cart.added_coupons
-              );
-            }, 400);
-          }}
-        />
       </View>
     );
   }
