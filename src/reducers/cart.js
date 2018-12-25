@@ -30,7 +30,7 @@ const initialState = {
   ids: [],
   fetching: false,
   user_data: {},
-  added_coupons: [],
+  coupons: [],
 };
 
 let newProducts = [];
@@ -70,7 +70,7 @@ export default function (state = initialState, action) {
         ...state,
         ...newState,
         fetching: false,
-        added_coupons: [],
+        coupons: [],
       };
 
     case CART_FAIL:
@@ -90,7 +90,7 @@ export default function (state = initialState, action) {
         ...state,
         amount: 0,
         products: {},
-        added_coupons: [],
+        coupons: [],
         fetching: false,
       };
 
@@ -129,6 +129,7 @@ export default function (state = initialState, action) {
         total_formatted: action.payload.total_formatted,
         subtotal: action.payload.total_formatted,
         subtotal_formatted: action.payload.subtotal_formatted,
+        coupons: Object.keys(action.payload.coupons).map(k => k)
       };
 
     case AUTH_LOGOUT:
@@ -145,8 +146,8 @@ export default function (state = initialState, action) {
     case CART_ADD_COUPON_CODE:
       return {
         ...state,
-        added_coupons: [
-          ...state.added_coupons,
+        coupons: [
+          ...state.coupons,
           action.payload,
         ],
       };

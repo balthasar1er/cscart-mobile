@@ -57,7 +57,7 @@ class CouponCodes extends Component {
     const { onAddPress } = this.props;
     const value = this.refs.form.getValue();
 
-    if (value) {
+    if (value && value !== '') {
       this.setState({
         value: '',
       });

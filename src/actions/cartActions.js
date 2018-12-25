@@ -80,7 +80,6 @@ export function recalculateTotal(ids, coupons = []) {
       }
     })
       .then((response) => {
-        console.log(response, coupons);
         dispatch({
           type: CART_RECALCULATE_SUCCESS,
           payload: response.data,

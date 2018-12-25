@@ -388,13 +388,13 @@ class CheckoutStepThree extends Component {
           </Text>
         </FormBlock>
         <CouponCodes
-          items={cart.added_coupons}
+          items={cart.coupons}
           onAddPress={(value) => {
             cartActions.addCoupon(value);
             setTimeout(() => {
               cartActions.recalculateTotal(
                 shipping_id,
-                this.props.cart.added_coupons
+                this.props.cart.coupons
               );
             }, 400);
           }}
