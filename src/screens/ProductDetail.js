@@ -514,7 +514,7 @@ class ProductDetail extends Component {
         {product.list_discount_prc ? (
           <View style={styles.listDiscountWrapper}>
             <Text style={styles.listDiscountText}>
-              {`${i18n.gettext('Save')} ${product.list_discount_prc}%`}
+              {`${i18n.gettext('Discount')} ${product.list_discount_prc}%`}
             </Text>
           </View>
         ) : null}
@@ -711,7 +711,7 @@ class ProductDetail extends Component {
     const { product } = this.state;
     const features = Object.keys(product.product_features).map(k => product.product_features[k]);
     return (
-      <Section title={i18n.gettext('Feautures')}>
+      <Section title={i18n.gettext('Features')}>
         {features.length
           ? features.map((item, index) => (
             <SectionRow
@@ -722,7 +722,7 @@ class ProductDetail extends Component {
             />
           ))
           : (
-            <Text>{` ${i18n.gettext('There are no feautures.')} `}
+            <Text>{` ${i18n.gettext('There are no features.')} `}
             </Text>
           )}
       </Section>
