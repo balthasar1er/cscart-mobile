@@ -25,6 +25,8 @@ export function create(data, cb = null) {
         if (cb) {
           cb(response.data);
         }
+
+        return response;
       })
       .catch((error) => {
         dispatch({

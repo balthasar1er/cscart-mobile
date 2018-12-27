@@ -12,7 +12,6 @@ import {
 
 import Api from '../services/api';
 import i18n from '../utils/i18n';
-import { Promise } from 'core-js';
 
 export function fetchAll() {
   return (dispatch) => {
@@ -32,21 +31,10 @@ export function fetchAll() {
       });
   };
 }
-export function applePay(transactionIdentifier, paymentData) {
-  return (dispatch) => {
-    return new Promise((resolve, resect) => {
-      resolve(paymentData);
-    });
-  };
-}
 
-export function settlements(orderId, replay, cb = null) {
+export function settlements(data) {
   return (dispatch) => {
     dispatch({ type: SETTLEMENTS_REQUEST });
-    const data = {
-      order_id: orderId,
-      replay,
-    };
     return Api.post('/sra_settlements', data)
       .then((response) => {
         dispatch({
@@ -54,9 +42,7 @@ export function settlements(orderId, replay, cb = null) {
           payload: response.data,
         });
 
-        if (cb) {
-          setTimeout(() => cb(response.data), 400);
-        }
+        return response;
       })
       .catch((error) => {
         dispatch({

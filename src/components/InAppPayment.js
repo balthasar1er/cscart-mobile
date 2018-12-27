@@ -1,16 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Alert,
   Platform,
-  View,
-  Image,
-  TouchableOpacity,
-  Text
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { PaymentRequest, ApplePayButton } from 'react-native-payments';
-import EStyleSheet from 'react-native-extended-stylesheet';
 
 import config from '../config';
 import i18n from '../utils/i18n';
@@ -19,29 +15,20 @@ import * as ordersActions from '../actions/ordersActions';
 import * as cartActions from '../actions/cartActions';
 import * as paymentsActions from '../actions/paymentsActions';
 
-const styles = EStyleSheet.create({
-  androidPayBtn: {
-    backgroundColor: 'black',
-    padding: 12,
-    borderRadius: 4,
-  },
-  androidPayBtnWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'center'
-  },
-  androidPayBtnIco: {
-    width: 60,
-    height: 24,
-    marginLeft: 6,
-  },
-  androidPayBtnText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: '1rem',
-  }
-});
-
 class InAppPayment extends React.Component {
+  static propTypes = {
+    cartActions: PropTypes.shape({
+      getUpdatedDetailsForShippingAddress: PropTypes.func,
+    }),
+    ordersActions: PropTypes.shape({}),
+    paymentsActions: PropTypes.shape({
+      settlements: PropTypes.func
+    }),
+    navigator: PropTypes.shape({}),
+  };
+
+  static defaultProps = {};
+
   constructor(props) {
     super(props);
     this.state = {};
@@ -55,36 +42,17 @@ class InAppPayment extends React.Component {
     const vendorNames = [];
     const methodData = [];
 
-    if (Platform.OS === 'ios') {
-      methodData.push(
-        {
-          supportedMethods: ['apple-pay'],
-          data: {
-            merchantIdentifier: config.applePayMerchantIdentifier,
-            supportedNetworks: config.applePaySupportedNetworks,
-            countryCode: 'US',
-            currencyCode: 'USD'
-          }
+    methodData.push(
+      {
+        supportedMethods: ['apple-pay'],
+        data: {
+          merchantIdentifier: config.applePayMerchantIdentifier,
+          supportedNetworks: config.applePaySupportedNetworks,
+          countryCode: 'US',
+          currencyCode: 'USD'
         }
-      );
-    } else {
-      methodData.push(
-        {
-          supportedMethods: ['android-pay'],
-          data: {
-            supportedNetworks: config.googlePaySupportedNetworks,
-            currencyCode: 'USD',
-            environment: 'TEST', // defaults to production
-            paymentMethodTokenizationParameters: {
-              tokenizationType: 'NETWORK_TOKEN',
-              parameters: {
-                publicKey: config.googlePayApiKey
-              }
-            }
-          }
-        }
-      );
-    }
+      }
+    );
 
     const shippingOptions = [];
     const displayItems = [];
@@ -196,38 +164,88 @@ class InAppPayment extends React.Component {
       b_zipcode: shippingAddress.postalCode,
       s_zipcode: shippingAddress.postalCode,
     };
-    cartActions.getUpdatedDetailsForShippingAddress(data, (error, result) => {
-      if (error) {
+    cartActions.getUpdatedDetailsForShippingAddress(data)
+      .then((result) => {
+        const updatedDetail = this.getPaymentData(result).details;
+        event.updateWith(updatedDetail);
+      })
+      .catch(() => {
         this.paymentRequest.fail();
-        return;
-      }
-      const updatedDetail = this.getPaymentData(result).details;
-      event.updateWith(updatedDetail);
-    });
+      });
   }
 
   handleShippingOptionChange = (event) => {
     const { cartActions } = this.props;
     const { shippingOption } = this.paymentRequest;
-    cartActions.getUpdatedDetailsForShippingOption([shippingOption], (error, result) => {
-      if (error) {
-        this.paymentRequest.fail();
-        return;
-      }
-
-      const updatedDetail = this.getPaymentData(result).details;
-      event.updateWith(updatedDetail);
-    });
+    cartActions.getUpdatedDetailsForShippingOption([shippingOption])
+      .then((result) => {
+        const updatedDetail = this.getPaymentData(result).details;
+        event.updateWith(updatedDetail);
+      })
+      .catch(() => this.paymentRequest.fail());
   };
 
-  handleApplePay = () => {
-    const { cartActions, paymentsActions, navigator } = this.props;
+  handleShowError = () => {
+    this.paymentRequest.abort();
+    Alert.alert(
+      i18n.gettext('Error'),
+      i18n.gettext('There was an error processing your payment.'),
+      { cancelable: true }
+    );
+  };
+
+  handleApplePay = (paymentID) => {
+    const {
+      ordersActions,
+      paymentsActions,
+      navigator,
+      cart,
+    } = this.props;
+
     this.paymentRequest.show()
       .then((paymentResponse) => {
-        const { transactionIdentifier, paymentData } = paymentResponse.details;
-        paymentsActions
-          .applePay(transactionIdentifier, paymentData)
-          .then((data) => {
+        const { shippingOption } = paymentResponse;
+        const {
+          transactionIdentifier,
+          paymentData
+        } = paymentResponse.details;
+
+        const orderInfo = {
+          products: {},
+          shipping_id: shippingOption,
+          payment_id: paymentID,
+          user_data: cart.user_data,
+        };
+
+        Object.keys(cart.products).map((key) => {
+          const p = cart.products[key];
+          orderInfo.products[p.product_id] = {
+            product_id: p.product_id,
+            amount: p.amount,
+          };
+          return orderInfo;
+        });
+
+        return ordersActions
+          .create(orderInfo)
+          .then((response) => {
+            const data = {
+              order_id: response.data.order_id,
+              payment_info: {
+                ...paymentData,
+                transactionIdentifier,
+              },
+            };
+            return paymentsActions
+              .settlements(data)
+              .then(settlementsResponse => (
+                {
+                  settlements: settlementsResponse.data,
+                  order: response.data
+                }
+              ));
+          })
+          .then((result) => {
             paymentResponse.complete('success');
             cartActions.clear();
             navigator.push({
@@ -235,72 +253,38 @@ class InAppPayment extends React.Component {
               backButtonTitle: '',
               backButtonHidden: true,
               passProps: {
-                orderId: 104, // FIXME
+                orderId: result.order.order_id, // FIXME
               }
             });
           })
-          .catch((error) => {
-            this.paymentRequest.abort();
-            Alert.alert(
-              i18n.gettext('Error'),
-              i18n.gettext('There was an error processing your payment.'),
-              { cancelable: true }
-            );
-          });
-        return true;
+          .catch(error => this.handleShowError(error));
       })
-      .catch((error) => {
-        console.log('canceled', error);
-      });
+      .catch(error => this.handleShowError(error));
   };
-
-  handleGooglePay = () => {
-    const { cartActions, paymentsActions, navigator } = this.props;
-    console.log(this.paymentRequest);
-    this.paymentRequest.show()
-      .then((paymentResponse) => {
-        const { transactionIdentifier, paymentData } = paymentResponse.details;
-        paymentsActions
-          .applePay(transactionIdentifier, paymentData)
-          .then((data) => {
-            paymentResponse.complete('success');
-            cartActions.clear();
-            navigator.push({
-              screen: 'CheckoutComplete',
-              backButtonTitle: '',
-              backButtonHidden: true,
-              passProps: {
-                orderId: 104, // FIXME
-              }
-            });
-          })
-          .catch((error) => {
-            this.paymentRequest.abort();
-            Alert.alert(
-              i18n.gettext('Error'),
-              i18n.gettext('There was an error processing your payment.'),
-              { cancelable: true }
-            );
-          });
-        return true;
-      })
-      .catch((error) => {
-        console.log('canceled', error);
-      });
-  }
 
   handlePayPresed = () => {
-    if (Platform.OS === 'ios' && config.applePay) {
-      this.initPaymentRequest();
-      this.handleApplePay();
-    } else if (config.googlePay) {
-      this.initPaymentRequest();
-      this.handleGooglePay();
+    const { cart } = this.props;
+    let paymentID = null;
+
+    // FIXME: Find apple pay payment id.
+    Object.keys(cart.payments)
+      .forEach((key) => {
+        const payment = cart.payments[key];
+        if (payment.template.endsWith('apple_pay.tpl')) {
+          paymentID = payment.payment_id;
+        }
+      });
+
+    if (!paymentID) {
+      return;
     }
+
+    this.initPaymentRequest();
+    this.handleApplePay(paymentID);
   }
 
   render() {
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' && config.applePay) {
       return (
         <ApplePayButton
           buttonStyle="black"
@@ -309,22 +293,7 @@ class InAppPayment extends React.Component {
         />
       );
     }
-    return (
-      <TouchableOpacity
-        style={styles.androidPayBtn}
-        onPress={this.handlePayPresed}
-      >
-        <View style={styles.androidPayBtnWrapper}>
-          <Text style={styles.androidPayBtnText}>
-            {i18n.gettext('Buy with')}
-          </Text>
-          <Image
-            source={require('../assets/google_pay.png')}
-            style={styles.androidPayBtnIco}
-          />
-        </View>
-      </TouchableOpacity>
-    );
+    return null;
   }
 }
 
