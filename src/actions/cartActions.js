@@ -32,6 +32,7 @@ import {
   CART_RECALCULATE_FAIL,
 
   CART_ADD_COUPON_CODE,
+  CART_REMOVE_COUPON_CODE,
 } from '../constants';
 
 import i18n from '../utils/i18n';

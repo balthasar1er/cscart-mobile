@@ -19,6 +19,7 @@ import {
   CART_RECALCULATE_SUCCESS,
 
   CART_ADD_COUPON_CODE,
+  CART_REMOVE_COUPON_CODE,
 
   CHANGE_AMOUNT,
   AUTH_LOGOUT,
@@ -129,7 +130,7 @@ export default function (state = initialState, action) {
         total_formatted: action.payload.total_formatted,
         subtotal: action.payload.total_formatted,
         subtotal_formatted: action.payload.subtotal_formatted,
-        coupons: Object.keys(action.payload.coupons).map(k => k)
+        coupons: Object.keys(action.payload.coupons).map(k => k),
       };
 
     case AUTH_LOGOUT:
@@ -150,6 +151,12 @@ export default function (state = initialState, action) {
           ...state.coupons,
           action.payload,
         ],
+      };
+
+    case CART_REMOVE_COUPON_CODE:
+      return {
+        ...state,
+        coupons: [...state.coupons].filter(item => item !== action.payload),
       };
 
     default:

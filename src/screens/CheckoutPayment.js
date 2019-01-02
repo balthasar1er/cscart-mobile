@@ -398,6 +398,15 @@ class CheckoutStepThree extends Component {
               );
             }, 400);
           }}
+          onRemovePress={(value) => {
+            cartActions.removeCoupon(value);
+            setTimeout(() => {
+              cartActions.recalculateTotal(
+                shipping_id,
+                this.props.cart.coupons
+              );
+            }, 400);
+          }}
         />
       </View>
     );
