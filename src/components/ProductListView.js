@@ -90,7 +90,7 @@ class ProductListView extends PureComponent {
         {item.list_discount_prc && (
           <View style={styles.listDiscountWrapper}>
             <Text style={styles.listDiscountText}>
-              {i18n.gettext('Save')} {`${item.list_discount_prc}%`}
+              {i18n.gettext('Discount')} {`${item.list_discount_prc}%`}
             </Text>
           </View>
         )}
