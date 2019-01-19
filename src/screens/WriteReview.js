@@ -34,7 +34,6 @@ import {
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    padding: 14,
     backgroundColor: '$screenBackgroundColor',
   },
   textarea: {

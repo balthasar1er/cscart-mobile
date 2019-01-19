@@ -53,6 +53,10 @@ import {
   VERSION_MVE,
 } from '../constants';
 
+const writingDirection = {
+  writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+};
+
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
@@ -77,28 +81,34 @@ const styles = EStyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#F1F1F1',
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F1F1'
+    borderBottomColor: '#F1F1F1',
+    ...writingDirection,
   },
   nameText: {
     fontSize: '1.2rem',
     color: '$darkColor',
     marginBottom: 5,
+    ...writingDirection,
   },
   priceText: {
     fontSize: '1rem',
     fontWeight: 'bold',
     color: '$darkColor',
+    ...writingDirection,
   },
   listPriceText: {
     textDecorationLine: 'line-through',
     color: '$darkColor',
+    ...writingDirection,
   },
   promoText: {
     marginBottom: 10,
+    ...writingDirection,
   },
   descText: {
     marginTop: 10,
-    color: 'gray'
+    color: 'gray',
+    ...writingDirection,
   },
   addToCartContainer: {
     padding: 10,
@@ -143,6 +153,7 @@ const styles = EStyleSheet.create({
   sectionBtnText: {
     color: '$primaryColor',
     fontSize: '0.9rem',
+    ...writingDirection,
   },
   vendorWrapper: {
     paddingLeft: 14,
@@ -167,10 +178,11 @@ const styles = EStyleSheet.create({
   vendorInfoBtn: {
     position: 'absolute',
     top: 10,
-    right: '1rem',
+    [I18nManager.isRTL ? 'left' : 'right']: '1rem',
   },
   rating: {
     marginLeft: -10,
+    marginRight: -10,
     marginTop: -4
   },
   keyboardAvoidingContainer: {
@@ -189,6 +201,7 @@ const styles = EStyleSheet.create({
   },
   listDiscountText: {
     color: '#fff',
+    ...writingDirection,
   },
 });
 
@@ -263,7 +276,7 @@ class ProductDetail extends Component {
 
   componentWillMount() {
     const buttons = {
-      [I18nManager.isRTL ? 'leftButtons' : 'leftButtons']: [
+      rightButtons: [
         {
           id: 'cart',
           component: 'CartBtn',
@@ -278,7 +291,7 @@ class ProductDetail extends Component {
     iconsLoaded.then(() => {
       const { hideSearch } = this.props;
       if (hideSearch) {
-        buttons[I18nManager.isRTL ? 'rightButtons' : 'leftButtons'].splice(-1, 1);
+        buttons.rightButtons.splice(-1, 1);
       }
       this.props.navigator.setButtons(buttons);
     });
@@ -574,7 +587,7 @@ class ProductDetail extends Component {
     return (
       <View>
         {parseInt(product.list_price, 10) ? (
-          <Text>
+          <Text style={{ ...writingDirection }}>
             {`${i18n.gettext('List price')}: `}
             <Text style={styles.listPriceText}>
               {formatPrice(product.list_price_formatted.price)}

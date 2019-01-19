@@ -4,6 +4,7 @@ import {
   View,
   Text,
   Image,
+  I18nManager,
   TouchableOpacity,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -16,6 +17,7 @@ const styles = EStyleSheet.create({
   title: {
     fontSize: '0.9rem',
     fontWeight: 'bold',
+    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
   },
   titleSub: {
     fontWeight: 'normal',

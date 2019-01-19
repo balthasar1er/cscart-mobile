@@ -69,6 +69,7 @@ const styles = EStyleSheet.create({
   },
   productItemDetail: {
     marginLeft: 14,
+    marginRight: 14,
     width: '70%',
   },
   productItemName: {

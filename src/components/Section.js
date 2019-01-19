@@ -4,6 +4,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -23,6 +24,7 @@ const styles = EStyleSheet.create({
     fontSize: '1rem',
     paddingLeft: 14,
     paddingBottom: 10,
+    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
   },
   rightButton: {
     position: 'absolute',

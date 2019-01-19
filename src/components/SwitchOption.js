@@ -4,6 +4,7 @@ import {
   View,
   Text,
   Switch,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -15,6 +16,7 @@ const styles = EStyleSheet.create({
   title: {
     fontSize: '0.9rem',
     fontWeight: 'bold',
+    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
   },
   wrapper: {
     marginTop: 10,
@@ -60,8 +62,8 @@ export default class extends Component {
   }
 
   handleChange(v) {
-    const { option } = this.props;
-    return this.props.onChange(option.variants[v ? 0 : 1]);
+    const { option, onChange } = this.props;
+    return onChange(option.variants[v ? 0 : 1]);
   }
 
   render() {

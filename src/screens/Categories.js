@@ -41,8 +41,10 @@ const styles = EStyleSheet.create({
     fontWeight: 'bold',
     fontSize: '1.3rem',
     paddingLeft: 10,
+    paddingRight: 10,
     paddingTop: 20,
     paddingBottom: 20,
+    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
   },
   emptyList: {
     fontSize: '1rem',
@@ -100,9 +102,10 @@ class Categories extends Component {
   }
 
   componentWillMount() {
+    const { navigator } = this.props;
     iconsLoaded.then(() => {
-      this.props.navigator.setButtons({
-        [I18nManager.isRTL ? 'leftButtons' : 'rightButtons']: [
+      navigator.setButtons({
+        rightButtons: [
           {
             id: 'cart',
             component: 'CartBtn',

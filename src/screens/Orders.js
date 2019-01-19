@@ -148,7 +148,7 @@ class Orders extends Component {
     registerDrawerDeepLinks(event, navigator);
     if (event.type === 'NavBarButtonPress') {
       if (event.id === 'sideMenu') {
-        navigator.toggleDrawer({ side: [I18nManager.isRTL ? 'right' : 'left'] });
+        navigator.toggleDrawer({ side: I18nManager.isRTL ? 'right' : 'left' });
       } else if (event.id === 'cart') {
         navigator.showModal({
           screen: 'Cart',

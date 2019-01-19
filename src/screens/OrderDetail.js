@@ -8,6 +8,7 @@ import {
   Text,
   ScrollView,
   Image,
+  I18nManager
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -23,6 +24,10 @@ import i18n from '../utils/i18n';
 import { getCountryByCode, formatPrice, getImagePath } from '../utils';
 import Api from '../services/api';
 
+const writingDirection = {
+  writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+};
+
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
@@ -35,6 +40,7 @@ const styles = EStyleSheet.create({
     fontSize: '1.6rem',
     fontWeight: 'bold',
     marginBottom: 5,
+    ...writingDirection,
   },
   formBlockWraper: {
     marginTop: 14,
@@ -43,10 +49,12 @@ const styles = EStyleSheet.create({
     fontSize: '0.8rem',
     color: '#7C7C7C',
     marginBottom: 24,
+    ...writingDirection,
   },
   header: {
     fontSize: '0.9rem',
     fontWeight: 'bold',
+    ...writingDirection,
   },
   date: {
     fontSize: '0.7rem',
@@ -81,10 +89,12 @@ const styles = EStyleSheet.create({
     color: 'black',
     marginBottom: 5,
     fontWeight: 'bold',
+    ...writingDirection,
   },
   productItemPrice: {
     fontSize: '0.7rem',
     color: 'black',
+    ...writingDirection,
   },
 });
 

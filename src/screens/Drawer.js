@@ -93,6 +93,7 @@ const styles = EStyleSheet.create({
     fontSize: '0.9rem',
     paddingTop: 3,
     fontWeight: 'bold',
+    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
   },
   itemBtnWrapper: {
     flexDirection: 'row',

@@ -4,6 +4,7 @@ import {
   View,
   Text,
   TextInput,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -15,6 +16,7 @@ const styles = EStyleSheet.create({
   title: {
     fontSize: '0.9rem',
     fontWeight: 'bold',
+    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
   },
   commentText: {
     color: '#9cb0c4',

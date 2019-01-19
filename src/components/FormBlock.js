@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   View,
   Text,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -29,6 +30,7 @@ const styles = EStyleSheet.create({
     marginBottom: 14,
     fontWeight: 'bold',
     fontSize: '0.9rem',
+    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
   },
   btnWrapper: {
     marginTop: 14,

@@ -5,6 +5,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { PRODUCT_IMAGE_WIDTH, formatPrice, getImagePath } from '../utils';
@@ -36,11 +37,13 @@ const styles = EStyleSheet.create({
   },
   productName: {
     color: 'black',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
   },
   productPrice: {
     color: '#73626B',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
   },
   listDiscountWrapper: {
     backgroundColor: '$productDiscountColor',

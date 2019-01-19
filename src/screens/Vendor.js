@@ -39,8 +39,10 @@ const styles = EStyleSheet.create({
     fontWeight: 'bold',
     fontSize: '1.3rem',
     paddingLeft: 10,
+    paddingRight: 10,
     paddingTop: 20,
     paddingBottom: 20,
+    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
   }
 });
 
@@ -129,7 +131,7 @@ class Vendor extends Component {
             icon: iconsMap.close,
           },
         ],
-        [I18nManager.isRTL ? 'leftButtons' : 'leftButtons']: [
+        [I18nManager.isRTL ? 'leftButtons' : 'rightButtons']: [
           {
             id: 'cart',
             component: 'CartBtn',
