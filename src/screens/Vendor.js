@@ -6,6 +6,7 @@ import {
   View,
   Text,
   FlatList,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -95,18 +96,24 @@ class Vendor extends Component {
   }
 
   componentWillMount() {
-    const { vendors, companyId } = this.props;
+    const {
+      vendors,
+      companyId,
+      vendorActions,
+      productsActions,
+      navigator,
+    } = this.props;
 
-    this.props.vendorActions.categories(companyId);
-    this.props.vendorActions.products(companyId);
+    vendorActions.categories(companyId);
+    vendorActions.products(companyId);
 
     if (!vendors.items[companyId] && !vendors.fetching) {
-      this.props.vendorActions.fetch(companyId);
+      vendorActions.fetch(companyId);
     } else {
       this.setState({
         vendor: vendors.items[companyId],
       }, () => {
-        this.props.productsActions.fetchDiscussion(
+        productsActions.fetchDiscussion(
           this.state.vendor.company_id,
           { page: this.state.discussion.search.page },
           'M'
@@ -115,14 +122,14 @@ class Vendor extends Component {
     }
 
     iconsLoaded.then(() => {
-      this.props.navigator.setButtons({
-        leftButtons: [
+      navigator.setButtons({
+        [I18nManager.isRTL ? 'rightButtons' : 'leftButtons']: [
           {
             id: 'close',
             icon: iconsMap.close,
           },
         ],
-        rightButtons: [
+        [I18nManager.isRTL ? 'leftButtons' : 'leftButtons']: [
           {
             id: 'cart',
             component: 'CartBtn',
@@ -139,7 +146,12 @@ class Vendor extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { products, vendors, companyId, navigator } = nextProps;
+    const {
+      products,
+      vendors,
+      companyId,
+      navigator
+    } = nextProps;
     const vendorProducts = products.items[companyId];
     if (vendorProducts) {
       this.setState({

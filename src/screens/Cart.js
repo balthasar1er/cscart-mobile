@@ -8,6 +8,7 @@ import {
   Alert,
   Image,
   FlatList,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swipeout from 'react-native-swipeout';
@@ -161,13 +162,13 @@ class Cart extends Component {
     const { navigator } = this.props;
     iconsLoaded.then(() => {
       navigator.setButtons({
-        leftButtons: [
+        [I18nManager.isRTL ? 'rightButtons' : 'leftButtons']: [
           {
             id: 'close',
             icon: iconsMap.close,
           },
         ],
-        rightButtons: [
+        [I18nManager.isRTL ? 'leftButtons' : 'rightButtons']: [
           {
             id: 'clearCart',
             icon: iconsMap.delete,

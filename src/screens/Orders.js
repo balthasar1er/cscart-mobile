@@ -8,6 +8,7 @@ import {
   FlatList,
   InteractionManager,
   TouchableOpacity,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -106,13 +107,13 @@ class Orders extends Component {
   componentWillMount() {
     iconsLoaded.then(() => {
       this.props.navigator.setButtons({
-        leftButtons: [
+        [I18nManager.isRTL ? 'rightButtons' : 'leftButtons']: [
           {
             id: 'sideMenu',
             icon: iconsMap.menu,
           },
         ],
-        rightButtons: [
+        [I18nManager.isRTL ? 'leftButtons' : 'leftButtons']: [
           {
             id: 'cart',
             component: 'CartBtn',
@@ -147,7 +148,7 @@ class Orders extends Component {
     registerDrawerDeepLinks(event, navigator);
     if (event.type === 'NavBarButtonPress') {
       if (event.id === 'sideMenu') {
-        navigator.toggleDrawer({ side: 'left' });
+        navigator.toggleDrawer({ side: [I18nManager.isRTL ? 'right' : 'left'] });
       } else if (event.id === 'cart') {
         navigator.showModal({
           screen: 'Cart',

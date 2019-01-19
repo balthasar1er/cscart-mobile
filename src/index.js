@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { Dimensions, AsyncStorage, Platform } from 'react-native';
+import {
+  Dimensions,
+  AsyncStorage,
+  Platform,
+  I18nManager,
+} from 'react-native';
 import { persistStore } from 'redux-persist';
 import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -23,6 +28,10 @@ EStyleSheet.build({
 class App extends Component {
   constructor(props) {
     super(props);
+
+    // Allow RTL support.
+    I18nManager.allowRTL(true);
+
     // run app after store persist.
     persistStore(store, {
       blacklist: ['products', 'discussion', 'orders', 'search', 'vendors'],
@@ -47,12 +56,12 @@ class App extends Component {
         statusBarColor: theme.$statusBarColor,
       },
       drawer: {
-        left: {
+        [I18nManager.isRTL ? 'right' : 'left']: {
           screen: 'Drawer',
         },
         style: {
           drawerShadow: 'NO',
-          leftDrawerWidth: Platform.OS === 'ios' ? 84 : 100,
+          [I18nManager.isRTL ? 'rightDrawerWidth' : 'leftDrawerWidth']: Platform.OS === 'ios' ? 84 : 100,
           contentOverlayColor: theme.$contentOverlayColor,
         },
       },

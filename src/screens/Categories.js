@@ -8,6 +8,7 @@ import {
   FlatList,
   ActivityIndicator,
   InteractionManager,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { PRODUCT_NUM_COLUMNS } from '../utils';
@@ -101,7 +102,7 @@ class Categories extends Component {
   componentWillMount() {
     iconsLoaded.then(() => {
       this.props.navigator.setButtons({
-        rightButtons: [
+        [I18nManager.isRTL ? 'leftButtons' : 'rightButtons']: [
           {
             id: 'cart',
             component: 'CartBtn',

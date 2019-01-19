@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   InteractionManager,
   KeyboardAvoidingView,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
@@ -262,7 +263,7 @@ class ProductDetail extends Component {
 
   componentWillMount() {
     const buttons = {
-      rightButtons: [
+      [I18nManager.isRTL ? 'leftButtons' : 'leftButtons']: [
         {
           id: 'cart',
           component: 'CartBtn',
@@ -277,7 +278,7 @@ class ProductDetail extends Component {
     iconsLoaded.then(() => {
       const { hideSearch } = this.props;
       if (hideSearch) {
-        buttons.rightButtons.splice(-1, 1);
+        buttons[I18nManager.isRTL ? 'rightButtons' : 'leftButtons'].splice(-1, 1);
       }
       this.props.navigator.setButtons(buttons);
     });

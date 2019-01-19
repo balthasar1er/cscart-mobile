@@ -8,6 +8,7 @@ import {
   Image,
   Alert,
   FlatList,
+  I18nManager,
   TouchableOpacity,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -136,18 +137,18 @@ export class WishList extends Component {
   }
 
   componentWillMount() {
-    const { navigator } = this.props;
+    const { navigator, wishListActions } = this.props;
 
-    this.props.wishListActions.fetch();
+    wishListActions.fetch();
     iconsLoaded.then(() => {
       navigator.setButtons({
-        leftButtons: [
+        [I18nManager.isRTL ? 'rightButtons' : 'leftButtons']: [
           {
             id: 'close',
             icon: iconsMap.close,
           },
         ],
-        rightButtons: [
+        [I18nManager.isRTL ? 'leftButtons' : 'rightButtons']: [
           {
             id: 'clearWishList',
             icon: iconsMap.delete,
