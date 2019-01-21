@@ -31,7 +31,6 @@ class App extends Component {
 
     // Allow RTL support.
     I18nManager.allowRTL(true);
-    I18nManager.forceRTL(true);
 
     // run app after store persist.
     persistStore(store, {
