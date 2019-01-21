@@ -9,10 +9,10 @@ import {
   Image,
   Platform,
   ScrollView,
+  I18nManager,
   TouchableOpacity,
   InteractionManager,
   KeyboardAvoidingView,
-  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
@@ -38,11 +38,11 @@ import Rating from '../components/Rating';
 import Icon from '../components/Icon';
 
 import i18n from '../utils/i18n';
+import rtl from '../utils/rtl';
 import theme from '../config/theme';
 import config from '../config';
 
 import {
-  iconsMap,
   iconsLoaded,
 } from '../utils/navIcons';
 
@@ -52,10 +52,6 @@ import {
   DISCUSSION_DISABLED,
   VERSION_MVE,
 } from '../constants';
-
-const writingDirection = {
-  writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
-};
 
 const styles = EStyleSheet.create({
   container: {
@@ -82,33 +78,33 @@ const styles = EStyleSheet.create({
     borderTopColor: '#F1F1F1',
     borderBottomWidth: 1,
     borderBottomColor: '#F1F1F1',
-    ...writingDirection,
+    ...rtl.getWritingDirection(),
   },
   nameText: {
     fontSize: '1.2rem',
     color: '$darkColor',
     marginBottom: 5,
-    ...writingDirection,
+    ...rtl.getWritingDirection(),
   },
   priceText: {
     fontSize: '1rem',
     fontWeight: 'bold',
     color: '$darkColor',
-    ...writingDirection,
+    ...rtl.getWritingDirection(),
   },
   listPriceText: {
     textDecorationLine: 'line-through',
     color: '$darkColor',
-    ...writingDirection,
+    ...rtl.getWritingDirection(),
   },
   promoText: {
     marginBottom: 10,
-    ...writingDirection,
+    ...rtl.getWritingDirection(),
   },
   descText: {
     marginTop: 10,
     color: 'gray',
-    ...writingDirection,
+    ...rtl.getWritingDirection(),
   },
   addToCartContainer: {
     padding: 10,
@@ -153,7 +149,7 @@ const styles = EStyleSheet.create({
   sectionBtnText: {
     color: '$primaryColor',
     fontSize: '0.9rem',
-    ...writingDirection,
+    ...rtl.getWritingDirection(),
   },
   vendorWrapper: {
     paddingLeft: 14,
@@ -201,7 +197,7 @@ const styles = EStyleSheet.create({
   },
   listDiscountText: {
     color: '#fff',
-    ...writingDirection,
+    ...rtl.getWritingDirection(),
   },
 });
 
@@ -247,7 +243,7 @@ class ProductDetail extends Component {
       logged: PropTypes.bool,
     }),
     cart: PropTypes.shape({
-      fetching: PropTypes.boolean,
+      fetching: PropTypes.bool,
     }),
     vendorActions: PropTypes.shape({
       fetch: PropTypes.func,
@@ -275,23 +271,12 @@ class ProductDetail extends Component {
   }
 
   componentWillMount() {
-    const buttons = {
-      rightButtons: [
-        {
-          id: 'cart',
-          component: 'CartBtn',
-          passProps: {},
-        },
-        {
-          id: 'search',
-          icon: iconsMap.search,
-        },
-      ],
-    };
+    const buttons = rtl.getNavigatorButtons();
+
     iconsLoaded.then(() => {
       const { hideSearch } = this.props;
       if (hideSearch) {
-        buttons.rightButtons.splice(-1, 1);
+        buttons[I18nManager.isRTL ? 'leftButtons' : 'rightButtons'].splice(-1, 1);
       }
       this.props.navigator.setButtons(buttons);
     });
@@ -386,6 +371,8 @@ class ProductDetail extends Component {
           screen: 'Search',
           animated: false,
         });
+      } else if (event.id === 'back') {
+        navigator.pop();
       }
     }
   }
@@ -587,7 +574,7 @@ class ProductDetail extends Component {
     return (
       <View>
         {parseInt(product.list_price, 10) ? (
-          <Text style={{ ...writingDirection }}>
+          <Text style={{ ...rtl.getWritingDirection() }}>
             {`${i18n.gettext('List price')}: `}
             <Text style={styles.listPriceText}>
               {formatPrice(product.list_price_formatted.price)}

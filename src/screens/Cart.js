@@ -30,6 +30,7 @@ import theme from '../config/theme';
 import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import i18n from '../utils/i18n';
 import { formatPrice, getImagePath } from '../utils';
+import rtl from '../utils/rtl';
 
 import {
   iconsMap,
@@ -332,6 +333,7 @@ class Cart extends Component {
       navigator.push({
         screen: 'CheckoutDelivery',
         backButtonTitle: '',
+        backButtonHidden: I18nManager.isRTL,
         passProps: {
           products,
         },

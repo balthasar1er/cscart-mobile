@@ -7,6 +7,7 @@ const preloadIcons = {
   close: [30, theme.$navBarButtonColor],
   delete: [30, theme.$navBarButtonColor],
   create: [30, theme.$navBarButtonColor],
+  'keyboard-arrow-right': [40, theme.$navBarButtonColor]
 };
 
 const iconsMap = {};

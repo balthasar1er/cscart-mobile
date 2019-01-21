@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -25,6 +26,9 @@ import Spinner from '../components/Spinner';
 import Icon from '../components/Icon';
 
 import i18n from '../utils/i18n';
+import rtl from '../utils/rtl';
+import { iconsLoaded } from '../utils/navIcons';
+
 import { stripTags, formatPrice } from '../utils';
 
 // theme
@@ -113,6 +117,15 @@ class CheckoutShipping extends Component {
       shipping_id: {},
       isNextDisabled: true,
     };
+
+    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+  }
+
+  componentWillMount() {
+    const { navigator } = this.props;
+    iconsLoaded.then(() => {
+      navigator.setButtons(rtl.getNavigatorBackButton());
+    });
   }
 
   componentDidMount() {
@@ -125,6 +138,15 @@ class CheckoutShipping extends Component {
   componentWillReceiveProps(nextProps) {
     const { cart } = nextProps;
     this.setDefaults(cart);
+  }
+
+  onNavigatorEvent(event) {
+    const { navigator } = this.props;
+    if (event.type === 'NavBarButtonPress') {
+      if (event.id === 'back') {
+        navigator.pop();
+      }
+    }
   }
 
   setDefaults(cart) {
@@ -205,6 +227,7 @@ class CheckoutShipping extends Component {
       screen: 'CheckoutPayment',
       title: i18n.gettext('Checkout').toUpperCase(),
       backButtonTitle: '',
+      backButtonHidden: I18nManager.isRTL,
       passProps: {
         shipping_id: this.state.shipping_id,
       },

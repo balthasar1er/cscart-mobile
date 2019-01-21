@@ -4,6 +4,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -40,6 +41,7 @@ const styles = EStyleSheet.create({
     fontSize: '1.2rem',
     marginTop: 10,
     marginBottom: 10,
+    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
   },
 });
 

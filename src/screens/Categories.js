@@ -8,7 +8,6 @@ import {
   FlatList,
   ActivityIndicator,
   InteractionManager,
-  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { PRODUCT_NUM_COLUMNS } from '../utils';
@@ -24,6 +23,7 @@ import Spinner from '../components/Spinner';
 import VendorInfo from '../components/VendorInfo';
 import CategoryBlock from '../components/CategoryBlock';
 import ProductListView from '../components/ProductListView';
+
 // theme
 import theme from '../config/theme';
 
@@ -31,6 +31,7 @@ import {
   iconsMap,
   iconsLoaded,
 } from '../utils/navIcons';
+import rtl from '../utils/rtl';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -44,7 +45,7 @@ const styles = EStyleSheet.create({
     paddingRight: 10,
     paddingTop: 20,
     paddingBottom: 20,
-    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+    ...rtl.getWritingDirection(),
   },
   emptyList: {
     fontSize: '1rem',
@@ -104,20 +105,7 @@ class Categories extends Component {
   componentWillMount() {
     const { navigator } = this.props;
     iconsLoaded.then(() => {
-      navigator.setButtons({
-        rightButtons: [
-          {
-            id: 'cart',
-            component: 'CartBtn',
-            passProps: {},
-          },
-          {
-            id: 'search',
-            title: i18n.gettext('Search'),
-            icon: iconsMap.search,
-          },
-        ],
-      });
+      navigator.setButtons(rtl.getNavigatorButtons());
     });
   }
 
@@ -182,6 +170,8 @@ class Categories extends Component {
           screen: 'Search',
           title: i18n.gettext('Search'),
         });
+      } else if (event.id === 'back') {
+        navigator.pop();
       }
     }
   }

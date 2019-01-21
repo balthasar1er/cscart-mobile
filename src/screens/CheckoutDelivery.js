@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { View } from 'react-native';
+import { View, I18nManager } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import * as t from 'tcomb-form-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -18,6 +18,8 @@ import * as authActions from '../actions/authActions';
 import * as cartActions from '../actions/cartActions';
 
 import i18n from '../utils/i18n';
+import rtl from '../utils/rtl';
+import { iconsLoaded } from '../utils/navIcons';
 import { getCountries, getStates, formatPrice } from '../utils';
 
 // theme
@@ -211,6 +213,14 @@ class Checkout extends Component {
       billingValues: {},
       shippingValues: {},
     };
+    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+  }
+
+  componentWillMount() {
+    const { navigator } = this.props;
+    iconsLoaded.then(() => {
+      navigator.setButtons(rtl.getNavigatorBackButton());
+    });
   }
 
   componentDidMount() {
@@ -264,6 +274,15 @@ class Checkout extends Component {
         this.handleChange(this.state.shippingValues, 'shipping');
       }
     });
+  }
+
+  onNavigatorEvent(event) {
+    const { navigator } = this.props;
+    if (event.type === 'NavBarButtonPress') {
+      if (event.id === 'back') {
+        navigator.pop();
+      }
+    }
   }
 
   handleChange = (value, type) => {
@@ -348,6 +367,7 @@ class Checkout extends Component {
       navigator.push({
         screen: 'CheckoutShipping',
         backButtonTitle: '',
+        backButtonHidden: I18nManager.isRTL,
         title: i18n.gettext('Checkout').toUpperCase(),
         passProps: {
           total: cart.subtotal,

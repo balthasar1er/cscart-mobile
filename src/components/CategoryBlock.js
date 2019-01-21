@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import {
   View,
   Text,
-  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import sortBy from 'lodash/sortBy';
 
 import CategoryListView from './CategoryListView';
 import i18n from '../utils/i18n';
+import rtl from '../utils/rtl';
 
 const styles = EStyleSheet.create({
   container: {
@@ -31,7 +31,7 @@ const styles = EStyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     color: '$categoriesHeaderColor',
-    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+    ...rtl.getWritingDirection(),
   },
 });
 
