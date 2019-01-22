@@ -183,6 +183,7 @@ class CheckoutStepThree extends Component {
 
     const orderInfo = {
       products: {},
+      coupon_codes: cart.coupons,
       shipping_id,
       payment_id: this.state.selectedItem.payment_id,
       user_data: cart.user_data,
@@ -233,6 +234,7 @@ class CheckoutStepThree extends Component {
 
     const orderInfo = {
       products: {},
+      coupon_codes: cart.coupons,
       shipping_id,
       payment_id: this.state.selectedItem.payment_id,
       user_data: cart.user_data,

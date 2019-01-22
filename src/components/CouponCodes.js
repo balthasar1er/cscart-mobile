@@ -51,6 +51,7 @@ const styles = EStyleSheet.create({
     borderRadius: 4,
     paddingHorizontal: 20,
     paddingVertical: 7,
+    height: 36,
     position: 'absolute',
     top: 0,
     right: 0,
