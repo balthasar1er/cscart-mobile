@@ -26,6 +26,7 @@ import PaymentEmpty from '../components/PaymentEmpty';
 import PaymentCheckForm from '../components/PaymentCheckForm';
 import PaymentPaypalForm from '../components/PaymentPaypalForm';
 import PaymentYandexKassaForm from '../components/PaymentYandexKassaForm';
+import CouponCodes from '../components/CouponCodes';
 import Spinner from '../components/Spinner';
 import Icon from '../components/Icon';
 import { stripTags, formatPrice } from '../utils';
@@ -177,6 +178,7 @@ class CheckoutStepThree extends Component {
 
     const orderInfo = {
       products: {},
+      coupon_codes: cart.coupons,
       shipping_id,
       payment_id: this.state.selectedItem.payment_id,
       user_data: cart.user_data,
@@ -227,6 +229,7 @@ class CheckoutStepThree extends Component {
 
     const orderInfo = {
       products: {},
+      coupon_codes: cart.coupons,
       shipping_id,
       payment_id: this.state.selectedItem.payment_id,
       user_data: cart.user_data,
@@ -297,7 +300,7 @@ class CheckoutStepThree extends Component {
   );
 
   renderFooter() {
-    const { cart } = this.props;
+    const { cart, shipping_id, cartActions } = this.props;
     const { selectedItem } = this.state;
     if (!selectedItem) {
       return null;
@@ -375,6 +378,27 @@ class CheckoutStepThree extends Component {
             {stripTags(selectedItem.instructions)}
           </Text>
         </FormBlock>
+        <CouponCodes
+          items={cart.coupons}
+          onAddPress={(value) => {
+            cartActions.addCoupon(value);
+            setTimeout(() => {
+              cartActions.recalculateTotal(
+                shipping_id,
+                this.props.cart.coupons
+              );
+            }, 400);
+          }}
+          onRemovePress={(value) => {
+            cartActions.removeCoupon(value);
+            setTimeout(() => {
+              cartActions.recalculateTotal(
+                shipping_id,
+                this.props.cart.coupons
+              );
+            }, 400);
+          }}
+        />
       </View>
     );
   }
