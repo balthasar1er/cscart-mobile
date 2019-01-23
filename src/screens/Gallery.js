@@ -31,11 +31,11 @@ const styles = EStyleSheet.create({
   },
   closeBtnContainer: {
     position: 'absolute',
-    top: 14,
+    top: 22,
     right: 14,
   },
   closeBtn: {
-    color: theme.$navBarButtonColor,
+    color: 'black',
   }
 });
 

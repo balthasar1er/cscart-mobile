@@ -88,7 +88,7 @@ export default class ProfileForm extends Component {
   }
 
   getFieldType = (field, allFields) => {
-    const label = field.description;
+    const label = field.description || '';
     const help = !field.required ? `${i18n.gettext('(Optional)')}` : '';
 
     if (field.field_type === FIELD_DATE) {

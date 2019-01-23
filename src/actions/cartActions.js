@@ -46,11 +46,7 @@ export function fetch(fetching = true, calculateShipping = 'A') {
         fetching,
       }
     });
-    return Api.get('/sra_cart_content/', {
-      params: {
-        calculate_shipping: calculateShipping
-      }
-    })
+    return Api.get('/sra_cart_content/', { params: { calculate_shipping: calculateShipping } })
       .then((response) => {
         dispatch({
           type: CART_SUCCESS,
