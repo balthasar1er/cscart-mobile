@@ -5,6 +5,7 @@ import {
 } from '../constants';
 
 const initialState = {
+  sort: 'none',
   params: {
     page: 1,
   },
