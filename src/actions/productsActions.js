@@ -25,6 +25,8 @@ import {
 
   NOTIFICATION_SHOW,
   DISCUSSION_DISABLED,
+
+  CHANGE_PRODUCTS_SORT,
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
@@ -159,14 +161,13 @@ export function search(params = {}) {
   };
 }
 
-export function fetchByCategory(categoryId, page = 1, companyId = false, sort) {
+export function fetchByCategory(categoryId, page = 1, companyId = false, sort = {}) {
   const params = {
     page,
     subcats: 'Y',
-    sort_by: 'price',
-    sort_order: 'desc',
     items_per_page: 10,
     company_id: companyId || '',
+    ...sort,
   };
 
   return (dispatch) => {
@@ -184,5 +185,14 @@ export function fetchByCategory(categoryId, page = 1, companyId = false, sort) {
           error
         });
       });
+  };
+}
+
+export function changeSort(params) {
+  return (dispatch) => {
+    dispatch({
+      type: CHANGE_PRODUCTS_SORT,
+      payload: params,
+    });
   };
 }

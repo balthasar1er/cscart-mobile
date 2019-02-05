@@ -2,10 +2,15 @@ import {
   FETCH_PRODUCTS_REQUEST,
   FETCH_PRODUCTS_FAIL,
   FETCH_PRODUCTS_SUCCESS,
+
+  CHANGE_PRODUCTS_SORT,
 } from '../constants';
 
 const initialState = {
-  sort: 'none',
+  sortParams: {
+    sort_by: 'product',
+    sort_order: 'asc',
+  },
   params: {
     page: 1,
   },
@@ -39,6 +44,7 @@ export default function (state = initialState, action) {
         ];
       }
       return {
+        ...state,
         params,
         items,
         hasMore: (params.items_per_page * params.page) < +params.total_items,
@@ -49,6 +55,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         fetching: false,
+      };
+
+    case CHANGE_PRODUCTS_SORT:
+      return {
+        ...state,
+        sortParams: action.payload,
       };
 
     default:

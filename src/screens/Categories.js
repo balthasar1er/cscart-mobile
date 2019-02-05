@@ -21,6 +21,7 @@ import * as productsActions from '../actions/productsActions';
 // Components
 import Spinner from '../components/Spinner';
 import VendorInfo from '../components/VendorInfo';
+import SortProducts from '../components/SortProducts';
 import CategoryBlock from '../components/CategoryBlock';
 import ProductListView from '../components/ProductListView';
 // theme
@@ -31,10 +32,18 @@ import {
   iconsLoaded,
 } from '../utils/navIcons';
 
+
 // Styles
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
+  },
+  headerWrapper: {
+    flex: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    marginRight: 14,
+    alignItems: 'center'
   },
   header: {
     fontWeight: 'bold',
@@ -99,8 +108,9 @@ class Categories extends Component {
   }
 
   componentWillMount() {
+    const { navigator } = this.props;
     iconsLoaded.then(() => {
-      this.props.navigator.setButtons({
+      navigator.setButtons({
         rightButtons: [
           {
             id: 'cart',
@@ -150,7 +160,7 @@ class Categories extends Component {
       this.setState({
         ...this.state,
         ...newState,
-      }, () => productsActions.fetchByCategory(this.activeCategoryId, 1, companyId));
+      }, () => productsActions.fetchByCategory(this.activeCategoryId, 1, companyId, products.sortParams));
     });
 
     navigator.setTitle({
@@ -183,6 +193,7 @@ class Categories extends Component {
   }
 
   findCategoryById(items) {
+    const { categoryId } = this.props;
     const flatten = [];
     const makeFlat = (list) => {
       list.forEach((i) => {
@@ -193,11 +204,11 @@ class Categories extends Component {
       });
     };
     makeFlat(items);
-    return flatten.find(i => i.category_id == this.props.categoryId) || null;
+    return flatten.find(i => i.category_id == categoryId) || null;
   }
 
   handleLoadMore() {
-    const { products, productsActions } = this.props;
+    const { products, productsActions, companyId } = this.props;
     const { isLoadMoreRequest } = this.state;
 
     if (products.hasMore && !isLoadMoreRequest) {
@@ -207,7 +218,8 @@ class Categories extends Component {
       productsActions.fetchByCategory(
         this.activeCategoryId,
         products.params.page + 1,
-        this.props.companyId
+        companyId,
+        products.sortParams,
       ).then(() => {
         this.setState({
           isLoadMoreRequest: false,
@@ -217,23 +229,43 @@ class Categories extends Component {
   }
 
   handleRefresh() {
-    const { productsActions, companyId } = this.props;
+    const { productsActions, companyId, products } = this.props;
     this.setState({
       refreshing: true,
-    }, () => productsActions.fetchByCategory(this.activeCategoryId, 1, companyId));
+    },
+    () => productsActions
+      .fetchByCategory(this.activeCategoryId, 1, companyId, products.sortParams));
   }
 
   renderHeader() {
     const {
-      navigator, companyId, vendors
+      navigator,
+      companyId,
+      vendors,
+      productsActions,
     } = this.props;
     let productHeader = null;
+    const { subCategories, products } = this.state;
 
-    if (this.state.subCategories.length !== 0 && this.state.products.length !== 0) {
+    if (subCategories.length !== 0 && products.length !== 0) {
       productHeader = (
-        <Text style={styles.header}>
-          {companyId ? i18n.gettext('Vendor products') : i18n.gettext('Products')}
-        </Text>
+        <View style={styles.headerWrapper}>
+          <Text style={styles.header}>
+            {companyId ? i18n.gettext('Vendor products') : i18n.gettext('Products')}
+          </Text>
+          <SortProducts
+            sortParams={this.props.products.sortParams}
+            onChange={(sort) => {
+              productsActions.changeSort(sort);
+              productsActions.fetchByCategory(
+                this.activeCategoryId,
+                1,
+                companyId,
+                sort
+              );
+            }}
+          />
+        </View>
       );
     }
 

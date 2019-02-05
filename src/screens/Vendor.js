@@ -21,6 +21,7 @@ import Spinner from '../components/Spinner';
 import VendorInfo from '../components/VendorInfo';
 import CategoryBlock from '../components/CategoryBlock';
 import ProductListView from '../components/ProductListView';
+import SortProducts from '../components/SortProducts';
 
 // theme
 import theme from '../config/theme';
@@ -40,6 +41,13 @@ const styles = EStyleSheet.create({
     paddingLeft: 10,
     paddingTop: 20,
     paddingBottom: 20,
+  },
+  headerWrapper: {
+    flex: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    marginRight: 14,
+    alignItems: 'center'
   }
 });
 
@@ -95,18 +103,25 @@ class Vendor extends Component {
   }
 
   componentWillMount() {
-    const { vendors, companyId } = this.props;
+    const {
+      navigator,
+      vendors,
+      products,
+      companyId,
+      vendorActions,
+      productsActions,
+    } = this.props;
 
-    this.props.vendorActions.categories(companyId);
-    this.props.vendorActions.products(companyId);
+    vendorActions.categories(companyId);
+    vendorActions.products(companyId, 1, products.sortParams);
 
     if (!vendors.items[companyId] && !vendors.fetching) {
-      this.props.vendorActions.fetch(companyId);
+      vendorActions.fetch(companyId);
     } else {
       this.setState({
         vendor: vendors.items[companyId],
       }, () => {
-        this.props.productsActions.fetchDiscussion(
+        productsActions.fetchDiscussion(
           this.state.vendor.company_id,
           { page: this.state.discussion.search.page },
           'M'
@@ -115,7 +130,7 @@ class Vendor extends Component {
     }
 
     iconsLoaded.then(() => {
-      this.props.navigator.setButtons({
+      navigator.setButtons({
         leftButtons: [
           {
             id: 'close',
@@ -139,7 +154,12 @@ class Vendor extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { products, vendors, companyId, navigator } = nextProps;
+    const {
+      products,
+      vendors,
+      companyId,
+      navigator
+    } = nextProps;
     const vendorProducts = products.items[companyId];
     if (vendorProducts) {
       this.setState({
@@ -175,18 +195,24 @@ class Vendor extends Component {
   }
 
   handleLoadMore() {
-    const { products, vendorActions } = this.props;
+    const { products, vendorActions, companyId } = this.props;
     if (products.hasMore && !products.fetching && !this.isFirstLoad) {
       vendorActions.products(
-        this.props.companyId,
+        companyId,
         products.params.page + 1,
+        products.sortParams
       );
     }
   }
 
   renderHeader() {
     const {
-      navigator, vendorCategories, companyId
+      navigator,
+      vendorCategories,
+      companyId,
+      products,
+      vendorActions,
+      productsActions,
     } = this.props;
     const { vendor } = this.state;
 
@@ -195,9 +221,22 @@ class Vendor extends Component {
     }
 
     const productHeader = (
-      <Text style={styles.header}>
-        {i18n.gettext('Vendor products')}
-      </Text>
+      <View style={styles.headerWrapper}>
+        <Text style={styles.header}>
+          {i18n.gettext('Products')}
+        </Text>
+        <SortProducts
+          sortParams={products.sortParams}
+          onChange={(sort) => {
+            productsActions.changeSort(sort);
+            vendorActions.products(
+              companyId,
+              1,
+              sort
+            );
+          }}
+        />
+      </View>
     );
 
     return (
