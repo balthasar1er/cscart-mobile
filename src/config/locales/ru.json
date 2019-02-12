@@ -961,5 +961,8 @@
     "Payment metho": "Способ оплаты",
     "Awaiting call": "Ожидание звонка",
     "Coupon code": "Код купона",
-    "List price": "Рекомендованная цена"
+    "List price": "Рекомендованная цена",
+    "There are no products in this section": "В этой категории нет товаров",
+    "Add": "Добавить"
+
 }

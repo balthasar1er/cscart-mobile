@@ -95,6 +95,9 @@ export default class ProfileForm extends Component {
       // Date field
       return {
         type: field.required ? t.Date : t.maybe(t.Date),
+        i18n: {
+          optional: ''
+        },
         options: {
           label,
           help,
@@ -111,6 +114,9 @@ export default class ProfileForm extends Component {
       // Checkbox field
       return {
         type: field.required ? t.Boolean : t.maybe(t.Boolean),
+        i18n: {
+          optional: ''
+        },
         options: {
           label,
           help,
@@ -125,6 +131,9 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? Enums : t.maybe(Enums),
         options: {
+          i18n: {
+            optional: ''
+          },
           label,
           help,
         },
@@ -136,6 +145,9 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? t.String : t.maybe(t.String),
         options: {
+          i18n: {
+            optional: ''
+          },
           label,
           help,
           secureTextEntry: true,
@@ -149,6 +161,9 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? t.String : t.maybe(t.String),
         options: {
+          i18n: {
+            optional: ''
+          },
           label,
           help,
           clearButtonMode: 'while-editing',
@@ -161,6 +176,9 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? t.enums(field.values) : t.maybe(t.enums(field.values)),
         options: {
+          i18n: {
+            optional: ''
+          },
           label,
           help,
           defaultValueText: i18n.gettext('Select country'),
@@ -197,6 +215,9 @@ export default class ProfileForm extends Component {
       return {
         type,
         options: {
+          i18n: {
+            optional: ''
+          },
           label,
           help,
           defaultValueText: i18n.gettext('Select state'),
@@ -211,6 +232,9 @@ export default class ProfileForm extends Component {
     return {
       type: field.required ? t.String : t.maybe(t.String),
       options: {
+        i18n: {
+          optional: ''
+        },
         label,
         help,
         clearButtonMode: 'while-editing',
