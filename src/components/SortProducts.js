@@ -120,7 +120,7 @@ class SortProducts extends Component {
           style={styles.btn}
           onPress={this.showActionSheet}
         >
-          <Text style={styles.text}>
+          <Text style={styles.text} numberOfLines={2}>
             {items[activeIndex]}
           </Text>
         </TouchableOpacity>

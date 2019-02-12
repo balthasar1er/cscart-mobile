@@ -961,5 +961,11 @@
     "Payment metho": "Способ оплаты",
     "Awaiting call": "Ожидание звонка",
     "Coupon code": "Код купона",
-    "List price": "Рекомендованная цена"
+    "List price": "Рекомендованная цена",
+    "Newest Items First": "Сортировать по времени: новинки выше",
+    "Sort Alphabetically: A to Z": "Сортировать по алфавиту: от A до Я",
+    "Sort Alphabetically: Z to A": "Сортировать по алфавиту: от Я до А",
+    "Sort by Price: Low to High": "Сортировать по цене: дешевые выше",
+    "Sort by Price: High to Low": "Сортировать по цене: дорогие выше",
+    "Sort by Popularity": "Сортировать по популярности: по убыванию"
 }

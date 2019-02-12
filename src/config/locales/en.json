@@ -858,5 +858,11 @@
     "List price": "List price",
     "Discount": "Discount",
     "Coupon code": "Coupon code",
-    "Save": "Save"
+    "Save": "Save",
+    "Newest Items First": "Newest Items First",
+    "Sort Alphabetically: A to Z": "Sort Alphabetically: A to Z",
+    "Sort Alphabetically: Z to A": "Sort Alphabetically: Z to A",
+    "Sort by Price: Low to High": "Sort by Price: Low to High",
+    "Sort by Price: High to Low": "Sort by Price: High to Low",
+    "Sort by Popularity": "Sort by Popularity"
 }

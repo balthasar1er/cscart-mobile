@@ -132,7 +132,7 @@ class Categories extends Component {
       productsActions, products, navigator, categoryId, layouts, companyId,
     } = this.props;
 
-    let category = { ...this.props.category };
+    let { category } = this.props;
 
     if (!category) {
       category = await Api.get('/categories/432?subcats=Y');
@@ -156,12 +156,16 @@ class Categories extends Component {
       newState.products = categoryProducts;
     }
 
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({
-        ...this.state,
-        ...newState,
-      }, () => productsActions.fetchByCategory(this.activeCategoryId, 1, companyId, products.sortParams));
-    });
+    this.setState(state => ({
+      ...state,
+      ...newState,
+    }), () => productsActions
+      .fetchByCategory(
+        this.activeCategoryId,
+        1,
+        companyId,
+        products.sortParams
+      ));
 
     navigator.setTitle({
       title: category.category,
@@ -237,34 +241,45 @@ class Categories extends Component {
       .fetchByCategory(this.activeCategoryId, 1, companyId, products.sortParams));
   }
 
+  renderSorting() {
+    const {
+      companyId,
+      productsActions,
+      products
+    } = this.props;
+    return (
+      <SortProducts
+        sortParams={products.sortParams}
+        onChange={(sort) => {
+          productsActions.changeSort(sort);
+          productsActions.fetchByCategory(
+            this.activeCategoryId,
+            1,
+            companyId,
+            sort
+          );
+        }}
+      />
+    );
+  }
+
   renderHeader() {
     const {
       navigator,
       companyId,
       vendors,
-      productsActions,
     } = this.props;
     let productHeader = null;
     const { subCategories, products } = this.state;
 
-    if (subCategories.length !== 0 && products.length !== 0) {
+    if (products.length !== 0) {
+      const headerText = companyId ? i18n.gettext('Vendor products') : i18n.gettext('Products');
       productHeader = (
         <View style={styles.headerWrapper}>
           <Text style={styles.header}>
-            {companyId ? i18n.gettext('Vendor products') : i18n.gettext('Products')}
+            {(subCategories.length !== 0) && headerText}
           </Text>
-          <SortProducts
-            sortParams={this.props.products.sortParams}
-            onChange={(sort) => {
-              productsActions.changeSort(sort);
-              productsActions.fetchByCategory(
-                this.activeCategoryId,
-                1,
-                companyId,
-                sort
-              );
-            }}
-          />
+          {this.renderSorting()}
         </View>
       );
     }
