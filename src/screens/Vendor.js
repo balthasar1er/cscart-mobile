@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   View,
-  Text,
   FlatList,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -35,20 +34,6 @@ const styles = EStyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    fontWeight: 'bold',
-    fontSize: '1.3rem',
-    paddingLeft: 10,
-    paddingTop: 20,
-    paddingBottom: 20,
-  },
-  headerWrapper: {
-    flex: 1,
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    marginRight: 14,
-    alignItems: 'center'
-  }
 });
 
 class Vendor extends Component {
@@ -221,22 +206,17 @@ class Vendor extends Component {
     }
 
     const productHeader = (
-      <View style={styles.headerWrapper}>
-        <Text style={styles.header}>
-          {i18n.gettext('Products')}
-        </Text>
-        <SortProducts
-          sortParams={products.sortParams}
-          onChange={(sort) => {
-            productsActions.changeSort(sort);
-            vendorActions.products(
-              companyId,
-              1,
-              sort
-            );
-          }}
-        />
-      </View>
+      <SortProducts
+        sortParams={products.sortParams}
+        onChange={(sort) => {
+          productsActions.changeSort(sort);
+          vendorActions.products(
+            companyId,
+            1,
+            sort
+          );
+        }}
+      />
     );
 
     return (

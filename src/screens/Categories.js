@@ -7,7 +7,6 @@ import {
   Text,
   FlatList,
   ActivityIndicator,
-  InteractionManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { PRODUCT_NUM_COLUMNS } from '../utils';
@@ -37,20 +36,6 @@ import {
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-  },
-  headerWrapper: {
-    flex: 1,
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    marginRight: 14,
-    alignItems: 'center'
-  },
-  header: {
-    fontWeight: 'bold',
-    fontSize: '1.3rem',
-    paddingLeft: 10,
-    paddingTop: 20,
-    paddingBottom: 20,
   },
   emptyList: {
     fontSize: '1rem',
@@ -247,6 +232,7 @@ class Categories extends Component {
       productsActions,
       products
     } = this.props;
+
     return (
       <SortProducts
         sortParams={products.sortParams}
@@ -269,20 +255,6 @@ class Categories extends Component {
       companyId,
       vendors,
     } = this.props;
-    let productHeader = null;
-    const { subCategories, products } = this.state;
-
-    if (products.length !== 0) {
-      const headerText = companyId ? i18n.gettext('Vendor products') : i18n.gettext('Products');
-      productHeader = (
-        <View style={styles.headerWrapper}>
-          <Text style={styles.header}>
-            {(subCategories.length !== 0) && headerText}
-          </Text>
-          {this.renderSorting()}
-        </View>
-      );
-    }
 
     let vendorHeader = null;
     if (companyId && vendors.items[companyId] && !vendors.fetching) {
@@ -319,7 +291,7 @@ class Categories extends Component {
             });
           }}
         />
-        {productHeader}
+        {this.renderSorting()}
       </View>
     );
   }

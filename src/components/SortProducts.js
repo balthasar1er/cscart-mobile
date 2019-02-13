@@ -10,6 +10,15 @@ import ActionSheet from 'react-native-actionsheet';
 import i18n from '../utils/i18n';
 
 const styles = EStyleSheet.create({
+  wrapper: {
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#F0F0F0',
+    padding: 8,
+    paddingLeft: 14,
+    paddingRight: 14,
+    marginBottom: 10,
+  },
   btn: {
     justifyContent: 'center',
     paddingLeft: 6,
@@ -115,7 +124,7 @@ class SortProducts extends Component {
     const filteredItems = items.filter(item => item !== items[activeIndex]);
 
     return (
-      <View>
+      <View style={styles.wrapper}>
         <TouchableOpacity
           style={styles.btn}
           onPress={this.showActionSheet}
