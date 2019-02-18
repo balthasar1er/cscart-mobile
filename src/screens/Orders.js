@@ -107,13 +107,13 @@ class Orders extends Component {
   componentWillMount() {
     iconsLoaded.then(() => {
       this.props.navigator.setButtons({
-        [I18nManager.isRTL ? 'rightButtons' : 'leftButtons']: [
+        leftButtons: [
           {
             id: 'sideMenu',
             icon: iconsMap.menu,
           },
         ],
-        [I18nManager.isRTL ? 'leftButtons' : 'leftButtons']: [
+        rightButtons: [
           {
             id: 'cart',
             component: 'CartBtn',
@@ -148,7 +148,7 @@ class Orders extends Component {
     registerDrawerDeepLinks(event, navigator);
     if (event.type === 'NavBarButtonPress') {
       if (event.id === 'sideMenu') {
-        navigator.toggleDrawer({ side: I18nManager.isRTL ? 'right' : 'left' });
+        navigator.toggleDrawer({ side: 'left' });
       } else if (event.id === 'cart') {
         navigator.showModal({
           screen: 'Cart',

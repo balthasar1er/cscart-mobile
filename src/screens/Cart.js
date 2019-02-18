@@ -8,7 +8,6 @@ import {
   Alert,
   Image,
   FlatList,
-  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swipeout from 'react-native-swipeout';
@@ -30,7 +29,6 @@ import theme from '../config/theme';
 import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import i18n from '../utils/i18n';
 import { formatPrice, getImagePath } from '../utils';
-import rtl from '../utils/rtl';
 
 import {
   iconsMap,
@@ -77,11 +75,13 @@ const styles = EStyleSheet.create({
     fontSize: '0.9rem',
     color: 'black',
     marginBottom: 5,
+    textAlign: 'left',
     fontWeight: 'bold',
   },
   productItemPrice: {
     fontSize: '0.7rem',
     color: 'black',
+    textAlign: 'left',
   },
   emptyListContainer: {
     marginTop: '3rem',
@@ -164,13 +164,13 @@ class Cart extends Component {
     const { navigator } = this.props;
     iconsLoaded.then(() => {
       navigator.setButtons({
-        [I18nManager.isRTL ? 'rightButtons' : 'leftButtons']: [
+        leftButtons: [
           {
             id: 'close',
             icon: iconsMap.close,
           },
         ],
-        [I18nManager.isRTL ? 'leftButtons' : 'rightButtons']: [
+        rightButtons: [
           {
             id: 'clearCart',
             icon: iconsMap.delete,
@@ -333,7 +333,6 @@ class Cart extends Component {
       navigator.push({
         screen: 'CheckoutDelivery',
         backButtonTitle: '',
-        backButtonHidden: I18nManager.isRTL,
         passProps: {
           products,
         },

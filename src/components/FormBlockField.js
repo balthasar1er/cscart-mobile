@@ -3,13 +3,8 @@ import PropTypes from 'prop-types';
 import {
   View,
   Text,
-  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
-const writingDirection = {
-  writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
-};
 
 const styles = EStyleSheet.create({
   container: {
@@ -21,13 +16,13 @@ const styles = EStyleSheet.create({
     fontWeight: 'bold',
     paddingRight: 4,
     fontSize: '0.9rem',
-    ...writingDirection,
+    textAlign: 'left'
   },
   text: {
     color: '#7C7C7C',
     fontSize: '0.9rem',
     flex: 1,
-    ...writingDirection,
+    textAlign: 'right'
   },
 });
 

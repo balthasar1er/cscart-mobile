@@ -6,7 +6,6 @@ import {
   View,
   Text,
   FlatList,
-  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -42,7 +41,7 @@ const styles = EStyleSheet.create({
     paddingRight: 10,
     paddingTop: 20,
     paddingBottom: 20,
-    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+    textAlign: 'left',
   }
 });
 
@@ -125,13 +124,13 @@ class Vendor extends Component {
 
     iconsLoaded.then(() => {
       navigator.setButtons({
-        [I18nManager.isRTL ? 'rightButtons' : 'leftButtons']: [
+        leftButtons: [
           {
             id: 'close',
             icon: iconsMap.close,
           },
         ],
-        [I18nManager.isRTL ? 'leftButtons' : 'rightButtons']: [
+        rightButtons: [
           {
             id: 'cart',
             component: 'CartBtn',

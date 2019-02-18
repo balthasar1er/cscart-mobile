@@ -32,7 +32,7 @@
     "redux-persist": "4.10.1",
     "redux-thunk": "2.3.0",
     "shitty-qs": "1.0.1",
-    "tcomb-form-native": "git+https://github.com/i198622/tcomb-form-native.git"
+    "tcomb-form-native": "0.6.20"
   },
   "devDependencies": {
     "babel-eslint": "10.0.1",

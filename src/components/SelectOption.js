@@ -4,7 +4,6 @@ import {
   View,
   Text,
   Image,
-  I18nManager,
   TouchableOpacity,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -17,7 +16,7 @@ const styles = EStyleSheet.create({
   title: {
     fontSize: '0.9rem',
     fontWeight: 'bold',
-    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+    textAlign: 'left',
   },
   titleSub: {
     fontWeight: 'normal',
@@ -26,6 +25,7 @@ const styles = EStyleSheet.create({
   commentText: {
     color: '#9cb0c4',
     marginTop: 3,
+    textAlign: 'left',
   },
   optionsList: {},
   optionsVariants: {

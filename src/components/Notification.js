@@ -5,7 +5,6 @@ import {
   Text,
   Dimensions,
   Platform,
-  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -33,12 +32,12 @@ const styles = EStyleSheet.create({
     fontSize: '1rem',
     fontWeight: 'bold',
     paddingBottom: 2,
-    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+    textAlign: 'left'
   },
   msgText: {
     color: '#fff',
     fontSize: '0.8rem',
-    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+    textAlign: 'left'
   }
 });
 

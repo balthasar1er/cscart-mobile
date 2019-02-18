@@ -10,6 +10,7 @@
 #import "RNFirebaseMessaging.h"
 #import "AppDelegate.h"
 
+#import <React/RCTI18nUtil.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
@@ -19,6 +20,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [[RCTI18nUtil sharedInstance] allowRTL: YES];
+  [[RCTI18nUtil sharedInstance] forceRTL: [[RCTI18nUtil sharedInstance] isRTL]];
+
   [FIRApp configure];
   [RNFirebaseNotifications configure];
 

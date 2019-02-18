@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import DeviceInfo from 'react-native-device-info';
 import { Provider } from 'react-redux';
 import {
   Dimensions,
@@ -6,6 +7,7 @@ import {
   Platform,
   I18nManager,
 } from 'react-native';
+
 import { persistStore } from 'redux-persist';
 import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -25,12 +27,14 @@ EStyleSheet.build({
   ...theme,
 });
 
-class App extends Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
 
-    // Allow RTL support.
+    const locale = DeviceInfo.getDeviceLocale().split('-')[0];
+
     I18nManager.allowRTL(true);
+    I18nManager.forceRTL(['ar', 'he'].includes(locale));
 
     // run app after store persist.
     persistStore(store, {
@@ -56,12 +60,12 @@ class App extends Component {
         statusBarColor: theme.$statusBarColor,
       },
       drawer: {
-        [I18nManager.isRTL ? 'right' : 'left']: {
+        left: {
           screen: 'Drawer',
         },
         style: {
           drawerShadow: 'NO',
-          [I18nManager.isRTL ? 'rightDrawerWidth' : 'leftDrawerWidth']: Platform.OS === 'ios' ? 84 : 100,
+          leftDrawerWidth: Platform.OS === 'ios' ? 84 : 100,
           contentOverlayColor: theme.$contentOverlayColor,
         },
       },

@@ -8,7 +8,6 @@ import {
   Image,
   Alert,
   FlatList,
-  I18nManager,
   TouchableOpacity,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -65,10 +64,12 @@ const styles = EStyleSheet.create({
     color: 'black',
     marginBottom: 5,
     fontWeight: 'bold',
+    textAlign: 'left'
   },
   productItemPrice: {
     fontSize: '0.7rem',
     color: 'black',
+    textAlign: 'left'
   },
   emptyListContainer: {
     marginTop: '3rem',
@@ -142,13 +143,13 @@ export class WishList extends Component {
     wishListActions.fetch();
     iconsLoaded.then(() => {
       navigator.setButtons({
-        [I18nManager.isRTL ? 'rightButtons' : 'leftButtons']: [
+        leftButtons: [
           {
             id: 'close',
             icon: iconsMap.close,
           },
         ],
-        [I18nManager.isRTL ? 'leftButtons' : 'rightButtons']: [
+        rightButtons: [
           {
             id: 'clearWishList',
             icon: iconsMap.delete,
@@ -202,6 +203,11 @@ export class WishList extends Component {
     }
   }
 
+  handleRemoveProduct = (product) => {
+    const { wishListActions } = this.props;
+    wishListActions.remove(product.cartId);
+  };
+
   handleRefresh() {
     const { wishListActions } = this.props;
     this.setState(
@@ -209,10 +215,6 @@ export class WishList extends Component {
       () => wishListActions.fetch(),
     );
   }
-
-  handleRemoveProduct = (product) => {
-    this.props.wishListActions.remove(product.cartId);
-  };
 
   renderProductItem = (item) => {
     let productImage = null;

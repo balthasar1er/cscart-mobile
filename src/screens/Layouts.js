@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import {
   View,
   ScrollView,
-  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import has from 'lodash/has';
@@ -91,13 +90,13 @@ class Layouts extends Component {
     iconsLoaded.then(() => {
       const { navigator } = this.props;
       navigator.setButtons({
-        [I18nManager.isRTL ? 'rightButtons' : 'leftButtons']: [
+        leftButtons: [
           {
             id: 'sideMenu',
             icon: iconsMap.menu,
           },
         ],
-        [I18nManager.isRTL ? 'leftButtons' : 'rightButtons']: [
+        rightButtons: [
           {
             id: 'cart',
             component: 'CartBtn',
@@ -160,7 +159,7 @@ class Layouts extends Component {
     registerDrawerDeepLinks(event, navigator);
     if (event.type === 'NavBarButtonPress') {
       if (event.id === 'sideMenu') {
-        navigator.toggleDrawer({ side: I18nManager.isRTL ? 'right' : 'left' });
+        navigator.toggleDrawer({ side: 'left' });
       } else if (event.id === 'search') {
         navigator.showModal({
           screen: 'Search',

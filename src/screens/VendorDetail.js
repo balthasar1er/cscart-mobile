@@ -7,7 +7,6 @@ import {
   Text,
   Image,
   ScrollView,
-  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -34,10 +33,6 @@ import {
   iconsLoaded,
 } from '../utils/navIcons';
 
-const writingDirection = {
-  writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
-};
-
 // Styles
 const styles = EStyleSheet.create({
   container: {
@@ -52,18 +47,18 @@ const styles = EStyleSheet.create({
   vendorName: {
     fontSize: '1rem',
     fontWeight: 'bold',
-    ...writingDirection,
+    textAlign: 'left',
   },
   vendorDescription: {
     color: 'gray',
     fontSize: '0.9rem',
     marginTop: 10,
-    ...writingDirection,
+    textAlign: 'left',
   },
   address: {
     color: 'gray',
     fontSize: '0.9rem',
-    ...writingDirection,
+    textAlign: 'left',
   },
   logoWrapper: {
     flexDirection: 'row',
@@ -150,7 +145,7 @@ export class VendorDetail extends Component {
 
     iconsLoaded.then(() => {
       navigator.setButtons({
-        [I18nManager.isRTL ? 'rightButtons' : 'leftButtons']: [
+        leftButtons: [
           {
             id: 'close',
             icon: iconsMap.close,

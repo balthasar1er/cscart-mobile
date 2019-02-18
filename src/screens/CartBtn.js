@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   Text,
   Platform,
-  I18nManager,
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -23,6 +22,8 @@ const styles = EStyleSheet.create({
     minHeight: '100%',
     marginTop: 10,
     position: 'relative',
+    paddingLeft: 4,
+    paddingRight: 4,
   },
   btn: {
     fontSize: 28,
@@ -32,7 +33,6 @@ const styles = EStyleSheet.create({
   badge: {
     position: 'absolute',
     top: 0,
-    [I18nManager.isRTL ? 'left' : 'right']: 3,
     minWidth: 20,
     height: 20,
     borderRadius: 15,
@@ -43,7 +43,6 @@ const styles = EStyleSheet.create({
   badgeAndroid: {
     position: 'absolute',
     top: 0,
-    [I18nManager.isRTL ? 'left' : 'right']: 3,
     minWidth: 18,
     height: 18,
     borderRadius: 15,

@@ -38,12 +38,12 @@ import Rating from '../components/Rating';
 import Icon from '../components/Icon';
 
 import i18n from '../utils/i18n';
-import rtl from '../utils/rtl';
 import theme from '../config/theme';
 import config from '../config';
 
 import {
   iconsLoaded,
+  iconsMap
 } from '../utils/navIcons';
 
 import {
@@ -78,33 +78,37 @@ const styles = EStyleSheet.create({
     borderTopColor: '#F1F1F1',
     borderBottomWidth: 1,
     borderBottomColor: '#F1F1F1',
-    ...rtl.getWritingDirection(),
   },
   nameText: {
     fontSize: '1.2rem',
     color: '$darkColor',
     marginBottom: 5,
-    ...rtl.getWritingDirection(),
+    textAlign: 'left'
   },
   priceText: {
     fontSize: '1rem',
     fontWeight: 'bold',
     color: '$darkColor',
-    ...rtl.getWritingDirection(),
+    textAlign: 'left'
   },
   listPriceText: {
     textDecorationLine: 'line-through',
     color: '$darkColor',
-    ...rtl.getWritingDirection(),
+    textAlign: 'left'
+  },
+  listPriceWrapperText: {
+    textAlign: 'left',
   },
   promoText: {
     marginBottom: 10,
-    ...rtl.getWritingDirection(),
   },
   descText: {
     marginTop: 10,
     color: 'gray',
-    ...rtl.getWritingDirection(),
+    textAlign: 'left',
+  },
+  noFeaturesText: {
+    textAlign: 'left',
   },
   addToCartContainer: {
     padding: 10,
@@ -149,7 +153,6 @@ const styles = EStyleSheet.create({
   sectionBtnText: {
     color: '$primaryColor',
     fontSize: '0.9rem',
-    ...rtl.getWritingDirection(),
   },
   vendorWrapper: {
     paddingLeft: 14,
@@ -197,7 +200,6 @@ const styles = EStyleSheet.create({
   },
   listDiscountText: {
     color: '#fff',
-    ...rtl.getWritingDirection(),
   },
 });
 
@@ -271,12 +273,24 @@ class ProductDetail extends Component {
   }
 
   componentWillMount() {
-    const buttons = rtl.getNavigatorButtons();
+    const buttons = {
+      rightButtons: [
+        {
+          id: 'cart',
+          component: 'CartBtn',
+          passProps: {},
+        },
+        {
+          id: 'search',
+          icon: iconsMap.search,
+        },
+      ]
+    };
 
     iconsLoaded.then(() => {
       const { hideSearch } = this.props;
       if (hideSearch) {
-        buttons[I18nManager.isRTL ? 'leftButtons' : 'rightButtons'].splice(-1, 1);
+        buttons.rightButtons.splice(-1, 1);
       }
       this.props.navigator.setButtons(buttons);
     });
@@ -574,7 +588,7 @@ class ProductDetail extends Component {
     return (
       <View>
         {parseInt(product.list_price, 10) ? (
-          <Text style={{ ...rtl.getWritingDirection() }}>
+          <Text style={styles.listPriceWrapperText}>
             {`${i18n.gettext('List price')}: `}
             <Text style={styles.listPriceText}>
               {formatPrice(product.list_price_formatted.price)}
@@ -723,7 +737,8 @@ class ProductDetail extends Component {
             />
           ))
           : (
-            <Text>{` ${i18n.gettext('There are no features.')} `}
+            <Text style={styles.noFeaturesText}>
+              {` ${i18n.gettext('There are no features.')} `}
             </Text>
           )}
       </Section>

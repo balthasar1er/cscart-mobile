@@ -31,7 +31,6 @@ import {
   iconsMap,
   iconsLoaded,
 } from '../utils/navIcons';
-import rtl from '../utils/rtl';
 
 // Styles
 const styles = EStyleSheet.create({
@@ -45,7 +44,7 @@ const styles = EStyleSheet.create({
     paddingRight: 10,
     paddingTop: 20,
     paddingBottom: 20,
-    ...rtl.getWritingDirection(),
+    textAlign: 'left'
   },
   emptyList: {
     fontSize: '1rem',
@@ -105,7 +104,19 @@ class Categories extends Component {
   componentWillMount() {
     const { navigator } = this.props;
     iconsLoaded.then(() => {
-      navigator.setButtons(rtl.getNavigatorButtons());
+      navigator.setButtons({
+        rightButtons: [
+          {
+            id: 'cart',
+            component: 'CartBtn',
+            passProps: {},
+          },
+          {
+            id: 'search',
+            icon: iconsMap.search,
+          },
+        ]
+      });
     });
   }
 

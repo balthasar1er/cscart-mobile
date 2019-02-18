@@ -9,7 +9,6 @@ import sortBy from 'lodash/sortBy';
 
 import CategoryListView from './CategoryListView';
 import i18n from '../utils/i18n';
-import rtl from '../utils/rtl';
 
 const styles = EStyleSheet.create({
   container: {
@@ -31,7 +30,7 @@ const styles = EStyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     color: '$categoriesHeaderColor',
-    ...rtl.getWritingDirection(),
+    textAlign: 'left',
   },
 });
 

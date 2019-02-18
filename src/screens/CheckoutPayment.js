@@ -30,8 +30,6 @@ import Spinner from '../components/Spinner';
 import Icon from '../components/Icon';
 import { stripTags, formatPrice } from '../utils';
 import i18n from '../utils/i18n';
-import { iconsLoaded } from '../utils/navIcons';
-import rtl from '../utils/rtl';
 
 // theme
 import theme from '../config/theme';
@@ -133,13 +131,6 @@ class CheckoutStepThree extends Component {
     };
 
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-  }
-
-  componentWillMount() {
-    const { navigator } = this.props;
-    iconsLoaded.then(() => {
-      navigator.setButtons(rtl.getNavigatorBackButton());
-    });
   }
 
   componentDidMount() {

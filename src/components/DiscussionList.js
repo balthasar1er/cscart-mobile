@@ -4,7 +4,6 @@ import {
   Text,
   View,
   FlatList,
-  I18nManager,
   ActivityIndicator,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -16,10 +15,6 @@ import {
   DISCUSSION_RATING,
 } from '../constants';
 import i18n from '../utils/i18n';
-
-const writingDirection = {
-  writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
-};
 
 const styles = EStyleSheet.create({
   container: {
@@ -34,7 +29,7 @@ const styles = EStyleSheet.create({
     color: '$discussionMessageColor',
     marginTop: 0,
     paddingBottom: 10,
-    ...writingDirection,
+    textAlign: 'left'
   },
   itemContainer: {
     marginBottom: 10,
@@ -55,7 +50,7 @@ const styles = EStyleSheet.create({
   name: {
     fontWeight: '800',
     fontSize: '0.9rem',
-    ...writingDirection,
+    textAlign: 'left'
   },
   emptyText: {
     fontSize: '0.9rem',
@@ -63,7 +58,7 @@ const styles = EStyleSheet.create({
     paddingLeft: 14,
     paddingBottom: 10,
     paddingTop: 4,
-    ...writingDirection,
+    textAlign: 'left'
   },
 });
 

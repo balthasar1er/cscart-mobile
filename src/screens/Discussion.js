@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   View,
-  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -80,13 +79,13 @@ class Discussion extends Component {
 
     iconsLoaded.then(() => {
       const buttons = {
-        [I18nManager.isRTL ? 'rightButtons' : 'leftButtons']: [
+        leftButtons: [
           {
             id: 'close',
             icon: iconsMap.close,
           },
         ],
-        [I18nManager.isRTL ? 'leftButtons' : 'rightButtons']: [
+        rightButtons: [
           {
             id: 'newComment',
             icon: iconsMap.create,
@@ -95,11 +94,7 @@ class Discussion extends Component {
       };
       // Remove add comment btn.
       if (activeDiscussion.disable_adding) {
-        if (I18nManager.isRTL) {
-          buttons.leftButtons = [];
-        } else {
-          buttons.rightButtons = [];
-        }
+        buttons.rightButtons = [];
       }
 
       navigator.setButtons(buttons);

@@ -8,7 +8,6 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import uniqueId from 'lodash/uniqueId';
@@ -93,7 +92,7 @@ const styles = EStyleSheet.create({
     fontSize: '0.9rem',
     paddingTop: 3,
     fontWeight: 'bold',
-    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+    textAlign: 'left',
   },
   itemBtnWrapper: {
     flexDirection: 'row',
@@ -198,7 +197,7 @@ class Drawer extends Component {
 
   closeDrawer() {
     this.props.navigator.toggleDrawer({
-      side: I18nManager.isRTL ? 'right' : 'left',
+      side: 'left',
     });
   }
 
