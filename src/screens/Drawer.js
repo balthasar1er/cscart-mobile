@@ -41,6 +41,7 @@ const styles = EStyleSheet.create({
     position: 'absolute',
     left: 20,
     bottom: 20,
+    width: '78%',
   },
   headerUserNameText: {
     color: '$drawerHeaderTextColor',
@@ -223,7 +224,7 @@ class Drawer extends Component {
             <Icon name="exit-to-app" style={styles.signOutBtnIcon} />
           </TouchableOpacity>
           <View style={styles.headerUserName}>
-            <Text style={styles.headerUserNameText}>
+            <Text style={styles.headerUserNameText} numberOfLines={2}>
               {cart.user_data.b_firstname} {cart.user_data.b_lastname}
             </Text>
             <Text style={styles.headerUserMailText}>

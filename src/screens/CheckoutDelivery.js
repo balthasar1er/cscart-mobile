@@ -73,6 +73,11 @@ const BillingOptions = {
       keyboardType: 'phone-pad',
       returnKeyType: 'done',
       clearButtonMode: 'while-editing',
+      i18n: {
+        optional: '',
+        required: '',
+      },
+      help: `${i18n.gettext('(Optional)')}`,
     },
     b_address: {
       label: i18n.gettext('Address'),
@@ -87,6 +92,11 @@ const BillingOptions = {
       numberOfLines: 4,
       clearButtonMode: 'while-editing',
       returnKeyType: 'done',
+      i18n: {
+        optional: '',
+        required: '',
+      },
+      help: `${i18n.gettext('(Optional)')}`,
     },
     b_city: {
       label: i18n.gettext('City'),
@@ -144,6 +154,11 @@ const ShippingOptions = {
       keyboardType: 'phone-pad',
       returnKeyType: 'done',
       clearButtonMode: 'while-editing',
+      i18n: {
+        optional: '',
+        required: '',
+      },
+      help: `${i18n.gettext('(Optional)')}`,
     },
     s_address: {
       label: i18n.gettext('Address'),
@@ -158,6 +173,11 @@ const ShippingOptions = {
       numberOfLines: 4,
       clearButtonMode: 'while-editing',
       returnKeyType: 'done',
+      i18n: {
+        optional: '',
+        required: '',
+      },
+      help: `${i18n.gettext('(Optional)')}`,
     },
     s_city: {
       label: i18n.gettext('City'),

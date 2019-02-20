@@ -90,12 +90,19 @@ export default class ProfileForm extends Component {
   getFieldType = (field, allFields) => {
     const label = field.description || '';
     const help = !field.required ? `${i18n.gettext('(Optional)')}` : '';
+    const optionI18n = {
+      i18n: {
+        optional: '',
+        required: '',
+      }
+    };
 
     if (field.field_type === FIELD_DATE) {
       // Date field
       return {
         type: field.required ? t.Date : t.maybe(t.Date),
         options: {
+          ...optionI18n,
           label,
           help,
           defaultValueText: i18n.gettext('Select date'),
@@ -112,6 +119,7 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? t.Boolean : t.maybe(t.Boolean),
         options: {
+          ...optionI18n,
           label,
           help,
         },
@@ -125,6 +133,7 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? Enums : t.maybe(Enums),
         options: {
+          ...optionI18n,
           label,
           help,
         },
@@ -136,6 +145,7 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? t.String : t.maybe(t.String),
         options: {
+          ...optionI18n,
           label,
           help,
           secureTextEntry: true,
@@ -149,6 +159,7 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? t.String : t.maybe(t.String),
         options: {
+          ...optionI18n,
           label,
           help,
           clearButtonMode: 'while-editing',
@@ -161,6 +172,7 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? t.enums(field.values) : t.maybe(t.enums(field.values)),
         options: {
+          ...optionI18n,
           label,
           help,
           defaultValueText: i18n.gettext('Select country'),
@@ -197,6 +209,7 @@ export default class ProfileForm extends Component {
       return {
         type,
         options: {
+          ...optionI18n,
           label,
           help,
           defaultValueText: i18n.gettext('Select state'),
@@ -211,6 +224,7 @@ export default class ProfileForm extends Component {
     return {
       type: field.required ? t.String : t.maybe(t.String),
       options: {
+        ...optionI18n,
         label,
         help,
         clearButtonMode: 'while-editing',
