@@ -33,7 +33,6 @@ const styles = EStyleSheet.create({
     left: 0,
     right: 0,
     padding: 8,
-    textAlign: 'left',
   },
   productName: {
     color: 'black',

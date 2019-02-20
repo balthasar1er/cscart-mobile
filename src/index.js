@@ -7,7 +7,7 @@ import {
   Platform,
   I18nManager,
 } from 'react-native';
-
+import * as t from 'tcomb-form-native';
 import { persistStore } from 'redux-persist';
 import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -26,6 +26,43 @@ EStyleSheet.build({
   // $outline: 1,
   ...theme,
 });
+
+// TODO: RTL Ovveride form global styles.
+t.form.Form.defaultProps.stylesheet = {
+  ...t.form.Form.stylesheet,
+  controlLabel: {
+    ...t.form.Form.stylesheet.controlLabel,
+    normal: {
+      ...t.form.Form.stylesheet.controlLabel.normal,
+      textAlign: 'left',
+    },
+    error: {
+      ...t.form.Form.stylesheet.controlLabel.error,
+      textAlign: 'left',
+    },
+  },
+  textbox: {
+    normal: {
+      ...t.form.Form.stylesheet.textbox.normal,
+      textAlign: 'left',
+    },
+    error: {
+      ...t.form.Form.stylesheet.textbox.error,
+      textAlign: 'left',
+    }
+  },
+  helpBlock: {
+    ...t.form.Form.stylesheet.helpBlock,
+    normal: {
+      ...t.form.Form.stylesheet.helpBlock.normal,
+      textAlign: 'left',
+    },
+    error: {
+      ...t.form.Form.stylesheet.helpBlock.error,
+      textAlign: 'left',
+    },
+  },
+};
 
 class App extends React.Component {
   constructor(props) {

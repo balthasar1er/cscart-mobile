@@ -145,6 +145,7 @@ const styles = EStyleSheet.create({
   },
   sectionBtn: {
     paddingLeft: 14,
+    paddingRight: 14,
     paddingTop: 12,
     paddingBottom: 6,
     borderTopWidth: 1,

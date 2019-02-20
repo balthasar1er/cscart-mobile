@@ -37,15 +37,30 @@ const styles = EStyleSheet.create({
     backgroundColor: '$screenBackgroundColor',
     padding: 14,
   },
-  textarea: {
-    height: 200,
-  }
 });
 
 const inputStyle = cloneDeep(t.form.Form.stylesheet);
 // overriding the text color
-inputStyle.textbox.normal.height = 130;
-inputStyle.textbox.error.height = 130;
+inputStyle.textbox.normal = {
+  ...inputStyle.textbox.normal,
+  height: 130,
+  textAlign: 'left',
+};
+inputStyle.textbox.error = {
+  ...inputStyle.textbox.error,
+  height: 130,
+  textAlign: 'left',
+};
+inputStyle.controlLabel.normal = {
+  ...inputStyle.controlLabel.normal,
+  textAlign: 'left',
+};
+inputStyle.controlLabel.error = {
+  ...inputStyle.controlLabel.error,
+  textAlign: 'left',
+};
+
+console.log(inputStyle, 'asdasd');
 
 function selectRatingTemplate(rating) {
   const containerStyle = {
