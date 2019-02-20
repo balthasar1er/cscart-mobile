@@ -37,42 +37,42 @@ const DESTRUCTIVE_INDEX = 5;
 
 const itemsList = [
   {
-    name: i18n.gettext('Newest Items First'),
+    name: i18n.gettext('Sorting: Newest items first'),
     params: {
       sort_by: 'timestamp',
       sort_order: 'desc'
     },
   },
   {
-    name: i18n.gettext('Sort Alphabetically: A to Z'),
+    name: i18n.gettext('Sorting: A to Z'),
     params: {
       sort_by: 'product',
       sort_order: 'asc'
     },
   },
   {
-    name: i18n.gettext('Sort Alphabetically: Z to A'),
+    name: i18n.gettext('Sorting: Z to A'),
     params: {
       sort_by: 'product',
       sort_order: 'desc'
     },
   },
   {
-    name: i18n.gettext('Sort by Price: Low to High'),
+    name: i18n.gettext('Sorting: Lowest prices first'),
     params: {
       sort_by: 'price',
       sort_order: 'asc'
     },
   },
   {
-    name: i18n.gettext('Sort by Price: High to Low'),
+    name: i18n.gettext('Sorting: Highest prices first'),
     params: {
       sort_by: 'price',
       sort_order: 'desc'
     },
   },
   {
-    name: i18n.gettext('Sort by Popularity'),
+    name: i18n.gettext('Sorting: Most popular first'),
     params: {
       sort_by: 'popularity',
       sort_order: 'desc'

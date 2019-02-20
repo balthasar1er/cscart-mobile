@@ -859,10 +859,10 @@
     "Discount": "Discount",
     "Coupon code": "Coupon code",
     "Save": "Save",
-    "Newest Items First": "Newest Items First",
-    "Sort Alphabetically: A to Z": "Sort Alphabetically: A to Z",
-    "Sort Alphabetically: Z to A": "Sort Alphabetically: Z to A",
-    "Sort by Price: Low to High": "Sort by Price: Low to High",
-    "Sort by Price: High to Low": "Sort by Price: High to Low",
-    "Sort by Popularity": "Sort by Popularity"
+    "Sorting: Newest items first": "Sorting: Newest items first",
+    "Sorting: A to Z": "Sorting: A to Z",
+    "Sorting: Z to A": "Sorting: Z to A",
+    "Sorting: Lowest prices first": "Sorting: Lowest prices first",
+    "Sorting: Highest prices first": "Sorting: Highest prices first",
+    "Sorting: Most popular first": "Sorting: Most popular first"
 }
