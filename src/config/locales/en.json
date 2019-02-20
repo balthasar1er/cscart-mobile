@@ -856,6 +856,7 @@
     "State": "State",
     "Awaiting call": "Awaiting call",
     "List price": "List price",
-    "Discount": "Save",
+    "Discount": "Discount",
+    "Coupon code": "Coupon code",
     "Save": "Save"
 }

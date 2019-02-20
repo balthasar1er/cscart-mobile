@@ -58,6 +58,11 @@ const formOptions = {
     },
     notes: {
       label: i18n.gettext('Comment'),
+      i18n: {
+        optional: '',
+        required: '',
+      },
+      help: `${i18n.gettext('(Optional)')}`,
       clearButtonMode: 'while-editing',
       multiline: true,
       blurOnSubmit: true,

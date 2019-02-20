@@ -960,5 +960,9 @@
     "E-mail": "E-mail",
     "Payment metho": "Способ оплаты",
     "Awaiting call": "Ожидание звонка",
-    "List price": "Рекомендованная цена"
+    "Coupon code": "Код купона",
+    "List price": "Рекомендованная цена",
+    "There are no products in this section": "В этой категории нет товаров",
+    "Add": "Добавить"
+
 }
