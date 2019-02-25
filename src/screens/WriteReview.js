@@ -33,8 +33,8 @@ import {
 
 const styles = EStyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '$screenBackgroundColor',
+    flex: 1,
     padding: 14,
   },
 });
@@ -59,8 +59,6 @@ inputStyle.controlLabel.error = {
   ...inputStyle.controlLabel.error,
   textAlign: 'left',
 };
-
-console.log(inputStyle, 'asdasd');
 
 function selectRatingTemplate(rating) {
   const containerStyle = {
@@ -193,7 +191,12 @@ class WriteReview extends Component {
   }
 
   handleSend() {
-    const { productsActions, activeDiscussion, discussionType, discussionId } = this.props;
+    const {
+      productsActions,
+      activeDiscussion,
+      discussionType,
+      discussionId,
+    } = this.props;
     const value = this.refs.form.getValue(); // eslint-disable-line
     if (value) {
       this.isNewPostSent = true;
@@ -266,7 +269,7 @@ class WriteReview extends Component {
     };
 
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <Form
           ref="form" // eslint-disable-line
           type={FormFields}

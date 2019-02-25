@@ -44,11 +44,13 @@ t.form.Form.defaultProps.stylesheet = {
   textbox: {
     normal: {
       ...t.form.Form.stylesheet.textbox.normal,
-      textAlign: 'left',
+      textAlign: I18nManager.isRTL ? 'right' : 'left',
+      writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
     },
     error: {
       ...t.form.Form.stylesheet.textbox.error,
-      textAlign: 'left',
+      textAlign: I18nManager.isRTL ? 'right' : 'left',
+      writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
     }
   },
   helpBlock: {

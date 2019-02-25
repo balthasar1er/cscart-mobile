@@ -9,7 +9,6 @@ import {
   Image,
   Platform,
   ScrollView,
-  I18nManager,
   TouchableOpacity,
   InteractionManager,
   KeyboardAvoidingView,
@@ -154,6 +153,7 @@ const styles = EStyleSheet.create({
   sectionBtnText: {
     color: '$primaryColor',
     fontSize: '0.9rem',
+    textAlign: 'left',
   },
   vendorWrapper: {
     paddingLeft: 14,
@@ -165,20 +165,23 @@ const styles = EStyleSheet.create({
   vendorName: {
     fontSize: '1rem',
     fontWeight: 'bold',
+    textAlign: 'left',
   },
   vendorProductCount: {
     fontSize: '0.7rem',
     color: 'gray',
     marginBottom: 13,
+    textAlign: 'left',
   },
   vendorDescription: {
     color: 'gray',
     fontSize: '0.9rem',
+    textAlign: 'left',
   },
   vendorInfoBtn: {
     position: 'absolute',
     top: 10,
-    [I18nManager.isRTL ? 'left' : 'right']: '1rem',
+    right: '1rem',
   },
   rating: {
     marginLeft: -10,
