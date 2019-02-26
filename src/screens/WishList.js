@@ -94,7 +94,8 @@ const styles = EStyleSheet.create({
     color: 'black',
     marginTop: '1rem',
     paddingLeft: '0.25rem',
-    paddingRight: '0.25rem'
+    paddingRight: '0.25rem',
+    textAlign: 'center'
   },
   emptyListDesc: {
     fontSize: '1rem',
