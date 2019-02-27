@@ -17,6 +17,7 @@
     "lodash": "4.17.11",
     "react": "16.3.2",
     "react-native": "0.55.4",
+    "react-native-actionsheet": "^2.4.2",
     "react-native-device-info": "0.24.3",
     "react-native-extended-stylesheet": "0.10.0",
     "react-native-firebase": "5.1.0",
