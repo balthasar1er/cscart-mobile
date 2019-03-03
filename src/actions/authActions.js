@@ -193,7 +193,6 @@ export function createProfile(params) {
       })
       .then(() => cartActions.fetch(false)(dispatch))
       .catch((error) => {
-        console.log(error, error.response, 'error');
         dispatch({
           type: AUTH_REGESTRATION_FAIL,
           payload: error,

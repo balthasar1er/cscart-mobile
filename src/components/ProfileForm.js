@@ -189,12 +189,16 @@ export default class ProfileForm extends Component {
       let countryCode = null;
       let values = null;
 
-      if ('s_country' in allFields) {
-        countryCode = allFields.s_country.value;
+      const foundShippingCountry = allFields
+        .filter(item => item.field_id === 's_country');
+      if (foundShippingCountry.length) {
+        countryCode = foundShippingCountry[0].value;
       }
 
-      if ('b_country' in allFields) {
-        countryCode = allFields.b_country.value;
+      const foundBillingCountry = allFields
+        .filter(item => item.field_id === 'b_country');
+      if (foundBillingCountry.length) {
+        countryCode = foundBillingCountry[0].value;
       }
 
       if (countryCode in field.values) {
@@ -310,7 +314,7 @@ export default class ProfileForm extends Component {
       .forEach((key) => {
         const item = newForms[index].fields[key];
         fields[key] = item;
-        fields[key].value = values[key];
+        fields[key].value = values[fields[key].field_id];
       });
 
     newForms[index].formFields = this.convertFieldsToTcomb(fields).formFields;
