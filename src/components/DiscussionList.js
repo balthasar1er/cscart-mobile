@@ -52,13 +52,16 @@ const styles = EStyleSheet.create({
     fontSize: '0.9rem',
     textAlign: 'left'
   },
+  empty: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   emptyText: {
     fontSize: '0.9rem',
     color: 'gray',
-    paddingLeft: 14,
     paddingBottom: 10,
     paddingTop: 4,
-    textAlign: 'left'
   },
 });
 
@@ -116,18 +119,19 @@ export default class DiscussionList extends Component {
   );
 
   render() {
+    const { items, infinite, onEndReached } = this.props;
     return (
       <View style={styles.container}>
         <FlatList
-          data={this.props.items}
+          data={items}
           numColumns={1}
           keyExtractor={(item, index) => `disucssion_${index}`}
           renderItem={({ item, index }) => this.renderItem(item, index)}
           ListFooterComponent={() => this.renderFooter()}
           ListEmptyComponent={() => this.renderEmpty()}
           onEndReached={() => {
-            if (this.props.infinite) {
-              this.props.onEndReached();
+            if (infinite) {
+              onEndReached();
             }
           }}
         />

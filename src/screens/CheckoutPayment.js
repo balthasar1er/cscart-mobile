@@ -174,7 +174,11 @@ class CheckoutStepThree extends Component {
 
   placeOrderAndComplete() {
     const {
-      cart, shipping_id, ordersActions, navigator, cartActions
+      cart,
+      shipping_id,
+      ordersActions,
+      navigator,
+      cartActions,
     } = this.props;
     const values = this.paymentFormRef.getValue();
 
