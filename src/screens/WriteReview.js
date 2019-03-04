@@ -34,9 +34,11 @@ import {
 const styles = EStyleSheet.create({
   container: {
     backgroundColor: '$screenBackgroundColor',
-    flex: 1,
     padding: 14,
   },
+  wrapperStyle: {
+    flex: 1,
+  }
 });
 
 const inputStyle = cloneDeep(t.form.Form.stylesheet);
@@ -269,7 +271,7 @@ class WriteReview extends Component {
     };
 
     return (
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView style={styles.wrapperStyle} contentContainerStyle={styles.container}>
         <Form
           ref="form" // eslint-disable-line
           type={FormFields}

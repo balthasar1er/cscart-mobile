@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {
   TouchableOpacity,
   Text,
+  I18nManager,
   Platform,
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
@@ -33,6 +34,7 @@ const styles = EStyleSheet.create({
   badge: {
     position: 'absolute',
     top: 0,
+    left: 3,
     minWidth: 20,
     height: 20,
     borderRadius: 15,
