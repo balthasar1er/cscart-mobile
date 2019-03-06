@@ -34,7 +34,7 @@ const styles = EStyleSheet.create({
   badge: {
     position: 'absolute',
     top: 0,
-    left: 3,
+    [I18nManager.isRTL ? 'left' : 'right']: 3,
     minWidth: 20,
     height: 20,
     borderRadius: 15,
@@ -45,6 +45,7 @@ const styles = EStyleSheet.create({
   badgeAndroid: {
     position: 'absolute',
     top: 0,
+    [I18nManager.isRTL ? 'left' : 'right']: 3,
     minWidth: 18,
     height: 18,
     borderRadius: 15,

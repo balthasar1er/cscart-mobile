@@ -176,7 +176,7 @@ class WriteReview extends Component {
     if (this.isNewPostSent) {
       this.isNewPostSent = false;
       if (nextProps.type === 'modal') {
-        setTimeout(() => navigator.dismissModal(), 1000);
+        navigator.dismissModal();
       } else {
         navigator.pop();
       }
