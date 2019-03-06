@@ -105,9 +105,17 @@ const BillingOptions = {
     },
     b_country: {
       label: i18n.gettext('Country'),
+      nullOption: {
+        value: '',
+        text: i18n.gettext('Select country')
+      },
     },
     b_state: {
       label: i18n.gettext('State'),
+      nullOption: {
+        value: '',
+        text: i18n.gettext('Select state')
+      },
     },
     b_zipcode: {
       label: i18n.gettext('Zip code'),
@@ -186,9 +194,17 @@ const ShippingOptions = {
     },
     s_country: {
       label: i18n.gettext('Country'),
+      nullOption: {
+        value: '',
+        text: i18n.gettext('Select country')
+      },
     },
     s_state: {
       label: i18n.gettext('State'),
+      nullOption: {
+        value: '',
+        text: i18n.gettext('Select state')
+      },
     },
     s_zipcode: {
       label: i18n.gettext('Zip code'),
@@ -307,6 +323,7 @@ class Checkout extends Component {
           }),
           billingValues: {
             ...value,
+            b_state: ''
           }
         });
       }
@@ -331,6 +348,7 @@ class Checkout extends Component {
           }),
           shippingValues: {
             ...value,
+            s_state: ''
           }
         });
       }
