@@ -12,6 +12,7 @@ if (langs.includes(locale)) {
       break;
     case 'ar':
       jsonData = require('../config/locales/ar.json');
+      break;
     case 'fr':
       jsonData = require('../config/locales/fr.json');
       break;
