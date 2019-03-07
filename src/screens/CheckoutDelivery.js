@@ -247,6 +247,7 @@ class Checkout extends Component {
       billingValues: {},
       shippingValues: {},
     };
+    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   componentDidMount() {
@@ -300,6 +301,15 @@ class Checkout extends Component {
         this.handleChange(this.state.shippingValues, 'shipping');
       }
     });
+  }
+
+  onNavigatorEvent(event) {
+    const { navigator } = this.props;
+    if (event.type === 'NavBarButtonPress') {
+      if (event.id === 'back') {
+        navigator.pop();
+      }
+    }
   }
 
   handleChange = (value, type) => {

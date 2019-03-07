@@ -33,19 +33,34 @@ import {
 
 const styles = EStyleSheet.create({
   container: {
-    flex: 1,
-    padding: 14,
     backgroundColor: '$screenBackgroundColor',
+    padding: 14,
   },
-  textarea: {
-    height: 200,
+  wrapperStyle: {
+    flex: 1,
   }
 });
 
 const inputStyle = cloneDeep(t.form.Form.stylesheet);
 // overriding the text color
-inputStyle.textbox.normal.height = 130;
-inputStyle.textbox.error.height = 130;
+inputStyle.textbox.normal = {
+  ...inputStyle.textbox.normal,
+  height: 130,
+  textAlign: 'left',
+};
+inputStyle.textbox.error = {
+  ...inputStyle.textbox.error,
+  height: 130,
+  textAlign: 'left',
+};
+inputStyle.controlLabel.normal = {
+  ...inputStyle.controlLabel.normal,
+  textAlign: 'left',
+};
+inputStyle.controlLabel.error = {
+  ...inputStyle.controlLabel.error,
+  textAlign: 'left',
+};
 
 function selectRatingTemplate(rating) {
   const containerStyle = {
@@ -161,7 +176,7 @@ class WriteReview extends Component {
     if (this.isNewPostSent) {
       this.isNewPostSent = false;
       if (nextProps.type === 'modal') {
-        setTimeout(() => navigator.dismissModal(), 1000);
+        navigator.dismissModal();
       } else {
         navigator.pop();
       }
@@ -178,7 +193,12 @@ class WriteReview extends Component {
   }
 
   handleSend() {
-    const { productsActions, activeDiscussion, discussionType, discussionId } = this.props;
+    const {
+      productsActions,
+      activeDiscussion,
+      discussionType,
+      discussionId,
+    } = this.props;
     const value = this.refs.form.getValue(); // eslint-disable-line
     if (value) {
       this.isNewPostSent = true;
@@ -251,7 +271,7 @@ class WriteReview extends Component {
     };
 
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.wrapperStyle} contentContainerStyle={styles.container}>
         <Form
           ref="form" // eslint-disable-line
           type={FormFields}

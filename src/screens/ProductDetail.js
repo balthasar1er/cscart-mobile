@@ -42,8 +42,8 @@ import theme from '../config/theme';
 import config from '../config';
 
 import {
-  iconsMap,
   iconsLoaded,
+  iconsMap
 } from '../utils/navIcons';
 
 import {
@@ -79,28 +79,38 @@ const styles = EStyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#F1F1F1',
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F1F1'
+    borderBottomColor: '#F1F1F1',
   },
   nameText: {
     fontSize: '1.2rem',
     color: '$darkColor',
     marginBottom: 5,
+    textAlign: 'left'
   },
   priceText: {
     fontSize: '1rem',
     fontWeight: 'bold',
     color: '$darkColor',
+    textAlign: 'left'
   },
   listPriceText: {
     textDecorationLine: 'line-through',
     color: '$darkColor',
+    textAlign: 'left'
+  },
+  listPriceWrapperText: {
+    textAlign: 'left',
   },
   promoText: {
     marginBottom: 10,
   },
   descText: {
     marginTop: 10,
-    color: 'gray'
+    color: 'gray',
+    textAlign: 'left',
+  },
+  noFeaturesText: {
+    textAlign: 'left',
   },
   addToCartContainer: {
     padding: 10,
@@ -137,6 +147,7 @@ const styles = EStyleSheet.create({
   },
   sectionBtn: {
     paddingLeft: 14,
+    paddingRight: 14,
     paddingTop: 12,
     paddingBottom: 6,
     borderTopWidth: 1,
@@ -145,6 +156,7 @@ const styles = EStyleSheet.create({
   sectionBtnText: {
     color: '$primaryColor',
     fontSize: '0.9rem',
+    textAlign: 'left',
   },
   vendorWrapper: {
     paddingLeft: 14,
@@ -156,15 +168,18 @@ const styles = EStyleSheet.create({
   vendorName: {
     fontSize: '1rem',
     fontWeight: 'bold',
+    textAlign: 'left',
   },
   vendorProductCount: {
     fontSize: '0.7rem',
     color: 'gray',
     marginBottom: 13,
+    textAlign: 'left',
   },
   vendorDescription: {
     color: 'gray',
     fontSize: '0.9rem',
+    textAlign: 'left',
   },
   vendorInfoBtn: {
     position: 'absolute',
@@ -173,6 +188,7 @@ const styles = EStyleSheet.create({
   },
   rating: {
     marginLeft: -10,
+    marginRight: -10,
     marginTop: -4
   },
   keyboardAvoidingContainer: {
@@ -236,7 +252,7 @@ class ProductDetail extends Component {
       logged: PropTypes.bool,
     }),
     cart: PropTypes.shape({
-      fetching: PropTypes.boolean,
+      fetching: PropTypes.bool,
     }),
     vendorActions: PropTypes.shape({
       fetch: PropTypes.func,
@@ -275,8 +291,9 @@ class ProductDetail extends Component {
           id: 'search',
           icon: iconsMap.search,
         },
-      ],
+      ]
     };
+
     iconsLoaded.then(() => {
       const { hideSearch } = this.props;
       if (hideSearch) {
@@ -375,6 +392,8 @@ class ProductDetail extends Component {
           screen: 'Search',
           animated: false,
         });
+      } else if (event.id === 'back') {
+        navigator.pop();
       }
     }
   }
@@ -576,7 +595,7 @@ class ProductDetail extends Component {
     return (
       <View>
         {parseInt(product.list_price, 10) ? (
-          <Text>
+          <Text style={styles.listPriceWrapperText}>
             {`${i18n.gettext('List price')}: `}
             <Text style={styles.listPriceText}>
               {formatPrice(product.list_price_formatted.price)}
@@ -750,7 +769,8 @@ class ProductDetail extends Component {
         {(features.length !== 0)
           ? features.map((item, index) => this.renderFeatureItem(item, index))
           : (
-            <Text>{` ${i18n.gettext('There are no features.')} `}
+            <Text style={styles.noFeaturesText}>
+              {` ${i18n.gettext('There are no features.')} `}
             </Text>
           )}
       </Section>

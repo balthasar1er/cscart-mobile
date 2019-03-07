@@ -47,15 +47,18 @@ const styles = EStyleSheet.create({
   vendorName: {
     fontSize: '1rem',
     fontWeight: 'bold',
+    textAlign: 'left',
   },
   vendorDescription: {
     color: 'gray',
     fontSize: '0.9rem',
     marginTop: 10,
+    textAlign: 'left',
   },
   address: {
     color: 'gray',
     fontSize: '0.9rem',
+    textAlign: 'left',
   },
   logoWrapper: {
     flexDirection: 'row',

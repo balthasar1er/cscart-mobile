@@ -6,7 +6,6 @@ import {
   View,
   ScrollView,
 } from 'react-native';
-import SplashScreen from 'react-native-splash-screen';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import has from 'lodash/has';
 
@@ -89,7 +88,8 @@ class Layouts extends Component {
 
   componentWillMount() {
     iconsLoaded.then(() => {
-      this.props.navigator.setButtons({
+      const { navigator } = this.props;
+      navigator.setButtons({
         leftButtons: [
           {
             id: 'sideMenu',
@@ -112,12 +112,12 @@ class Layouts extends Component {
   }
 
   componentDidMount() {
-    const { navigator } = this.props;
+    const { navigator, layoutsActions } = this.props;
     navigator.setTitle({
       title: config.shopName.toUpperCase(),
     });
-    this.props.layoutsActions.fetch(config.layoutId, 'index.index');
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    layoutsActions.fetch(config.layoutId, 'index.index');
+    navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
 
     if (config.pushNotifications) {
       PushNotificaitons.Init();

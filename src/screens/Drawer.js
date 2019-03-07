@@ -93,6 +93,7 @@ const styles = EStyleSheet.create({
     fontSize: '0.9rem',
     paddingTop: 3,
     fontWeight: 'bold',
+    textAlign: 'left',
   },
   itemBtnWrapper: {
     flexDirection: 'row',
@@ -192,6 +193,10 @@ class Drawer extends Component {
         title: page.page,
       },
     });
+    this.closeDrawer();
+  }
+
+  closeDrawer() {
     this.props.navigator.toggleDrawer({
       side: 'left',
     });
@@ -214,11 +219,7 @@ class Drawer extends Component {
                 link: 'home/',
                 payload: {},
               });
-              this.props.navigator.toggleDrawer({
-                side: 'left',
-                animated: true,
-                to: 'close'
-              });
+              this.closeDrawer();
             }}
           >
             <Icon name="exit-to-app" style={styles.signOutBtnIcon} />
@@ -245,9 +246,7 @@ class Drawer extends Component {
           <TouchableOpacity
             style={styles.signInBtn}
             onPress={() => {
-              this.props.navigator.toggleDrawer({
-                side: 'left',
-              });
+              this.closeDrawer();
               this.props.navigator.showModal({
                 screen: 'Login',
               });
@@ -265,9 +264,7 @@ class Drawer extends Component {
           <TouchableOpacity
             style={styles.signInBtn}
             onPress={() => {
-              this.props.navigator.toggleDrawer({
-                side: 'left',
-              });
+              this.closeDrawer();
               this.props.navigator.showModal({
                 screen: 'Registration',
                 title: i18n.gettext('Registration'),
@@ -356,9 +353,7 @@ class Drawer extends Component {
                   link: 'home/',
                   payload: {},
                 });
-                navigator.toggleDrawer({
-                  side: 'left',
-                });
+                this.closeDrawer();
               }}
             >
               <View style={styles.itemBtnWrapper}>
@@ -375,9 +370,7 @@ class Drawer extends Component {
                 navigator.showModal({
                   screen: 'Cart',
                 });
-                navigator.toggleDrawer({
-                  side: 'left',
-                });
+                this.closeDrawer();
               }}
             >
               <View style={styles.itemBtnWrapper}>
@@ -397,9 +390,7 @@ class Drawer extends Component {
                     navigator.showModal({
                       screen: 'WishList',
                     });
-                    navigator.toggleDrawer({
-                      side: 'left',
-                    });
+                    this.closeDrawer();
                   }}
                 >
                   <View style={styles.itemBtnWrapper}>
@@ -423,9 +414,7 @@ class Drawer extends Component {
                       title: i18n.gettext('Profile'),
                       passProps: {},
                     });
-                    navigator.toggleDrawer({
-                      side: 'left',
-                    });
+                    this.closeDrawer();
                   }}
                 >
                   <View style={styles.itemBtnWrapper}>
@@ -447,9 +436,7 @@ class Drawer extends Component {
                       link: 'dispatch=orders.search',
                       payload: {},
                     });
-                    navigator.toggleDrawer({
-                      side: 'left',
-                    });
+                    this.closeDrawer();
                   }}
                 >
                   <View style={styles.itemBtnWrapper}>

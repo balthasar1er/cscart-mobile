@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
+import { View, I18nManager } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import * as t from 'tcomb-form-native';
 
@@ -42,11 +42,29 @@ const formOptions = {
       blurOnSubmit: true,
       stylesheet: {
         ...Form.stylesheet,
+        controlLabel: {
+          ...Form.stylesheet.controlLabel,
+          normal: {
+            ...Form.stylesheet.controlLabel.normal,
+            textAlign: 'left',
+          },
+          error: {
+            ...Form.stylesheet.controlLabel.error,
+            textAlign: 'left',
+          },
+        },
         textbox: {
           ...Form.stylesheet.textbox,
           normal: {
             ...Form.stylesheet.textbox.normal,
-            height: 150
+            height: 150,
+            textAlign: I18nManager.isRTL ? 'right' : 'left',
+            writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+          },
+          error: {
+            ...Form.stylesheet.textbox.error,
+            textAlign: I18nManager.isRTL ? 'right' : 'left',
+            writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
           }
         }
       },

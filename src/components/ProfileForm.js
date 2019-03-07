@@ -40,6 +40,7 @@ const styles = EStyleSheet.create({
     fontSize: '1.2rem',
     marginTop: 10,
     marginBottom: 10,
+    textAlign: 'left'
   },
 });
 

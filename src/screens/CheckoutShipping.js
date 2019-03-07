@@ -25,6 +25,7 @@ import Spinner from '../components/Spinner';
 import Icon from '../components/Icon';
 
 import i18n from '../utils/i18n';
+
 import { stripTags, formatPrice } from '../utils';
 
 // theme
@@ -113,6 +114,8 @@ class CheckoutShipping extends Component {
       shipping_id: {},
       isNextDisabled: true,
     };
+
+    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   componentDidMount() {
@@ -125,6 +128,15 @@ class CheckoutShipping extends Component {
   componentWillReceiveProps(nextProps) {
     const { cart } = nextProps;
     this.setDefaults(cart);
+  }
+
+  onNavigatorEvent(event) {
+    const { navigator } = this.props;
+    if (event.type === 'NavBarButtonPress') {
+      if (event.id === 'back') {
+        navigator.pop();
+      }
+    }
   }
 
   setDefaults(cart) {

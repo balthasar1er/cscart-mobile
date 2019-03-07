@@ -23,6 +23,7 @@ import VendorInfo from '../components/VendorInfo';
 import SortProducts from '../components/SortProducts';
 import CategoryBlock from '../components/CategoryBlock';
 import ProductListView from '../components/ProductListView';
+
 // theme
 import theme from '../config/theme';
 
@@ -104,10 +105,9 @@ class Categories extends Component {
           },
           {
             id: 'search',
-            title: i18n.gettext('Search'),
             icon: iconsMap.search,
           },
-        ],
+        ]
       });
     });
   }
@@ -177,6 +177,8 @@ class Categories extends Component {
           screen: 'Search',
           title: i18n.gettext('Search'),
         });
+      } else if (event.id === 'back') {
+        navigator.pop();
       }
     }
   }

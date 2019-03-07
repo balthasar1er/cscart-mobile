@@ -32,10 +32,12 @@ const styles = EStyleSheet.create({
     fontSize: '1rem',
     fontWeight: 'bold',
     paddingBottom: 2,
+    textAlign: 'left'
   },
   msgText: {
     color: '#fff',
     fontSize: '0.8rem',
+    textAlign: 'left'
   }
 });
 

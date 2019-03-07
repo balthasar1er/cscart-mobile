@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   View,
   Text,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -59,7 +60,7 @@ const styles = EStyleSheet.create({
     position: 'absolute',
     top: -0,
     transform: [
-      { rotate: '-30deg' },
+      { rotate: I18nManager.isRTL ? '30deg' : '-30deg' },
     ],
   },
   arrowBottom: {
@@ -70,7 +71,7 @@ const styles = EStyleSheet.create({
     position: 'absolute',
     bottom: -6,
     transform: [
-      { rotate: '30deg' },
+      { rotate: I18nManager.isRTL ? '-30deg' : '30deg' },
     ],
   },
   roundNumber: {
@@ -91,7 +92,7 @@ const styles = EStyleSheet.create({
   },
   roundNumberGray: {
     backgroundColor: '#989898',
-    marginLeft: 6,
+    [I18nManager.isRTL ? 'marginRight' : 'marginLeft']: 6
   }
 });
 

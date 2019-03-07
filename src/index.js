@@ -1,6 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
+import DeviceInfo from 'react-native-device-info';
 import { Provider } from 'react-redux';
-import { Dimensions, AsyncStorage, Platform } from 'react-native';
+import {
+  Dimensions,
+  AsyncStorage,
+  Platform,
+  I18nManager,
+} from 'react-native';
+import * as t from 'tcomb-form-native';
 import { persistStore } from 'redux-persist';
 import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -20,9 +27,54 @@ EStyleSheet.build({
   ...theme,
 });
 
-class App extends Component {
+// TODO: RTL Ovveride form global styles.
+t.form.Form.defaultProps.stylesheet = {
+  ...t.form.Form.stylesheet,
+  controlLabel: {
+    ...t.form.Form.stylesheet.controlLabel,
+    normal: {
+      ...t.form.Form.stylesheet.controlLabel.normal,
+      textAlign: 'left',
+    },
+    error: {
+      ...t.form.Form.stylesheet.controlLabel.error,
+      textAlign: 'left',
+    },
+  },
+  textbox: {
+    normal: {
+      ...t.form.Form.stylesheet.textbox.normal,
+      textAlign: I18nManager.isRTL ? 'right' : 'left',
+      writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+    },
+    error: {
+      ...t.form.Form.stylesheet.textbox.error,
+      textAlign: I18nManager.isRTL ? 'right' : 'left',
+      writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
+    }
+  },
+  helpBlock: {
+    ...t.form.Form.stylesheet.helpBlock,
+    normal: {
+      ...t.form.Form.stylesheet.helpBlock.normal,
+      textAlign: 'left',
+    },
+    error: {
+      ...t.form.Form.stylesheet.helpBlock.error,
+      textAlign: 'left',
+    },
+  },
+};
+
+class App extends React.Component {
   constructor(props) {
     super(props);
+
+    const locale = DeviceInfo.getDeviceLocale().split('-')[0];
+
+    I18nManager.allowRTL(true);
+    I18nManager.forceRTL(['ar', 'he'].includes(locale));
+
     // run app after store persist.
     persistStore(store, {
       blacklist: ['products', 'discussion', 'orders', 'search', 'vendors'],

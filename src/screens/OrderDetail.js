@@ -35,6 +35,7 @@ const styles = EStyleSheet.create({
     fontSize: '1.6rem',
     fontWeight: 'bold',
     marginBottom: 5,
+    textAlign: 'left',
   },
   formBlockWraper: {
     marginTop: 14,
@@ -43,10 +44,12 @@ const styles = EStyleSheet.create({
     fontSize: '0.8rem',
     color: '#7C7C7C',
     marginBottom: 24,
+    textAlign: 'left',
   },
   header: {
     fontSize: '0.9rem',
     fontWeight: 'bold',
+    textAlign: 'left',
   },
   date: {
     fontSize: '0.7rem',
@@ -81,10 +84,12 @@ const styles = EStyleSheet.create({
     color: 'black',
     marginBottom: 5,
     fontWeight: 'bold',
+    textAlign: 'left',
   },
   productItemPrice: {
     fontSize: '0.7rem',
     color: 'black',
+    textAlign: 'left',
   },
 });
 
