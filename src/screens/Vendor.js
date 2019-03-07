@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   View,
-  Text,
   FlatList,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -21,6 +20,7 @@ import Spinner from '../components/Spinner';
 import VendorInfo from '../components/VendorInfo';
 import CategoryBlock from '../components/CategoryBlock';
 import ProductListView from '../components/ProductListView';
+import SortProducts from '../components/SortProducts';
 
 // theme
 import theme from '../config/theme';
@@ -34,15 +34,6 @@ const styles = EStyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    fontWeight: 'bold',
-    fontSize: '1.3rem',
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 20,
-    paddingBottom: 20,
-    textAlign: 'left',
-  }
 });
 
 class Vendor extends Component {
@@ -98,15 +89,16 @@ class Vendor extends Component {
 
   componentWillMount() {
     const {
+      navigator,
       vendors,
+      products,
       companyId,
       vendorActions,
       productsActions,
-      navigator,
     } = this.props;
 
     vendorActions.categories(companyId);
-    vendorActions.products(companyId);
+    vendorActions.products(companyId, 1, products.sortParams);
 
     if (!vendors.items[companyId] && !vendors.fetching) {
       vendorActions.fetch(companyId);
@@ -188,18 +180,24 @@ class Vendor extends Component {
   }
 
   handleLoadMore() {
-    const { products, vendorActions } = this.props;
+    const { products, vendorActions, companyId } = this.props;
     if (products.hasMore && !products.fetching && !this.isFirstLoad) {
       vendorActions.products(
-        this.props.companyId,
+        companyId,
         products.params.page + 1,
+        products.sortParams
       );
     }
   }
 
   renderHeader() {
     const {
-      navigator, vendorCategories, companyId
+      navigator,
+      vendorCategories,
+      companyId,
+      products,
+      vendorActions,
+      productsActions,
     } = this.props;
     const { vendor } = this.state;
 
@@ -208,9 +206,17 @@ class Vendor extends Component {
     }
 
     const productHeader = (
-      <Text style={styles.header}>
-        {i18n.gettext('Vendor products')}
-      </Text>
+      <SortProducts
+        sortParams={products.sortParams}
+        onChange={(sort) => {
+          productsActions.changeSort(sort);
+          vendorActions.products(
+            companyId,
+            1,
+            sort
+          );
+        }}
+      />
     );
 
     return (

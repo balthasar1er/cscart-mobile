@@ -856,6 +856,13 @@
     "State": "State",
     "Awaiting call": "Awaiting call",
     "List price": "List price",
-    "Discount": "Save",
-    "Save": "Save"
+    "Discount": "Discount",
+    "Coupon code": "Coupon code",
+    "Save": "Save",
+    "Sorting: Newest items first": "Sorting: Newest items first",
+    "Sorting: A to Z": "Sorting: A to Z",
+    "Sorting: Z to A": "Sorting: Z to A",
+    "Sorting: Lowest prices first": "Sorting: Lowest prices first",
+    "Sorting: Highest prices first": "Sorting: Highest prices first",
+    "Sorting: Most popular first": "Sorting: Most popular first"
 }

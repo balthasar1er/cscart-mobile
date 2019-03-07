@@ -74,7 +74,7 @@ const styles = EStyleSheet.create({
   emptyListContainer: {
     marginTop: '3rem',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   emptyListIconWrapper: {
     backgroundColor: '#3FC9F6',
@@ -95,6 +95,9 @@ const styles = EStyleSheet.create({
     fontWeight: 'bold',
     color: 'black',
     marginTop: '1rem',
+    paddingLeft: '0.25rem',
+    paddingRight: '0.25rem',
+    textAlign: 'center'
   },
   emptyListDesc: {
     fontSize: '1rem',

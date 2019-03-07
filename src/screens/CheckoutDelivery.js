@@ -73,6 +73,11 @@ const BillingOptions = {
       keyboardType: 'phone-pad',
       returnKeyType: 'done',
       clearButtonMode: 'while-editing',
+      i18n: {
+        optional: '',
+        required: '',
+      },
+      help: `${i18n.gettext('(Optional)')}`,
     },
     b_address: {
       label: i18n.gettext('Address'),
@@ -87,6 +92,11 @@ const BillingOptions = {
       numberOfLines: 4,
       clearButtonMode: 'while-editing',
       returnKeyType: 'done',
+      i18n: {
+        optional: '',
+        required: '',
+      },
+      help: `${i18n.gettext('(Optional)')}`,
     },
     b_city: {
       label: i18n.gettext('City'),
@@ -95,9 +105,17 @@ const BillingOptions = {
     },
     b_country: {
       label: i18n.gettext('Country'),
+      nullOption: {
+        value: '',
+        text: i18n.gettext('Select country')
+      },
     },
     b_state: {
       label: i18n.gettext('State'),
+      nullOption: {
+        value: '',
+        text: i18n.gettext('Select state')
+      },
     },
     b_zipcode: {
       label: i18n.gettext('Zip code'),
@@ -144,6 +162,11 @@ const ShippingOptions = {
       keyboardType: 'phone-pad',
       returnKeyType: 'done',
       clearButtonMode: 'while-editing',
+      i18n: {
+        optional: '',
+        required: '',
+      },
+      help: `${i18n.gettext('(Optional)')}`,
     },
     s_address: {
       label: i18n.gettext('Address'),
@@ -158,6 +181,11 @@ const ShippingOptions = {
       numberOfLines: 4,
       clearButtonMode: 'while-editing',
       returnKeyType: 'done',
+      i18n: {
+        optional: '',
+        required: '',
+      },
+      help: `${i18n.gettext('(Optional)')}`,
     },
     s_city: {
       label: i18n.gettext('City'),
@@ -166,9 +194,17 @@ const ShippingOptions = {
     },
     s_country: {
       label: i18n.gettext('Country'),
+      nullOption: {
+        value: '',
+        text: i18n.gettext('Select country')
+      },
     },
     s_state: {
       label: i18n.gettext('State'),
+      nullOption: {
+        value: '',
+        text: i18n.gettext('Select state')
+      },
     },
     s_zipcode: {
       label: i18n.gettext('Zip code'),
@@ -297,6 +333,7 @@ class Checkout extends Component {
           }),
           billingValues: {
             ...value,
+            b_state: ''
           }
         });
       }
@@ -321,6 +358,7 @@ class Checkout extends Component {
           }),
           shippingValues: {
             ...value,
+            s_state: ''
           }
         });
       }

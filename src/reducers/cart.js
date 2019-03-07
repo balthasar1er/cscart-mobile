@@ -18,6 +18,9 @@ import {
 
   CART_RECALCULATE_SUCCESS,
 
+  CART_ADD_COUPON_CODE,
+  CART_REMOVE_COUPON_CODE,
+
   CHANGE_AMOUNT,
   AUTH_LOGOUT,
 } from '../constants';
@@ -28,6 +31,7 @@ const initialState = {
   ids: [],
   fetching: false,
   user_data: {},
+  coupons: [],
 };
 
 let newProducts = [];
@@ -67,6 +71,7 @@ export default function (state = initialState, action) {
         ...state,
         ...newState,
         fetching: false,
+        coupons: [],
       };
 
     case CART_FAIL:
@@ -86,6 +91,7 @@ export default function (state = initialState, action) {
         ...state,
         amount: 0,
         products: {},
+        coupons: [],
         fetching: false,
       };
 
@@ -124,6 +130,7 @@ export default function (state = initialState, action) {
         total_formatted: action.payload.total_formatted,
         subtotal: action.payload.total_formatted,
         subtotal_formatted: action.payload.subtotal_formatted,
+        coupons: Object.keys(action.payload.coupons).map(k => k),
       };
 
     case AUTH_LOGOUT:
@@ -135,6 +142,21 @@ export default function (state = initialState, action) {
       return {
         ...state,
         products: newProducts,
+      };
+
+    case CART_ADD_COUPON_CODE:
+      return {
+        ...state,
+        coupons: [
+          ...state.coupons,
+          action.payload,
+        ],
+      };
+
+    case CART_REMOVE_COUPON_CODE:
+      return {
+        ...state,
+        coupons: [...state.coupons].filter(item => item !== action.payload),
       };
 
     default:

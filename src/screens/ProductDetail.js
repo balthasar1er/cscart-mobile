@@ -13,6 +13,7 @@ import {
   InteractionManager,
   KeyboardAvoidingView,
 } from 'react-native';
+import format from 'date-fns/format';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 import { stripTags, formatPrice, getProductImagesPaths } from '../utils';
@@ -50,6 +51,8 @@ import {
   DISCUSSION_RATING,
   DISCUSSION_DISABLED,
   VERSION_MVE,
+  FEATURE_TYPE_DATE,
+  FEATURE_TYPE_CHECKBOX,
 } from '../constants';
 
 const styles = EStyleSheet.create({
@@ -726,20 +729,45 @@ class ProductDetail extends Component {
     );
   }
 
+  renderFeatureItem = (feature, index) => {
+    const {
+      description,
+      feature_type, // eslint-disable-line
+      value_int, // eslint-disable-line
+      value,
+      variant
+    } = feature;
+
+    let newValue = null;
+    switch (feature_type) { // eslint-disable-line
+      case FEATURE_TYPE_DATE:
+        newValue = format(value_int * 1000, 'MM/DD/YYYY'); // eslint-disable-line
+        break;
+      case FEATURE_TYPE_CHECKBOX:
+        newValue = feature.value === 'Y' ? i18n.gettext('Yes') : i18n.gettext('No');
+        break;
+      default:
+        newValue = value || variant;
+    }
+
+    return (
+      <SectionRow
+        name={description}
+        value={newValue}
+        key={index}
+      />
+    );
+  }
+
   renderFeatures() {
     const { product } = this.state;
-    const features = Object.keys(product.product_features).map(k => product.product_features[k]);
+    const features = Object.keys(product.product_features)
+      .map(k => product.product_features[k]);
+
     return (
       <Section title={i18n.gettext('Features')}>
-        {features.length
-          ? features.map((item, index) => (
-            <SectionRow
-              name={item.description}
-              value={item.variant || item.value}
-              last={(index + 1) === features.length}
-              key={index}
-            />
-          ))
+        {(features.length !== 0)
+          ? features.map((item, index) => this.renderFeatureItem(item, index))
           : (
             <Text style={styles.noFeaturesText}>
               {` ${i18n.gettext('There are no features.')} `}

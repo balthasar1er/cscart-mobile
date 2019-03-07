@@ -1,7 +1,7 @@
 import DeviceInfo from 'react-native-device-info';
 import gettext from 'gettext.js';
 
-const langs = ['ar', 'ru', 'en'];
+const langs = ['ar', 'ru', 'en', 'fr'];
 let jsonData;
 const locale = DeviceInfo.getDeviceLocale().split('-')[0];
 
@@ -12,6 +12,8 @@ if (langs.includes(locale)) {
       break;
     case 'ar':
       jsonData = require('../config/locales/ar.json');
+    case 'fr':
+      jsonData = require('../config/locales/fr.json');
       break;
     default:
       jsonData = require('../config/locales/en.json');

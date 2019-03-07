@@ -30,6 +30,9 @@ import {
   CART_RECALCULATE_REQUEST,
   CART_RECALCULATE_SUCCESS,
   CART_RECALCULATE_FAIL,
+
+  CART_ADD_COUPON_CODE,
+  CART_REMOVE_COUPON_CODE,
 } from '../constants';
 
 import i18n from '../utils/i18n';
@@ -59,14 +62,20 @@ export function fetch(fetching = true, calculateShipping = 'A') {
   };
 }
 
-export function recalculateTotal(ids) {
+export function recalculateTotal(ids, coupons = []) {
   const shippingIds = Object.values(ids);
 
   return (dispatch) => {
     dispatch({
       type: CART_RECALCULATE_REQUEST,
     });
-    return Api.get('/sra_cart_content/', { params: { shipping_ids: shippingIds, calculate_shipping: 'E' } })
+    return Api.get('/sra_cart_content/', {
+      params: {
+        shipping_ids: shippingIds,
+        calculate_shipping: 'E',
+        coupon_codes: coupons,
+      }
+    })
       .then((response) => {
         dispatch({
           type: CART_RECALCULATE_SUCCESS,
@@ -219,6 +228,24 @@ export function changeAmount(cid, amount) {
         cid,
         amount,
       },
+    });
+  };
+}
+
+export function addCoupon(coupon) {
+  return (dispatch) => {
+    dispatch({
+      type: CART_ADD_COUPON_CODE,
+      payload: coupon
+    });
+  };
+}
+
+export function removeCoupon(coupon) {
+  return (dispatch) => {
+    dispatch({
+      type: CART_REMOVE_COUPON_CODE,
+      payload: coupon
     });
   };
 }

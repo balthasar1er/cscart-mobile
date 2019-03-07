@@ -91,12 +91,19 @@ export default class ProfileForm extends Component {
   getFieldType = (field, allFields) => {
     const label = field.description || '';
     const help = !field.required ? `${i18n.gettext('(Optional)')}` : '';
+    const optionI18n = {
+      i18n: {
+        optional: '',
+        required: '',
+      }
+    };
 
     if (field.field_type === FIELD_DATE) {
       // Date field
       return {
         type: field.required ? t.Date : t.maybe(t.Date),
         options: {
+          ...optionI18n,
           label,
           help,
           defaultValueText: i18n.gettext('Select date'),
@@ -113,6 +120,7 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? t.Boolean : t.maybe(t.Boolean),
         options: {
+          ...optionI18n,
           label,
           help,
         },
@@ -126,6 +134,7 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? Enums : t.maybe(Enums),
         options: {
+          ...optionI18n,
           label,
           help,
         },
@@ -137,6 +146,7 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? t.String : t.maybe(t.String),
         options: {
+          ...optionI18n,
           label,
           help,
           secureTextEntry: true,
@@ -150,6 +160,7 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? t.String : t.maybe(t.String),
         options: {
+          ...optionI18n,
           label,
           help,
           clearButtonMode: 'while-editing',
@@ -162,6 +173,7 @@ export default class ProfileForm extends Component {
       return {
         type: field.required ? t.enums(field.values) : t.maybe(t.enums(field.values)),
         options: {
+          ...optionI18n,
           label,
           help,
           defaultValueText: i18n.gettext('Select country'),
@@ -178,12 +190,16 @@ export default class ProfileForm extends Component {
       let countryCode = null;
       let values = null;
 
-      if ('s_country' in allFields) {
-        countryCode = allFields.s_country.value;
+      const foundShippingCountry = allFields
+        .filter(item => item.field_id === 's_country');
+      if (foundShippingCountry.length) {
+        countryCode = foundShippingCountry[0].value;
       }
 
-      if ('b_country' in allFields) {
-        countryCode = allFields.b_country.value;
+      const foundBillingCountry = allFields
+        .filter(item => item.field_id === 'b_country');
+      if (foundBillingCountry.length) {
+        countryCode = foundBillingCountry[0].value;
       }
 
       if (countryCode in field.values) {
@@ -198,6 +214,7 @@ export default class ProfileForm extends Component {
       return {
         type,
         options: {
+          ...optionI18n,
           label,
           help,
           defaultValueText: i18n.gettext('Select state'),
@@ -212,6 +229,7 @@ export default class ProfileForm extends Component {
     return {
       type: field.required ? t.String : t.maybe(t.String),
       options: {
+        ...optionI18n,
         label,
         help,
         clearButtonMode: 'while-editing',
@@ -297,7 +315,7 @@ export default class ProfileForm extends Component {
       .forEach((key) => {
         const item = newForms[index].fields[key];
         fields[key] = item;
-        fields[key].value = values[key];
+        fields[key].value = values[fields[key].field_id];
       });
 
     newForms[index].formFields = this.convertFieldsToTcomb(fields).formFields;

@@ -126,16 +126,20 @@ export class VendorDetail extends Component {
 
   componentWillMount() {
     const {
-      navigator, vendorId, vendors
+      navigator,
+      vendorId,
+      vendors,
+      vendorActions,
+      productsActions
     } = this.props;
 
     if (!vendors.items[vendorId] && !vendors.fetching) {
-      this.props.vendorActions.fetch(vendorId);
+      vendorActions.fetch(vendorId);
     } else {
       this.setState({
         vendor: vendors.items[vendorId],
       }, () => {
-        this.props.productsActions.fetchDiscussion(
+        productsActions.fetchDiscussion(
           this.state.vendor.company_id,
           { page: this.state.discussion.search.page },
           'M'

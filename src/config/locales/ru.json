@@ -960,5 +960,14 @@
     "E-mail": "E-mail",
     "Payment metho": "Способ оплаты",
     "Awaiting call": "Ожидание звонка",
-    "List price": "Рекомендованная цена"
+    "Coupon code": "Код купона",
+    "List price": "Рекомендованная цена",
+    "Sorting: Newest items first": "Сортировка: Новинки выше",
+    "Sorting: A to Z": "Сортировка: от А до Я",
+    "Sorting: Z to A": "Сортировка: от Я до А",
+    "Sorting: Lowest prices first": "Сортировка: Сначала низкие цены",
+    "Sorting: Highest prices first": "Сортировка: Сначала высокие цены",
+    "Sorting: Most popular first": "Сортировка: Популярные в начале",
+    "There are no products in this section": "В этой категории нет товаров",
+    "Add": "Добавить"
 }
