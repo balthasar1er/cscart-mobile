@@ -315,6 +315,7 @@ class Checkout extends Component {
   handleChange = (value, type) => {
     if (type === 'billing') {
       const bState = getStates(value.b_country);
+ 
       if (bState) {
         this.setState({
           billingFormFields: t.struct({
@@ -327,13 +328,14 @@ class Checkout extends Component {
           },
         });
       } else {
+        const { billingValues } = this.state;
         this.setState({
           billingFormFields: t.struct({
             ...billingFields,
           }),
           billingValues: {
             ...value,
-            b_state: ''
+            b_state: value.b_country !== billingValues.b_country ? '' : value.b_state, 
           }
         });
       }
@@ -352,13 +354,14 @@ class Checkout extends Component {
           },
         });
       } else {
+        const { shippingValues } = this.state;
         this.setState({
           shippingFormFields: t.struct({
             ...shippingFields,
           }),
           shippingValues: {
             ...value,
-            s_state: ''
+            s_state: value.s_country !== shippingValues.s_country ? '' : value.s_state,
           }
         });
       }
