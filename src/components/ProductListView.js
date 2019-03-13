@@ -55,6 +55,18 @@ const styles = EStyleSheet.create({
     paddingRight: 4,
     borderRadius: 2,
   },
+  priceWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  listPriceText: {
+    textDecorationLine: 'line-through',
+    color: '$darkColor',
+    textAlign: 'left',
+    paddingRight: 4,
+    paddingTop: 2,
+    fontSize: 12,
+  },
   listDiscountText: {
     color: '#fff',
     textAlign: 'left',
@@ -69,10 +81,48 @@ class ProductListView extends PureComponent {
     onPress: PropTypes.func,
   };
 
+  renderDiscount = () => {
+    const { product } = this.props;
+    const { item } = product;
+
+    if (!item.list_discount_prc && !item.discount_prc) {
+      return null;
+    }
+
+    const discount = item.list_discount_prc || item.discount_prc;
+
+    return (
+      <View style={styles.listDiscountWrapper}>
+        <Text style={styles.listDiscountText}>
+          {i18n.gettext('Discount')} {`${discount}%`}
+        </Text>
+      </View>
+    );
+  }
+
+  renderPrice = () => {
+    const { product } = this.props;
+    const { item } = product;
+    const price = item.price_formatted ? item.price_formatted.price : item.price;
+    
+    return (
+      <View style={styles.priceWrapper}>
+        <Text style={styles.listPriceText}>
+          22
+        </Text>
+        <Text
+          numberOfLines={1}
+          style={styles.productPrice}
+        >
+          {formatPrice(price)}
+        </Text>
+      </View>
+    );
+  }
+
   render() {
     const { product, onPress } = this.props;
     const { item } = product;
-    const price = item.price_formatted ? item.price_formatted.price : item.price;
     const imageUri = getImagePath(item);
 
     return (
@@ -90,13 +140,7 @@ class ProductListView extends PureComponent {
             />
           )}
         </View>
-        {item.list_discount_prc && (
-          <View style={styles.listDiscountWrapper}>
-            <Text style={styles.listDiscountText}>
-              {i18n.gettext('Discount')} {`${item.list_discount_prc}%`}
-            </Text>
-          </View>
-        )}
+        {this.renderDiscount()}
         <View style={styles.description}>
           <Text
             numberOfLines={1}
@@ -104,12 +148,7 @@ class ProductListView extends PureComponent {
           >
             {item.product}
           </Text>
-          <Text
-            numberOfLines={1}
-            style={styles.productPrice}
-          >
-            {formatPrice(price)}
-          </Text>
+          {this.renderPrice()}
         </View>
       </TouchableOpacity>
     );
