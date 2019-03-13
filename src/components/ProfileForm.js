@@ -254,6 +254,13 @@ export default class ProfileForm extends Component {
       if (item.field_type === FIELD_DATE) { // Date field
         formValues[item.field_id] = item.value ? new Date(item.value * 1000) : undefined;
       }
+
+      // TODO: Fixme brainfuck code.
+      if (item.field_type === FIELD_STATE) {
+        if (!item.values[item.value]) {
+          formValues[item.field_id] = '';
+        }
+      }
     });
 
     return {
