@@ -197,6 +197,7 @@ class InAppPayment extends React.Component {
   handleApplePay = (paymentID) => {
     const {
       ordersActions,
+      cartActions,
       paymentsActions,
       navigator,
       cart,
@@ -233,7 +234,7 @@ class InAppPayment extends React.Component {
               order_id: response.data.order_id,
               payment_info: {
                 ...paymentData,
-                transactionIdentifier,
+                token: transactionIdentifier,
               },
             };
             return paymentsActions
