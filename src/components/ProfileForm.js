@@ -245,6 +245,9 @@ export default class ProfileForm extends Component {
       order: fields.map(field => field.field_id),
     };
 
+    let countryCache = null;
+    let stateCache = null;
+
     fields.forEach((item) => {
       const itemData = this.getFieldType(item, fields);
       formFields[item.field_id] = itemData.type;
@@ -255,13 +258,24 @@ export default class ProfileForm extends Component {
         formValues[item.field_id] = item.value ? new Date(item.value * 1000) : undefined;
       }
 
-      // TODO: Fixme brainfuck code.
       if (item.field_type === FIELD_STATE) {
-        if (!item.values[item.value]) {
-          formValues[item.field_id] = '';
-        }
+        stateCache = item;
+      }
+
+      if (item.field_type === FIELD_COUNTRY) {
+        countryCache = item;
       }
     });
+
+    // TODO: Fixme brainfuck code.
+    // Reset state.
+    if (countryCache && stateCache) {
+      if (stateCache.values[countryCache.value]) {
+        if(!stateCache.values[countryCache.value]) {
+          formValues[stateCache.field_id] = '';
+        }
+      }
+    }
 
     return {
       fields,
