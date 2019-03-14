@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import toInteger from 'lodash/toInteger';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { PRODUCT_IMAGE_WIDTH, formatPrice, getImagePath } from '../utils';
 import i18n from '../utils/i18n';
@@ -104,12 +105,24 @@ class ProductListView extends PureComponent {
     const { product } = this.props;
     const { item } = product;
     const price = item.price_formatted ? item.price_formatted.price : item.price;
+    let discountPrice = null;
+
+    if (toInteger(item.list_price)) {
+      discountPrice = item.list_price_formatted.price;
+    } else if (toInteger(item.base_price)) {
+      discountPrice = item.base_price_formatted.price;
+    }
     
     return (
       <View style={styles.priceWrapper}>
-        <Text style={styles.listPriceText}>
-          22
-        </Text>
+        {
+          (item.discount_prc || item.list_discount_prc) &&
+          (
+            <Text style={styles.listPriceText}>
+              {discountPrice}
+            </Text>
+          )
+        }
         <Text
           numberOfLines={1}
           style={styles.productPrice}
