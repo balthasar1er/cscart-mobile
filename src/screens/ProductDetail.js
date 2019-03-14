@@ -589,11 +589,14 @@ class ProductDetail extends Component {
   renderPrice() {
     const { product } = this.state;
     let discountPrice = null;
+    let discountTitle = null;
 
     if (toInteger(product.list_price)) {
       discountPrice = product.list_price_formatted.price;
+      discountTitle = `${i18n.gettext('List price')}: `;
     } else if (toInteger(product.base_price)) {
       discountPrice = product.base_price_formatted.price;
+      discountTitle = `${i18n.gettext('Old price')}: `;
     }
 
     const showDiscount = toInteger(product.discount_prc) || toInteger(product.list_discount_prc);
@@ -606,7 +609,7 @@ class ProductDetail extends Component {
       <View>
         {showDiscount && (
           <Text style={styles.listPriceWrapperText}>
-            {`${i18n.gettext('List price')}: `}
+            {discountTitle}
             <Text style={styles.listPriceText}>
               {formatPrice(discountPrice)}
             </Text>
