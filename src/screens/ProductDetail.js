@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
+import toInteger from 'lodash/toInteger';
 import { connect } from 'react-redux';
 import {
   View,
@@ -587,6 +588,15 @@ class ProductDetail extends Component {
 
   renderPrice() {
     const { product } = this.state;
+    let discountPrice = null;
+
+    if (toInteger(product.list_price)) {
+      discountPrice = product.list_price_formatted.price;
+    } else if (toInteger(product.base_price)) {
+      discountPrice = product.base_price_formatted.price;
+    }
+
+    const showDiscount = toInteger(product.discount_prc) || toInteger(product.list_discount_prc);
 
     if (!product.price) {
       return null;
@@ -594,14 +604,14 @@ class ProductDetail extends Component {
 
     return (
       <View>
-        {parseInt(product.list_price, 10) ? (
+        {showDiscount && (
           <Text style={styles.listPriceWrapperText}>
             {`${i18n.gettext('List price')}: `}
             <Text style={styles.listPriceText}>
-              {formatPrice(product.list_price_formatted.price)}
+              {formatPrice(discountPrice)}
             </Text>
           </Text>
-        ) : null}
+        )}
         <Text style={styles.priceText}>
           {formatPrice(product.price_formatted.price)}
         </Text>
