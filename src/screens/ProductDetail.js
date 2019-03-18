@@ -591,12 +591,14 @@ class ProductDetail extends Component {
     let discountPrice = null;
     let discountTitle = null;
 
+    if (toInteger(product.base_price)) {
+      discountPrice = product.base_price_formatted.price;
+      discountTitle = `${i18n.gettext('Old price')}: `;
+    }
+
     if (toInteger(product.list_price)) {
       discountPrice = product.list_price_formatted.price;
       discountTitle = `${i18n.gettext('List price')}: `;
-    } else if (toInteger(product.base_price)) {
-      discountPrice = product.base_price_formatted.price;
-      discountTitle = `${i18n.gettext('Old price')}: `;
     }
 
     const showDiscount = toInteger(product.discount_prc) || toInteger(product.list_discount_prc);

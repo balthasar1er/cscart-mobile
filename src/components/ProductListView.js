@@ -107,10 +107,12 @@ class ProductListView extends PureComponent {
     const price = item.price_formatted ? item.price_formatted.price : item.price;
     let discountPrice = null;
 
+    if (toInteger(item.base_price)) {
+      discountPrice = item.base_price_formatted.price;
+    }
+
     if (toInteger(item.list_price)) {
       discountPrice = item.list_price_formatted.price;
-    } else if (toInteger(item.base_price)) {
-      discountPrice = item.base_price_formatted.price;
     }
     
     return (
