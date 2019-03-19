@@ -503,14 +503,33 @@ class ProductDetail extends Component {
     }, () => this.calculatePrice());
   }
 
+  renderDiscountLabel() {
+    const { product } = this.state;
+
+    if (!product.list_discount_prc && !product.discount_prc) {
+      return null;
+    }
+
+    const discount = product.list_discount_prc || product.discount_prc;
+
+    return (
+      <View style={styles.listDiscountWrapper}>
+        <Text style={styles.listDiscountText}>
+          {`${i18n.gettext('Discount')} ${discount}%`}
+        </Text>
+      </View>
+    );
+  }
+
   renderImage() {
-    const { images, product } = this.state;
+    const { images } = this.state;
+    const { navigator } = this.props;
     const productImages = images.map((img, index) => (
       <TouchableOpacity
         style={styles.slide}
         key={index}
         onPress={() => {
-          this.props.navigator.showModal({
+          navigator.showModal({
             screen: 'Gallery',
             animationType: 'fade',
             passProps: {
@@ -534,13 +553,7 @@ class ProductDetail extends Component {
         >
           {productImages}
         </Swiper>
-        {product.list_discount_prc ? (
-          <View style={styles.listDiscountWrapper}>
-            <Text style={styles.listDiscountText}>
-              {`${i18n.gettext('Discount')} ${product.list_discount_prc}%`}
-            </Text>
-          </View>
-        ) : null}
+        {this.renderDiscountLabel()}
       </View>
     );
   }
@@ -590,18 +603,17 @@ class ProductDetail extends Component {
     const { product } = this.state;
     let discountPrice = null;
     let discountTitle = null;
+    let showDiscount = false;
 
-    if (toInteger(product.base_price)) {
+    if (toInteger(product.discount)) {
       discountPrice = product.base_price_formatted.price;
       discountTitle = `${i18n.gettext('Old price')}: `;
-    }
-
-    if (toInteger(product.list_price)) {
+      showDiscount = true;
+    } else if (toInteger(product.list_price)) {
       discountPrice = product.list_price_formatted.price;
       discountTitle = `${i18n.gettext('List price')}: `;
+      showDiscount = true;
     }
-
-    const showDiscount = toInteger(product.discount_prc) || toInteger(product.list_discount_prc);
 
     if (!product.price) {
       return null;
