@@ -25,6 +25,7 @@ class InAppPayment extends React.Component {
       settlements: PropTypes.func
     }),
     navigator: PropTypes.shape({}),
+    cart: PropTypes.shape({}),
   };
 
   static defaultProps = {};
@@ -247,16 +248,21 @@ class InAppPayment extends React.Component {
               ));
           })
           .then((result) => {
+            setTimeout(() => {
+              // Fixme: Show complete dialog after paymentResponse is complete.
+              navigator.showModal({
+                screen: 'CheckoutComplete',
+                backButtonTitle: '',
+                backButtonHidden: true,
+                passProps: {
+                  orderId: result.order.order_id, // FIXME
+                }
+              });
+            }, 3000);
+          })
+          .then(() => {
             paymentResponse.complete('success');
             cartActions.clear();
-            navigator.push({
-              screen: 'CheckoutComplete',
-              backButtonTitle: '',
-              backButtonHidden: true,
-              passProps: {
-                orderId: result.order.order_id, // FIXME
-              }
-            });
           })
           .catch(error => this.handleShowError(error));
       })

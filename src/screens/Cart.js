@@ -21,7 +21,6 @@ import Icon from '../components/Icon';
 import Spinner from '../components/Spinner';
 import QtyOption from '../components/QtyOption';
 import CartFooter from '../components/CartFooter';
-import InAppPayment from '../components/InAppPayment';
 
 // theme
 import theme from '../config/theme';
@@ -115,10 +114,6 @@ const styles = EStyleSheet.create({
     position: 'absolute',
     right: 14,
     bottom: 0,
-  },
-  inAppPaymentWrapper: {
-    marginLeft: 14,
-    marginRight: 14,
   },
 });
 
@@ -378,20 +373,6 @@ class Cart extends Component {
     );
   };
 
-  renderFooter = () => {
-    const { products } = this.state;
-
-    if (!products.length) {
-      return null;
-    }
-
-    return (
-      <View style={styles.inAppPaymentWrapper}>
-        <InAppPayment navigator={this.props.navigator} />
-      </View>
-    );
-  }
-
   renderList() {
     const { products, fetching, refreshing } = this.state;
 
@@ -408,7 +389,6 @@ class Cart extends Component {
           onRefresh={() => this.handleRefresh()}
           refreshing={refreshing}
           ListEmptyComponent={() => this.renderEmptyList()}
-          ListFooterComponent={() => this.renderFooter()}
         />
         {this.renderPlaceOrder()}
       </View>

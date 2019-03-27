@@ -26,6 +26,7 @@ import * as vendorActions from '../actions/vendorActions';
 
 // Components
 import DiscussionList from '../components/DiscussionList';
+import InAppPayment from '../components/InAppPayment';
 import SelectOption from '../components/SelectOption';
 import InputOption from '../components/InputOption';
 import QtyOption from '../components/QtyOption';
@@ -103,7 +104,7 @@ const styles = EStyleSheet.create({
     color: 'gray'
   },
   addToCartContainer: {
-    padding: 10,
+    padding: 8,
     flexDirection: 'row',
     borderTopWidth: 1,
     borderColor: '#F0F0F0',
@@ -111,8 +112,10 @@ const styles = EStyleSheet.create({
   addToCartBtn: {
     backgroundColor: '$primaryColor',
     padding: 10,
-    flex: 1,
-    borderRadius: 2,
+    flex: 3,
+    borderRadius: 3,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   addToCartBtnText: {
     textAlign: 'center',
@@ -191,6 +194,10 @@ const styles = EStyleSheet.create({
   },
   listDiscountText: {
     color: '#fff',
+  },
+  inAppPaymentWrapper: {
+    flex: 1,
+    marginRight: 10,
   },
 });
 
@@ -484,17 +491,18 @@ class ProductDetail extends Component {
   }
 
   renderImage() {
+    const { navigator } = this.state;
     const { images, product } = this.state;
     const productImages = images.map((img, index) => (
       <TouchableOpacity
         style={styles.slide}
         key={index}
         onPress={() => {
-          this.props.navigator.showModal({
+          navigator.showModal({
             screen: 'Gallery',
             animationType: 'fade',
             passProps: {
-              images: [...this.state.images],
+              images: [...images],
               activeIndex: index,
             },
           });
@@ -758,11 +766,13 @@ class ProductDetail extends Component {
   }
 
   renderVendorInfo() {
-    if (config.version !== VERSION_MVE || !this.state.vendor) {
+    const { vendor } = this.state;
+    const { navigator } = this.props;
+
+    if (config.version !== VERSION_MVE || !vendor) {
       return null;
     }
-    const { navigator } = this.props;
-    const { vendor } = this.state;
+
     return (
       <Section
         title={i18n.gettext('Vendor')}
@@ -770,13 +780,13 @@ class ProductDetail extends Component {
       >
         <View style={styles.vendorWrapper}>
           <Text style={styles.vendorName}>
-            {this.state.vendor.company}
+            {vendor.company}
           </Text>
           <Text style={styles.vendorProductCount}>
             {i18n.gettext('%1 item(s)', vendor.products_count)}
           </Text>
           <Text style={styles.vendorDescription}>
-            {stripTags(this.state.vendor.description)}
+            {stripTags(vendor.description)}
           </Text>
           <TouchableOpacity
             style={styles.vendorInfoBtn}
@@ -835,9 +845,13 @@ class ProductDetail extends Component {
   }
 
   renderAddToCart() {
-    const { hideWishList } = this.props;
+    const { hideWishList, navigator } = this.props;
+
     return (
       <View style={styles.addToCartContainer}>
+        <View style={styles.inAppPaymentWrapper}>
+          <InAppPayment navigator={navigator} />
+        </View>
         <TouchableOpacity
           style={styles.addToCartBtn}
           onPress={() => this.handleAddToCart()}
