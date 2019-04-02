@@ -23,6 +23,8 @@ export default function (state = initialState, action) {
         fetching: true,
         options: [],
         list_discount_prc: 0,
+        discount_prc: 0,
+        discount: null,
       };
 
     case FETCH_ONE_PRODUCT_SUCCESS:
