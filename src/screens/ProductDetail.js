@@ -287,6 +287,7 @@ class ProductDetail extends Component {
   }
 
   componentWillMount() {
+    const { navigator } = this.props;
     const buttons = {
       rightButtons: [
         {
@@ -306,7 +307,7 @@ class ProductDetail extends Component {
       if (hideSearch) {
         buttons.rightButtons.splice(-1, 1);
       }
-      this.props.navigator.setButtons(buttons);
+      navigator.setButtons(buttons);
     });
   }
 
@@ -319,7 +320,12 @@ class ProductDetail extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      productDetail, navigator, vendors, discussion, auth,
+      productDetail,
+      navigator,
+      vendors,
+      discussion,
+      auth,
+      vendorActions,
     } = nextProps;
     const product = productDetail;
 
@@ -338,7 +344,7 @@ class ProductDetail extends Component {
       !this.isVendorFetchRequestSent
     ) {
       this.isVendorFetchRequestSent = true;
-      this.props.vendorActions.fetch(product.company_id);
+      vendorActions.fetch(product.company_id);
     }
 
     const defaultOptions = { ...this.state.selectedOptions };
@@ -870,8 +876,18 @@ class ProductDetail extends Component {
     return (
       <View style={styles.addToCartContainer}>
         <View style={styles.inAppPaymentWrapper}>
-          <InAppPayment navigator={navigator} />
+          <InAppPayment
+            navigator={navigator}
+            onPress={(next) => {
+              const { cartActions } = this.props;
+              cartActions
+                .clear()
+                .then(() => this.handleAddToCart())
+                .then(() => next());
+            }}
+          />
         </View>
+
         <TouchableOpacity
           style={styles.addToCartBtn}
           onPress={() => this.handleAddToCart()}

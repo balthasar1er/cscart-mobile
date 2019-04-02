@@ -24,6 +24,7 @@ class InAppPayment extends React.Component {
     paymentsActions: PropTypes.shape({
       settlements: PropTypes.func
     }),
+    onPress: PropTypes.func,
     navigator: PropTypes.shape({}),
     cart: PropTypes.shape({}),
   };
@@ -291,12 +292,13 @@ class InAppPayment extends React.Component {
   }
 
   render() {
+    const { onPress } = this.props;
     if (Platform.OS === 'ios' && config.applePay) {
       return (
         <ApplePayButton
           buttonStyle="black"
           buttonType="buy"
-          onPress={this.handlePayPresed}
+          onPress={() => onPress(this.handlePayPresed)}
         />
       );
     }

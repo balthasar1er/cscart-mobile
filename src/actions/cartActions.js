@@ -129,7 +129,7 @@ export function getUpdatedDetailsForShippingOption(ids) {
     .catch(error => error);
 }
 
-export function add(data) {
+export function add(data, notify = true) {
   return (dispatch) => {
     dispatch({ type: ADD_TO_CART_REQUEST });
     return Api.post('/sra_cart_content/', data)
@@ -140,15 +140,17 @@ export function add(data) {
         });
         // Calculate cart
         setTimeout(() => fetch(false)(dispatch), 50);
-        dispatch({
-          type: NOTIFICATION_SHOW,
-          payload: {
-            type: 'success',
-            title: i18n.gettext('Success'),
-            text: i18n.gettext('The product was added to your cart.'),
-            closeLastModal: false,
-          },
-        });
+        if (notify) {
+          dispatch({
+            type: NOTIFICATION_SHOW,
+            payload: {
+              type: 'success',
+              title: i18n.gettext('Success'),
+              text: i18n.gettext('The product was added to your cart.'),
+              closeLastModal: false,
+            },
+          });
+        }
       })
       .catch((error) => {
         // Out of stock error
