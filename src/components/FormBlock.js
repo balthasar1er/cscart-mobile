@@ -29,6 +29,7 @@ const styles = EStyleSheet.create({
     marginBottom: 14,
     fontWeight: 'bold',
     fontSize: '0.9rem',
+    textAlign: 'left'
   },
   btnWrapper: {
     marginTop: 14,

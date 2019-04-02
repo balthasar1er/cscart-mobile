@@ -40,6 +40,7 @@ const styles = EStyleSheet.create({
     fontSize: '1.2rem',
     marginTop: 10,
     marginBottom: 10,
+    textAlign: 'left'
   },
 });
 
@@ -189,12 +190,16 @@ export default class ProfileForm extends Component {
       let countryCode = null;
       let values = null;
 
-      if ('s_country' in allFields) {
-        countryCode = allFields.s_country.value;
+      const foundShippingCountry = allFields
+        .filter(item => item.field_id === 's_country');
+      if (foundShippingCountry.length) {
+        countryCode = foundShippingCountry[0].value;
       }
 
-      if ('b_country' in allFields) {
-        countryCode = allFields.b_country.value;
+      const foundBillingCountry = allFields
+        .filter(item => item.field_id === 'b_country');
+      if (foundBillingCountry.length) {
+        countryCode = foundBillingCountry[0].value;
       }
 
       if (countryCode in field.values) {
@@ -240,6 +245,9 @@ export default class ProfileForm extends Component {
       order: fields.map(field => field.field_id),
     };
 
+    let countryCache = null;
+    let stateCache = null;
+
     fields.forEach((item) => {
       const itemData = this.getFieldType(item, fields);
       formFields[item.field_id] = itemData.type;
@@ -249,7 +257,25 @@ export default class ProfileForm extends Component {
       if (item.field_type === FIELD_DATE) { // Date field
         formValues[item.field_id] = item.value ? new Date(item.value * 1000) : undefined;
       }
+
+      if (item.field_type === FIELD_STATE) {
+        stateCache = item;
+      }
+
+      if (item.field_type === FIELD_COUNTRY) {
+        countryCache = item;
+      }
     });
+
+    // TODO: Fixme brainfuck code.
+    // Reset state.
+    if (countryCache && stateCache) {
+      if (stateCache.values[countryCache.value]) {
+        if(!stateCache.values[countryCache.value]) {
+          formValues[stateCache.field_id] = '';
+        }
+      }
+    }
 
     return {
       fields,
@@ -310,7 +336,7 @@ export default class ProfileForm extends Component {
       .forEach((key) => {
         const item = newForms[index].fields[key];
         fields[key] = item;
-        fields[key].value = values[key];
+        fields[key].value = values[fields[key].field_id];
       });
 
     newForms[index].formFields = this.convertFieldsToTcomb(fields).formFields;

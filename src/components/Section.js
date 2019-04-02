@@ -22,7 +22,9 @@ const styles = EStyleSheet.create({
   title: {
     fontSize: '1rem',
     paddingLeft: 14,
+    paddingRight: 14,
     paddingBottom: 10,
+    textAlign: 'left',
   },
   rightButton: {
     position: 'absolute',

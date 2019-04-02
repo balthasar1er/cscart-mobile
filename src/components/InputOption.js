@@ -15,6 +15,7 @@ const styles = EStyleSheet.create({
   title: {
     fontSize: '0.9rem',
     fontWeight: 'bold',
+    textAlign: 'left',
   },
   commentText: {
     color: '#9cb0c4',

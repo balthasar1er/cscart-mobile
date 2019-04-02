@@ -25,6 +25,8 @@ import {
 
   NOTIFICATION_SHOW,
   DISCUSSION_DISABLED,
+
+  CHANGE_PRODUCTS_SORT,
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
@@ -159,10 +161,18 @@ export function search(params = {}) {
   };
 }
 
-export function fetchByCategory(categoryId, page = 1, companyId = false) {
+export function fetchByCategory(categoryId, page = 1, companyId = false, sort = {}) {
+  const params = {
+    page,
+    subcats: 'Y',
+    items_per_page: 10,
+    company_id: companyId || '',
+    ...sort,
+  };
+
   return (dispatch) => {
     dispatch({ type: FETCH_PRODUCTS_REQUEST });
-    return Api.get(`/categories/${categoryId}/sra_products?items_per_page=10&page=${page}&subcats=Y${companyId ? `&company_id=${companyId}` : ''}`)
+    return Api.get(`/categories/${categoryId}/sra_products`, { params })
       .then((response) => {
         dispatch({
           type: FETCH_PRODUCTS_SUCCESS,
@@ -175,5 +185,14 @@ export function fetchByCategory(categoryId, page = 1, companyId = false) {
           error
         });
       });
+  };
+}
+
+export function changeSort(params) {
+  return (dispatch) => {
+    dispatch({
+      type: CHANGE_PRODUCTS_SORT,
+      payload: params,
+    });
   };
 }

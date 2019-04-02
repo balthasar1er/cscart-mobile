@@ -7,7 +7,6 @@ import {
   Text,
   FlatList,
   ActivityIndicator,
-  InteractionManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { PRODUCT_NUM_COLUMNS } from '../utils';
@@ -21,8 +20,10 @@ import * as productsActions from '../actions/productsActions';
 // Components
 import Spinner from '../components/Spinner';
 import VendorInfo from '../components/VendorInfo';
+import SortProducts from '../components/SortProducts';
 import CategoryBlock from '../components/CategoryBlock';
 import ProductListView from '../components/ProductListView';
+
 // theme
 import theme from '../config/theme';
 
@@ -31,17 +32,11 @@ import {
   iconsLoaded,
 } from '../utils/navIcons';
 
+
 // Styles
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    fontWeight: 'bold',
-    fontSize: '1.3rem',
-    paddingLeft: 10,
-    paddingTop: 20,
-    paddingBottom: 20,
   },
   emptyList: {
     fontSize: '1rem',
@@ -99,8 +94,9 @@ class Categories extends Component {
   }
 
   componentWillMount() {
+    const { navigator } = this.props;
     iconsLoaded.then(() => {
-      this.props.navigator.setButtons({
+      navigator.setButtons({
         rightButtons: [
           {
             id: 'cart',
@@ -109,10 +105,9 @@ class Categories extends Component {
           },
           {
             id: 'search',
-            title: i18n.gettext('Search'),
             icon: iconsMap.search,
           },
-        ],
+        ]
       });
     });
   }
@@ -122,7 +117,7 @@ class Categories extends Component {
       productsActions, products, navigator, categoryId, layouts, companyId,
     } = this.props;
 
-    let category = { ...this.props.category };
+    let { category } = this.props;
 
     if (!category) {
       category = await Api.get('/categories/432?subcats=Y');
@@ -146,12 +141,16 @@ class Categories extends Component {
       newState.products = categoryProducts;
     }
 
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({
-        ...this.state,
-        ...newState,
-      }, () => productsActions.fetchByCategory(this.activeCategoryId, 1, companyId));
-    });
+    this.setState(state => ({
+      ...state,
+      ...newState,
+    }), () => productsActions
+      .fetchByCategory(
+        this.activeCategoryId,
+        1,
+        companyId,
+        products.sortParams
+      ));
 
     navigator.setTitle({
       title: category.category,
@@ -178,11 +177,14 @@ class Categories extends Component {
           screen: 'Search',
           title: i18n.gettext('Search'),
         });
+      } else if (event.id === 'back') {
+        navigator.pop();
       }
     }
   }
 
   findCategoryById(items) {
+    const { categoryId } = this.props;
     const flatten = [];
     const makeFlat = (list) => {
       list.forEach((i) => {
@@ -193,11 +195,11 @@ class Categories extends Component {
       });
     };
     makeFlat(items);
-    return flatten.find(i => i.category_id == this.props.categoryId) || null;
+    return flatten.find(i => i.category_id == categoryId) || null;
   }
 
   handleLoadMore() {
-    const { products, productsActions } = this.props;
+    const { products, productsActions, companyId } = this.props;
     const { isLoadMoreRequest } = this.state;
 
     if (products.hasMore && !isLoadMoreRequest) {
@@ -207,7 +209,8 @@ class Categories extends Component {
       productsActions.fetchByCategory(
         this.activeCategoryId,
         products.params.page + 1,
-        this.props.companyId
+        companyId,
+        products.sortParams,
       ).then(() => {
         this.setState({
           isLoadMoreRequest: false,
@@ -217,25 +220,43 @@ class Categories extends Component {
   }
 
   handleRefresh() {
-    const { productsActions, companyId } = this.props;
+    const { productsActions, companyId, products } = this.props;
     this.setState({
       refreshing: true,
-    }, () => productsActions.fetchByCategory(this.activeCategoryId, 1, companyId));
+    },
+    () => productsActions
+      .fetchByCategory(this.activeCategoryId, 1, companyId, products.sortParams));
+  }
+
+  renderSorting() {
+    const {
+      companyId,
+      productsActions,
+      products
+    } = this.props;
+
+    return (
+      <SortProducts
+        sortParams={products.sortParams}
+        onChange={(sort) => {
+          productsActions.changeSort(sort);
+          productsActions.fetchByCategory(
+            this.activeCategoryId,
+            1,
+            companyId,
+            sort
+          );
+        }}
+      />
+    );
   }
 
   renderHeader() {
     const {
-      navigator, companyId, vendors
+      navigator,
+      companyId,
+      vendors,
     } = this.props;
-    let productHeader = null;
-
-    if (this.state.subCategories.length !== 0 && this.state.products.length !== 0) {
-      productHeader = (
-        <Text style={styles.header}>
-          {companyId ? i18n.gettext('Vendor products') : i18n.gettext('Products')}
-        </Text>
-      );
-    }
 
     let vendorHeader = null;
     if (companyId && vendors.items[companyId] && !vendors.fetching) {
@@ -272,7 +293,7 @@ class Categories extends Component {
             });
           }}
         />
-        {productHeader}
+        {this.renderSorting()}
       </View>
     );
   }

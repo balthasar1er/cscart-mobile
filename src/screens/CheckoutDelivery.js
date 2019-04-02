@@ -105,9 +105,17 @@ const BillingOptions = {
     },
     b_country: {
       label: i18n.gettext('Country'),
+      nullOption: {
+        value: '',
+        text: i18n.gettext('Select country')
+      },
     },
     b_state: {
       label: i18n.gettext('State'),
+      nullOption: {
+        value: '',
+        text: i18n.gettext('Select state')
+      },
     },
     b_zipcode: {
       label: i18n.gettext('Zip code'),
@@ -186,9 +194,17 @@ const ShippingOptions = {
     },
     s_country: {
       label: i18n.gettext('Country'),
+      nullOption: {
+        value: '',
+        text: i18n.gettext('Select country')
+      },
     },
     s_state: {
       label: i18n.gettext('State'),
+      nullOption: {
+        value: '',
+        text: i18n.gettext('Select state')
+      },
     },
     s_zipcode: {
       label: i18n.gettext('Zip code'),
@@ -231,6 +247,7 @@ class Checkout extends Component {
       billingValues: {},
       shippingValues: {},
     };
+    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   componentDidMount() {
@@ -286,9 +303,19 @@ class Checkout extends Component {
     });
   }
 
+  onNavigatorEvent(event) {
+    const { navigator } = this.props;
+    if (event.type === 'NavBarButtonPress') {
+      if (event.id === 'back') {
+        navigator.pop();
+      }
+    }
+  }
+
   handleChange = (value, type) => {
     if (type === 'billing') {
       const bState = getStates(value.b_country);
+ 
       if (bState) {
         this.setState({
           billingFormFields: t.struct({
@@ -301,12 +328,14 @@ class Checkout extends Component {
           },
         });
       } else {
+        const { billingValues } = this.state;
         this.setState({
           billingFormFields: t.struct({
             ...billingFields,
           }),
           billingValues: {
             ...value,
+            b_state: value.b_country !== billingValues.b_country ? '' : value.b_state, 
           }
         });
       }
@@ -325,12 +354,14 @@ class Checkout extends Component {
           },
         });
       } else {
+        const { shippingValues } = this.state;
         this.setState({
           shippingFormFields: t.struct({
             ...shippingFields,
           }),
           shippingValues: {
             ...value,
+            s_state: value.s_country !== shippingValues.s_country ? '' : value.s_state,
           }
         });
       }

@@ -15,6 +15,7 @@ const styles = EStyleSheet.create({
   title: {
     fontSize: '0.9rem',
     fontWeight: 'bold',
+    textAlign: 'left',
   },
   wrapper: {
     marginTop: 10,
@@ -60,8 +61,8 @@ export default class extends Component {
   }
 
   handleChange(v) {
-    const { option } = this.props;
-    return this.props.onChange(option.variants[v ? 0 : 1]);
+    const { option, onChange } = this.props;
+    return onChange(option.variants[v ? 0 : 1]);
   }
 
   render() {

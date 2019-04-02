@@ -64,15 +64,17 @@ const styles = EStyleSheet.create({
     color: 'black',
     marginBottom: 5,
     fontWeight: 'bold',
+    textAlign: 'left'
   },
   productItemPrice: {
     fontSize: '0.7rem',
     color: 'black',
+    textAlign: 'left'
   },
   emptyListContainer: {
     marginTop: '3rem',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   emptyListIconWrapper: {
     backgroundColor: '#3FC9F6',
@@ -93,6 +95,9 @@ const styles = EStyleSheet.create({
     fontWeight: 'bold',
     color: 'black',
     marginTop: '1rem',
+    paddingLeft: '0.25rem',
+    paddingRight: '0.25rem',
+    textAlign: 'center'
   },
   emptyListDesc: {
     fontSize: '1rem',
@@ -136,9 +141,9 @@ export class WishList extends Component {
   }
 
   componentWillMount() {
-    const { navigator } = this.props;
+    const { navigator, wishListActions } = this.props;
 
-    this.props.wishListActions.fetch();
+    wishListActions.fetch();
     iconsLoaded.then(() => {
       navigator.setButtons({
         leftButtons: [
@@ -201,6 +206,11 @@ export class WishList extends Component {
     }
   }
 
+  handleRemoveProduct = (product) => {
+    const { wishListActions } = this.props;
+    wishListActions.remove(product.cartId);
+  };
+
   handleRefresh() {
     const { wishListActions } = this.props;
     this.setState(
@@ -208,10 +218,6 @@ export class WishList extends Component {
       () => wishListActions.fetch(),
     );
   }
-
-  handleRemoveProduct = (product) => {
-    this.props.wishListActions.remove(product.cartId);
-  };
 
   renderProductItem = (item) => {
     let productImage = null;

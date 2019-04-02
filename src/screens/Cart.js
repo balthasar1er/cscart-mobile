@@ -68,17 +68,20 @@ const styles = EStyleSheet.create({
   },
   productItemDetail: {
     marginLeft: 14,
+    marginRight: 14,
     width: '70%',
   },
   productItemName: {
     fontSize: '0.9rem',
     color: 'black',
     marginBottom: 5,
+    textAlign: 'left',
     fontWeight: 'bold',
   },
   productItemPrice: {
     fontSize: '0.7rem',
     color: 'black',
+    textAlign: 'left',
   },
   emptyListContainer: {
     marginTop: '3rem',

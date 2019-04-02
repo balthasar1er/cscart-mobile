@@ -18,7 +18,6 @@ import * as productsActions from '../actions/productsActions';
 import Rating from '../components/Rating';
 import Section from '../components/Section';
 import SectionRow from '../components/SectionRow';
-import SectionButton from '../components/SectionButton';
 import DiscussionList from '../components/DiscussionList';
 
 // theme
@@ -48,15 +47,18 @@ const styles = EStyleSheet.create({
   vendorName: {
     fontSize: '1rem',
     fontWeight: 'bold',
+    textAlign: 'left',
   },
   vendorDescription: {
     color: 'gray',
     fontSize: '0.9rem',
     marginTop: 10,
+    textAlign: 'left',
   },
   address: {
     color: 'gray',
     fontSize: '0.9rem',
+    textAlign: 'left',
   },
   logoWrapper: {
     flexDirection: 'row',
@@ -124,16 +126,20 @@ export class VendorDetail extends Component {
 
   componentWillMount() {
     const {
-      navigator, vendorId, vendors
+      navigator,
+      vendorId,
+      vendors,
+      vendorActions,
+      productsActions
     } = this.props;
 
     if (!vendors.items[vendorId] && !vendors.fetching) {
-      this.props.vendorActions.fetch(vendorId);
+      vendorActions.fetch(vendorId);
     } else {
       this.setState({
         vendor: vendors.items[vendorId],
       }, () => {
-        this.props.productsActions.fetchDiscussion(
+        productsActions.fetchDiscussion(
           this.state.vendor.company_id,
           { page: this.state.discussion.search.page },
           'M'

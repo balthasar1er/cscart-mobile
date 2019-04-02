@@ -130,6 +130,8 @@ class CheckoutStepThree extends Component {
       selectedItem: null,
       items: [],
     };
+
+    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   componentDidMount() {
@@ -144,6 +146,15 @@ class CheckoutStepThree extends Component {
       items,
       selectedItem,
     });
+  }
+
+  onNavigatorEvent(event) {
+    const { navigator } = this.props;
+    if (event.type === 'NavBarButtonPress') {
+      if (event.id === 'back') {
+        navigator.pop();
+      }
+    }
   }
 
   handlePlaceOrder() {
@@ -164,7 +175,11 @@ class CheckoutStepThree extends Component {
 
   placeOrderAndComplete() {
     const {
-      cart, shipping_id, ordersActions, navigator, cartActions
+      cart,
+      shipping_id,
+      ordersActions,
+      navigator,
+      cartActions,
     } = this.props;
     const values = this.paymentFormRef.getValue();
 

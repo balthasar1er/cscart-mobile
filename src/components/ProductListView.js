@@ -36,11 +36,13 @@ const styles = EStyleSheet.create({
   },
   productName: {
     color: 'black',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    textAlign: 'left',
   },
   productPrice: {
     color: '#73626B',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    textAlign: 'left',
   },
   listDiscountWrapper: {
     backgroundColor: '$productDiscountColor',
@@ -55,6 +57,7 @@ const styles = EStyleSheet.create({
   },
   listDiscountText: {
     color: '#fff',
+    textAlign: 'left',
   },
 });
 

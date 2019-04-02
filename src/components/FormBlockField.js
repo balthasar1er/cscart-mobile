@@ -16,11 +16,13 @@ const styles = EStyleSheet.create({
     fontWeight: 'bold',
     paddingRight: 4,
     fontSize: '0.9rem',
+    textAlign: 'left'
   },
   text: {
     color: '#7C7C7C',
     fontSize: '0.9rem',
     flex: 1,
+    textAlign: 'right'
   },
 });
 
@@ -36,16 +38,17 @@ export default class extends PureComponent {
   };
 
   render() {
+    const { title, children } = this.props;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
-          {this.props.title}
+          {title}
         </Text>
         <Text
           style={styles.text}
           numberOfLines={4}
         >
-          {this.props.children}
+          {children}
         </Text>
       </View>
     );

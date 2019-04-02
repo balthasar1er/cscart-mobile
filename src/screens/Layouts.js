@@ -6,7 +6,6 @@ import {
   View,
   ScrollView,
 } from 'react-native';
-import SplashScreen from 'react-native-splash-screen';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import has from 'lodash/has';
 
@@ -89,7 +88,8 @@ class Layouts extends Component {
 
   componentWillMount() {
     iconsLoaded.then(() => {
-      this.props.navigator.setButtons({
+      const { navigator } = this.props;
+      navigator.setButtons({
         leftButtons: [
           {
             id: 'sideMenu',

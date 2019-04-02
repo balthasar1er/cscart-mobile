@@ -16,6 +16,7 @@ const styles = EStyleSheet.create({
   title: {
     fontSize: '0.9rem',
     fontWeight: 'bold',
+    textAlign: 'left',
   },
   titleSub: {
     fontWeight: 'normal',
@@ -24,6 +25,7 @@ const styles = EStyleSheet.create({
   commentText: {
     color: '#9cb0c4',
     marginTop: 3,
+    textAlign: 'left',
   },
   optionsList: {},
   optionsVariants: {
