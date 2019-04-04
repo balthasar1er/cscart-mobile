@@ -189,11 +189,6 @@ class InAppPayment extends React.Component {
 
   handleShowError = () => {
     this.paymentRequest.abort();
-    Alert.alert(
-      i18n.gettext('Error'),
-      i18n.gettext('There was an error processing your payment.'),
-      { cancelable: true }
-    );
   };
 
   handleApplePay = (paymentID) => {
@@ -264,8 +259,7 @@ class InAppPayment extends React.Component {
           .then(() => {
             paymentResponse.complete('success');
             cartActions.clear();
-          })
-          .catch(error => this.handleShowError(error));
+          });
       })
       .catch(error => this.handleShowError(error));
   };

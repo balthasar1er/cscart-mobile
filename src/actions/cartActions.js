@@ -52,12 +52,14 @@ export function fetch(fetching = true, calculateShipping = 'A') {
           type: CART_SUCCESS,
           payload: response.data,
         });
+        return response;
       })
       .catch((error) => {
         dispatch({
           type: CART_FAIL,
           error,
         });
+        return error;
       });
   };
 }
@@ -138,8 +140,6 @@ export function add(data, notify = true) {
           type: ADD_TO_CART_SUCCESS,
           payload: response.data,
         });
-        // Calculate cart
-        setTimeout(() => fetch(false)(dispatch), 50);
         if (notify) {
           dispatch({
             type: NOTIFICATION_SHOW,
@@ -152,6 +152,7 @@ export function add(data, notify = true) {
           });
         }
       })
+      .then(() => fetch(false)(dispatch))
       .catch((error) => {
         // Out of stock error
         if (error.response.data.status === 409) {
@@ -169,6 +170,7 @@ export function add(data, notify = true) {
           type: ADD_TO_CART_FAIL,
           error,
         });
+        return error.response;
       });
   };
 }
@@ -182,6 +184,7 @@ export function clear() {
           type: CART_CLEAR_SUCCESS,
           payload: response.data,
         });
+        return response;
       })
       .catch((error) => {
         dispatch({

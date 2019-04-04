@@ -56,6 +56,7 @@ import {
   FEATURE_TYPE_CHECKBOX,
 } from '../constants';
 
+
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
@@ -135,7 +136,7 @@ const styles = EStyleSheet.create({
   addToWishList: {
     backgroundColor: '$addToWishListColor',
     width: 60,
-    marginLeft: 12,
+    marginRight: 10,
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
@@ -212,7 +213,7 @@ const styles = EStyleSheet.create({
     color: '#fff',
   },
   inAppPaymentWrapper: {
-    flex: 1,
+    flex: 2,
     marginRight: 10,
   },
 });
@@ -447,7 +448,22 @@ class ProductDetail extends Component {
     });
   }
 
-  handleAddToCart() {
+  handleApplePay = async (next) => {
+    const { cartActions } = this.props;
+
+    try {
+      await cartActions.clear();
+      const cartData = await this.handleAddToCart(false);
+
+      if (!cartData.data.message) {
+        next();
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
+
+  handleAddToCart(showNotification = true) {
     const productOptions = {};
     const { product, selectedOptions, amount } = this.state;
     const { auth, navigator, cartActions } = this.props;
@@ -474,7 +490,7 @@ class ProductDetail extends Component {
       },
     };
 
-    return cartActions.add({ products });
+    return cartActions.add({ products }, showNotification);
   }
 
   handleAddToWishList() {
@@ -875,16 +891,20 @@ class ProductDetail extends Component {
 
     return (
       <View style={styles.addToCartContainer}>
+        {!hideWishList
+          && (
+            <TouchableOpacity
+              style={styles.addToWishList}
+              onPress={() => this.handleAddToWishList()}
+            >
+              <Icon name="favorite" size={24} style={styles.addToWishListIcon} />
+            </TouchableOpacity>
+          )}
+
         <View style={styles.inAppPaymentWrapper}>
           <InAppPayment
             navigator={navigator}
-            onPress={(next) => {
-              const { cartActions } = this.props;
-              cartActions
-                .clear()
-                .then(() => this.handleAddToCart())
-                .then(() => next());
-            }}
+            onPress={this.handleApplePay}
           />
         </View>
 
@@ -896,16 +916,6 @@ class ProductDetail extends Component {
             {i18n.gettext('Add to cart').toUpperCase()}
           </Text>
         </TouchableOpacity>
-
-        {!hideWishList
-          && (
-            <TouchableOpacity
-              style={styles.addToWishList}
-              onPress={() => this.handleAddToWishList()}
-            >
-              <Icon name="favorite" size={24} style={styles.addToWishListIcon} />
-            </TouchableOpacity>
-          )}
       </View>
     );
   }
@@ -917,9 +927,12 @@ class ProductDetail extends Component {
   render() {
     const { fetching } = this.state;
     const { cart } = this.props;
+
+    console.log('fetching true');
     if (fetching) {
-      return this.renderSpinner();
+      return null; // this.renderSpinner();
     }
+
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView
