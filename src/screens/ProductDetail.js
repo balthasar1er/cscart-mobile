@@ -343,25 +343,26 @@ class ProductDetail extends Component {
       !vendors.items[product.company_id] &&
       !vendors.fetching && product.company_id &&
       !this.isVendorFetchRequestSent
-    ) {
+    ) { 
       this.isVendorFetchRequestSent = true;
       vendorActions.fetch(product.company_id);
     }
 
     const defaultOptions = { ...this.state.selectedOptions };
-    product.options.forEach((option) => {
-
-      // Fixme: Server returned inconsistent data.
-      if (!option.variants) {
-        option.variants = [];
-      }
-
-      if (option.variants[option.value]) {
-        defaultOptions[option.option_id] = option.variants[option.value];
-      } else if (Object.values(option.variants).length) {
-        defaultOptions[option.option_id] = Object.values(option.variants)[0];
-      }
-    });
+    if (!Object.keys(this.state.selectedOptions).length) {
+      product.options.forEach((option) => {
+        // Fixme: Server returned inconsistent data.
+        if (!option.variants) {
+          option.variants = [];
+        }
+  
+        if (option.variants[option.value]) {
+          defaultOptions[option.option_id] = option.variants[option.value];
+        } else if (Object.values(option.variants).length) {
+          defaultOptions[option.option_id] = Object.values(option.variants)[0];
+        }
+      });
+    }
 
     // Get active discussion.
     let activeDiscussion = discussion.items[`p_${product.product_id}`];
@@ -456,14 +457,14 @@ class ProductDetail extends Component {
       const cartData = await this.handleAddToCart(false);
 
       if (!cartData.data.message) {
-        next();
+        setTimeout(() => next(), 400);
       }
     } catch (error) {
       console.log('error', error);
     }
   }
 
-  handleAddToCart(showNotification = true) {
+  handleAddToCart = (showNotification = true) => {
     const productOptions = {};
     const { product, selectedOptions, amount } = this.state;
     const { auth, navigator, cartActions } = this.props;
@@ -526,6 +527,7 @@ class ProductDetail extends Component {
     const { selectedOptions } = this.state;
     const newOptions = { ...selectedOptions };
     newOptions[name] = val;
+
     this.setState({
       selectedOptions: newOptions,
     }, () => this.calculatePrice());
@@ -910,7 +912,9 @@ class ProductDetail extends Component {
 
         <TouchableOpacity
           style={styles.addToCartBtn}
-          onPress={() => this.handleAddToCart()}
+          onPress={() => {
+            this.handleAddToCart();
+          }}
         >
           <Text style={styles.addToCartBtnText}>
             {i18n.gettext('Add to cart').toUpperCase()}
@@ -920,17 +924,12 @@ class ProductDetail extends Component {
     );
   }
 
-  renderSpinner = () => (
-    <Spinner visible mode="content" />
-  );
-
   render() {
     const { fetching } = this.state;
     const { cart } = this.props;
 
-    console.log('fetching true');
     if (fetching) {
-      return null; // this.renderSpinner();
+      return (<Spinner visible mode="content" />);
     }
 
     return (
@@ -963,8 +962,8 @@ class ProductDetail extends Component {
 
 export default connect(
   state => ({
-    auth: state.auth,
     cart: state.cart,
+    auth: state.auth,
     vendors: state.vendors,
     wishList: state.wishList,
     discussion: state.discussion,
