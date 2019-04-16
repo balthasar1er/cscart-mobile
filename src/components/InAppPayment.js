@@ -1,15 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Alert,
-  Platform,
-} from 'react-native';
+import { Platform } from 'react-native';
 import { bindActionCreators } from 'redux';
+import throttle from 'lodash/throttle';
 import { connect } from 'react-redux';
 import { PaymentRequest, ApplePayButton } from 'react-native-payments';
 
 import config from '../config';
-import i18n from '../utils/i18n';
 
 import * as ordersActions from '../actions/ordersActions';
 import * as cartActions from '../actions/cartActions';
@@ -33,7 +30,9 @@ class InAppPayment extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      shippingId: null,
+    };
     this.paymentRequest = null;
     this.methodData = [];
     this.details = {};
@@ -176,18 +175,26 @@ class InAppPayment extends React.Component {
       });
   }
 
-  handleShippingOptionChange = (event) => {
+  handleShippingOptionChange = throttle((event) => {
     const { cartActions } = this.props;
     const { shippingOption } = this.paymentRequest;
+
+    this.setState({
+      shippingId: shippingOption,
+    });
+
     cartActions.getUpdatedDetailsForShippingOption([shippingOption])
       .then((result) => {
         const updatedDetail = this.getPaymentData(result).details;
         event.updateWith(updatedDetail);
       })
       .catch(() => this.paymentRequest.fail());
-  };
+  }, 1000, { 'trailing': false });
 
   handleShowError = () => {
+    this.paymentRequest.removeEventListener('shippingaddresschange', this.handleShippingAddressChange);
+    this.paymentRequest.removeEventListener('shippingoptionchange', this.handleShippingOptionChange);
+
     this.paymentRequest.abort();
   };
 
@@ -210,7 +217,7 @@ class InAppPayment extends React.Component {
 
         const orderInfo = {
           products: {},
-          shipping_id: shippingOption,
+          shipping_id: this.state.shippingId || shippingOption,
           payment_id: paymentID,
           user_data: cart.user_data,
         };
@@ -224,8 +231,6 @@ class InAppPayment extends React.Component {
           };
           return orderInfo;
         });
-
-        console.log(orderInfo);
 
         return ordersActions
           .create(orderInfo)
