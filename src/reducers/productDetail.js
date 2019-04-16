@@ -2,10 +2,13 @@ import {
   FETCH_ONE_PRODUCT_REQUEST,
   FETCH_ONE_PRODUCT_FAIL,
   FETCH_ONE_PRODUCT_SUCCESS,
+
+  CHANGE_PRODUCTS_AMOUNT,
 } from '../constants';
 
 const initialState = {
   fetching: true,
+  amount: 1,
   options: [],
   price_formatted: {
     price: '',
@@ -23,6 +26,7 @@ export default function (state = initialState, action) {
         fetching: true,
         options: [],
         list_discount_prc: 0,
+        amount: 1,
       };
 
     case FETCH_ONE_PRODUCT_SUCCESS:
@@ -32,6 +36,7 @@ export default function (state = initialState, action) {
         options: Object.keys(action.payload.product.product_options)
           .map(k => action.payload.product.product_options[k]),
         fetching: false,
+        amount: parseInt(action.payload.product.qty_step, 10) || 1,
       };
 
     case FETCH_ONE_PRODUCT_FAIL:
@@ -39,6 +44,12 @@ export default function (state = initialState, action) {
         ...state,
         fetching: false,
       };
+
+    case CHANGE_PRODUCTS_AMOUNT:
+      return {
+        ...state,
+        amount: action.payload,
+      }
 
     default:
       return state;

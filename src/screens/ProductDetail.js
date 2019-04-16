@@ -251,6 +251,7 @@ class ProductDetail extends Component {
     }),
     productsActions: PropTypes.shape({
       fetchOptions: PropTypes.func,
+      changeAmount: PropTypes.func,
     }),
     cartActions: PropTypes.shape({
       add: PropTypes.func,
@@ -274,7 +275,6 @@ class ProductDetail extends Component {
     this.isVendorFetchRequestSent = false;
 
     this.state = {
-      amount: 1,
       images: [],
       product: {},
       discussion: {},
@@ -379,7 +379,6 @@ class ProductDetail extends Component {
     }
 
     this.setState({
-      amount: parseInt(product.qty_step, 10) || 1,
       images,
       product,
       discussion: activeDiscussion,
@@ -414,7 +413,7 @@ class ProductDetail extends Component {
   }
 
   calculatePrice = () => {
-    const { selectedOptions, product, amount } = this.state;
+    const { selectedOptions, product } = this.state;
     const { productDetail } = this.props;
     let newPrice = 0;
     let newListPrice = 0;
@@ -425,9 +424,9 @@ class ProductDetail extends Component {
       newListPrice += +selectedOptions[key].modifier;
     });
 
-    if (amount) {
-      newPrice *= amount;
-      newListPrice *= amount;
+    if (product.amount) {
+      newPrice *= product.amount;
+      newListPrice *= product.amount;
     }
 
     const priceFormated = product.price_formatted.price.replace(/[\s\d]+/, `${newPrice} `);
@@ -466,7 +465,7 @@ class ProductDetail extends Component {
 
   handleAddToCart = (showNotification = true) => {
     const productOptions = {};
-    const { product, selectedOptions, amount } = this.state;
+    const { product, selectedOptions } = this.state;
     const { auth, navigator, cartActions } = this.props;
 
     if (!auth.logged) {
@@ -486,7 +485,7 @@ class ProductDetail extends Component {
     const products = {
       [product.product_id]: {
         product_id: product.product_id,
-        amount,
+        amount: product.amount,
         product_options: productOptions,
       },
     };
@@ -496,7 +495,7 @@ class ProductDetail extends Component {
 
   handleAddToWishList() {
     const productOptions = {};
-    const { product, selectedOptions, amount } = this.state;
+    const { product, selectedOptions } = this.state;
     const { auth, navigator, wishListActions } = this.props;
 
     if (!auth.logged) {
@@ -516,7 +515,7 @@ class ProductDetail extends Component {
     const products = {
       [product.product_id]: {
         product_id: product.product_id,
-        amount,
+        amount: product.amount,
         product_options: productOptions,
       },
     };
@@ -743,19 +742,16 @@ class ProductDetail extends Component {
   }
 
   renderOptions() {
-    const { product, amount } = this.state;
+    const { productsActions } = this.props;
+    const { product } = this.state;
 
     return (
       <Section>
         {product.options.map(o => this.renderOptionItem(o))}
         <QtyOption
-          value={amount}
+          value={product.amount}
           step={parseInt(product.qty_step, 10) || 1}
-          onChange={(val) => {
-            this.setState({
-              amount: val,
-            }, () => this.calculatePrice());
-          }}
+          onChange={(val) => productsActions.changeAmount(val)}
         />
       </Section>
     );

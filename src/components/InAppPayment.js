@@ -225,6 +225,8 @@ class InAppPayment extends React.Component {
           return orderInfo;
         });
 
+        console.log(orderInfo);
+
         return ordersActions
           .create(orderInfo)
           .then((response) => {
