@@ -925,12 +925,14 @@ class ProductDetail extends Component {
             </TouchableOpacity>
           )}
 
-        <View style={styles.inAppPaymentWrapper}>
-          <InAppPayment
-            navigator={navigator}
-            onPress={this.handleApplePay}
-          />
-        </View>
+        {(Platform.OS === 'ios' && config.applePay) && (
+          <View style={styles.inAppPaymentWrapper}>
+            <InAppPayment
+              navigator={navigator}
+              onPress={this.handleApplePay}
+            />
+          </View>
+        )}
 
         <TouchableOpacity
           style={styles.addToCartBtn}
