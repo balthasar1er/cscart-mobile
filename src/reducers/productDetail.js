@@ -27,6 +27,8 @@ export default function (state = initialState, action) {
         options: [],
         list_discount_prc: 0,
         amount: 1,
+        discount_prc: 0,
+        discount: null,
       };
 
     case FETCH_ONE_PRODUCT_SUCCESS:

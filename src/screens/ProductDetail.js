@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
+import toInteger from 'lodash/toInteger';
 import { connect } from 'react-redux';
 import {
   View,
@@ -532,9 +533,27 @@ class ProductDetail extends Component {
     }, () => this.calculatePrice());
   }
 
+  renderDiscountLabel() {
+    const { product } = this.state;
+
+    if (!product.list_discount_prc && !product.discount_prc) {
+      return null;
+    }
+
+    const discount = product.list_discount_prc || product.discount_prc;
+
+    return (
+      <View style={styles.listDiscountWrapper}>
+        <Text style={styles.listDiscountText}>
+          {`${i18n.gettext('Discount')} ${discount}%`}
+        </Text>
+      </View>
+    );
+  }
+
   renderImage() {
-    const { navigator } = this.state;
-    const { images, product } = this.state;
+    const { images } = this.state;
+    const { navigator } = this.props;
     const productImages = images.map((img, index) => (
       <TouchableOpacity
         style={styles.slide}
@@ -564,13 +583,7 @@ class ProductDetail extends Component {
         >
           {productImages}
         </Swiper>
-        {product.list_discount_prc ? (
-          <View style={styles.listDiscountWrapper}>
-            <Text style={styles.listDiscountText}>
-              {`${i18n.gettext('Discount')} ${product.list_discount_prc}%`}
-            </Text>
-          </View>
-        ) : null}
+        {this.renderDiscountLabel()}
       </View>
     );
   }
@@ -618,6 +631,19 @@ class ProductDetail extends Component {
 
   renderPrice() {
     const { product } = this.state;
+    let discountPrice = null;
+    let discountTitle = null;
+    let showDiscount = false;
+
+    if (toInteger(product.discount)) {
+      discountPrice = product.base_price_formatted.price;
+      discountTitle = `${i18n.gettext('Old price')}: `;
+      showDiscount = true;
+    } else if (toInteger(product.list_price)) {
+      discountPrice = product.list_price_formatted.price;
+      discountTitle = `${i18n.gettext('List price')}: `;
+      showDiscount = true;
+    }
 
     if (!product.price) {
       return null;
@@ -625,14 +651,14 @@ class ProductDetail extends Component {
 
     return (
       <View>
-        {parseInt(product.list_price, 10) ? (
+        {showDiscount && (
           <Text style={styles.listPriceWrapperText}>
-            {`${i18n.gettext('List price')}: `}
+            {discountTitle}
             <Text style={styles.listPriceText}>
-              {formatPrice(product.list_price_formatted.price)}
+              {formatPrice(discountPrice)}
             </Text>
           </Text>
-        ) : null}
+        )}
         <Text style={styles.priceText}>
           {formatPrice(product.price_formatted.price)}
         </Text>
