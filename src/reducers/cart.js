@@ -48,6 +48,7 @@ export default function (state = initialState, action) {
     case ADD_TO_CART_SUCCESS:
       return {
         ...state,
+        fetching: false,
       };
 
     case ADD_TO_CART_FAIL:
@@ -105,6 +106,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         user_data: action.payload.user_data,
+        fetching: false,
       };
 
     case CART_CONTENT_SAVE_REQUEST:
@@ -121,6 +123,7 @@ export default function (state = initialState, action) {
           ...state.user_data,
           ...action.payload,
         },
+        fetching: false,
       };
 
     case CART_RECALCULATE_SUCCESS:

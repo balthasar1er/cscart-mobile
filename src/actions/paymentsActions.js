@@ -32,13 +32,9 @@ export function fetchAll() {
   };
 }
 
-export function settlements(orderId, replay, cb = null) {
+export function settlements(data) {
   return (dispatch) => {
     dispatch({ type: SETTLEMENTS_REQUEST });
-    const data = {
-      order_id: orderId,
-      replay,
-    };
     return Api.post('/sra_settlements', data)
       .then((response) => {
         dispatch({
@@ -46,9 +42,7 @@ export function settlements(orderId, replay, cb = null) {
           payload: response.data,
         });
 
-        if (cb) {
-          setTimeout(() => cb(response.data), 400);
-        }
+        return response;
       })
       .catch((error) => {
         dispatch({

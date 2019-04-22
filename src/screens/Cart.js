@@ -17,10 +17,10 @@ import debounce from 'lodash/debounce';
 import * as cartActions from '../actions/cartActions';
 
 // Components
+import Icon from '../components/Icon';
 import Spinner from '../components/Spinner';
 import QtyOption from '../components/QtyOption';
 import CartFooter from '../components/CartFooter';
-import Icon from '../components/Icon';
 
 // theme
 import theme from '../config/theme';
@@ -117,7 +117,7 @@ const styles = EStyleSheet.create({
     position: 'absolute',
     right: 14,
     bottom: 0,
-  }
+  },
 });
 
 class Cart extends Component {
@@ -200,6 +200,7 @@ class Cart extends Component {
       result.cartId = key;
       return result;
     });
+
     this.setState({
       products,
       fetching: false,
@@ -377,9 +378,11 @@ class Cart extends Component {
 
   renderList() {
     const { products, fetching, refreshing } = this.state;
+
     if (fetching) {
       return null;
     }
+
     return (
       <View style={styles.container}>
         <FlatList
@@ -396,11 +399,13 @@ class Cart extends Component {
   }
 
   renderSpinner = () => {
+    const { refreshing } = this.state;
     const { cart } = this.props;
-    const { fetching } = this.state;
-    if (fetching) {
+
+    if (refreshing) {
       return false;
     }
+
     return (
       <Spinner visible={cart.fetching} mode="content" />
     );

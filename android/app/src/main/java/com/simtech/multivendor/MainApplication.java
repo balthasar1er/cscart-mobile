@@ -1,7 +1,8 @@
 package com.simtech.multivendor;
 
-
 import com.reactnativenavigation.NavigationApplication;
+import com.facebook.react.ReactApplication;
+import com.reactnativepayments.ReactNativePaymentsPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;

@@ -27,6 +27,7 @@ import {
   DISCUSSION_DISABLED,
 
   CHANGE_PRODUCTS_SORT,
+  CHANGE_PRODUCTS_AMOUNT,
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
@@ -192,6 +193,15 @@ export function changeSort(params) {
   return (dispatch) => {
     dispatch({
       type: CHANGE_PRODUCTS_SORT,
+      payload: params,
+    });
+  };
+}
+
+export function changeAmount(params) {
+  return (dispatch) => {
+    dispatch({
+      type: CHANGE_PRODUCTS_AMOUNT,
       payload: params,
     });
   };

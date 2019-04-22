@@ -27,6 +27,7 @@ import * as vendorActions from '../actions/vendorActions';
 
 // Components
 import DiscussionList from '../components/DiscussionList';
+import InAppPayment from '../components/InAppPayment';
 import SelectOption from '../components/SelectOption';
 import InputOption from '../components/InputOption';
 import QtyOption from '../components/QtyOption';
@@ -55,6 +56,7 @@ import {
   FEATURE_TYPE_DATE,
   FEATURE_TYPE_CHECKBOX,
 } from '../constants';
+
 
 const styles = EStyleSheet.create({
   container: {
@@ -114,7 +116,7 @@ const styles = EStyleSheet.create({
     textAlign: 'left',
   },
   addToCartContainer: {
-    padding: 10,
+    padding: 8,
     flexDirection: 'row',
     borderTopWidth: 1,
     borderColor: '#F0F0F0',
@@ -122,8 +124,10 @@ const styles = EStyleSheet.create({
   addToCartBtn: {
     backgroundColor: '$primaryColor',
     padding: 10,
-    flex: 1,
-    borderRadius: 2,
+    flex: 3,
+    borderRadius: 3,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   addToCartBtnText: {
     textAlign: 'center',
@@ -133,7 +137,7 @@ const styles = EStyleSheet.create({
   addToWishList: {
     backgroundColor: '$addToWishListColor',
     width: 60,
-    marginLeft: 12,
+    marginRight: 10,
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
@@ -209,6 +213,10 @@ const styles = EStyleSheet.create({
   listDiscountText: {
     color: '#fff',
   },
+  inAppPaymentWrapper: {
+    flex: 2,
+    marginRight: 10,
+  },
 });
 
 class ProductDetail extends Component {
@@ -244,6 +252,7 @@ class ProductDetail extends Component {
     }),
     productsActions: PropTypes.shape({
       fetchOptions: PropTypes.func,
+      changeAmount: PropTypes.func,
     }),
     cartActions: PropTypes.shape({
       add: PropTypes.func,
@@ -267,7 +276,6 @@ class ProductDetail extends Component {
     this.isVendorFetchRequestSent = false;
 
     this.state = {
-      amount: 1,
       images: [],
       product: {},
       discussion: {},
@@ -281,6 +289,7 @@ class ProductDetail extends Component {
   }
 
   componentWillMount() {
+    const { navigator } = this.props;
     const buttons = {
       rightButtons: [
         {
@@ -300,7 +309,7 @@ class ProductDetail extends Component {
       if (hideSearch) {
         buttons.rightButtons.splice(-1, 1);
       }
-      this.props.navigator.setButtons(buttons);
+      navigator.setButtons(buttons);
     });
   }
 
@@ -313,7 +322,12 @@ class ProductDetail extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {
-      productDetail, navigator, vendors, discussion, auth,
+      productDetail,
+      navigator,
+      vendors,
+      discussion,
+      auth,
+      vendorActions,
     } = nextProps;
     const product = productDetail;
 
@@ -330,25 +344,26 @@ class ProductDetail extends Component {
       !vendors.items[product.company_id] &&
       !vendors.fetching && product.company_id &&
       !this.isVendorFetchRequestSent
-    ) {
+    ) { 
       this.isVendorFetchRequestSent = true;
-      this.props.vendorActions.fetch(product.company_id);
+      vendorActions.fetch(product.company_id);
     }
 
     const defaultOptions = { ...this.state.selectedOptions };
-    product.options.forEach((option) => {
-
-      // Fixme: Server returned inconsistent data.
-      if (!option.variants) {
-        option.variants = [];
-      }
-
-      if (option.variants[option.value]) {
-        defaultOptions[option.option_id] = option.variants[option.value];
-      } else if (Object.values(option.variants).length) {
-        defaultOptions[option.option_id] = Object.values(option.variants)[0];
-      }
-    });
+    if (!Object.keys(this.state.selectedOptions).length) {
+      product.options.forEach((option) => {
+        // Fixme: Server returned inconsistent data.
+        if (!option.variants) {
+          option.variants = [];
+        }
+  
+        if (option.variants[option.value]) {
+          defaultOptions[option.option_id] = option.variants[option.value];
+        } else if (Object.values(option.variants).length) {
+          defaultOptions[option.option_id] = Object.values(option.variants)[0];
+        }
+      });
+    }
 
     // Get active discussion.
     let activeDiscussion = discussion.items[`p_${product.product_id}`];
@@ -365,7 +380,6 @@ class ProductDetail extends Component {
     }
 
     this.setState({
-      amount: parseInt(product.qty_step, 10) || 1,
       images,
       product,
       discussion: activeDiscussion,
@@ -400,7 +414,7 @@ class ProductDetail extends Component {
   }
 
   calculatePrice = () => {
-    const { selectedOptions, product, amount } = this.state;
+    const { selectedOptions, product } = this.state;
     const { productDetail } = this.props;
     let newPrice = 0;
     let newListPrice = 0;
@@ -411,9 +425,9 @@ class ProductDetail extends Component {
       newListPrice += +selectedOptions[key].modifier;
     });
 
-    if (amount) {
-      newPrice *= amount;
-      newListPrice *= amount;
+    if (product.amount) {
+      newPrice *= product.amount;
+      newListPrice *= product.amount;
     }
 
     const priceFormated = product.price_formatted.price.replace(/[\s\d]+/, `${newPrice} `);
@@ -435,9 +449,24 @@ class ProductDetail extends Component {
     });
   }
 
-  handleAddToCart() {
+  handleApplePay = async (next) => {
+    const { cartActions } = this.props;
+
+    try {
+      await cartActions.clear();
+      const cartData = await this.handleAddToCart(false);
+
+      if (!cartData.data.message) {
+        setTimeout(() => next(), 400);
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
+
+  handleAddToCart = (showNotification = true) => {
     const productOptions = {};
-    const { product, selectedOptions, amount } = this.state;
+    const { product, selectedOptions } = this.state;
     const { auth, navigator, cartActions } = this.props;
 
     if (!auth.logged) {
@@ -457,17 +486,17 @@ class ProductDetail extends Component {
     const products = {
       [product.product_id]: {
         product_id: product.product_id,
-        amount,
+        amount: product.amount,
         product_options: productOptions,
       },
     };
 
-    return cartActions.add({ products });
+    return cartActions.add({ products }, showNotification);
   }
 
   handleAddToWishList() {
     const productOptions = {};
-    const { product, selectedOptions, amount } = this.state;
+    const { product, selectedOptions } = this.state;
     const { auth, navigator, wishListActions } = this.props;
 
     if (!auth.logged) {
@@ -487,7 +516,7 @@ class ProductDetail extends Component {
     const products = {
       [product.product_id]: {
         product_id: product.product_id,
-        amount,
+        amount: product.amount,
         product_options: productOptions,
       },
     };
@@ -498,6 +527,7 @@ class ProductDetail extends Component {
     const { selectedOptions } = this.state;
     const newOptions = { ...selectedOptions };
     newOptions[name] = val;
+
     this.setState({
       selectedOptions: newOptions,
     }, () => this.calculatePrice());
@@ -533,7 +563,7 @@ class ProductDetail extends Component {
             screen: 'Gallery',
             animationType: 'fade',
             passProps: {
-              images: [...this.state.images],
+              images: [...images],
               activeIndex: index,
             },
           });
@@ -738,19 +768,16 @@ class ProductDetail extends Component {
   }
 
   renderOptions() {
-    const { product, amount } = this.state;
+    const { productsActions } = this.props;
+    const { product } = this.state;
 
     return (
       <Section>
         {product.options.map(o => this.renderOptionItem(o))}
         <QtyOption
-          value={amount}
+          value={product.amount}
           step={parseInt(product.qty_step, 10) || 1}
-          onChange={(val) => {
-            this.setState({
-              amount: val,
-            }, () => this.calculatePrice());
-          }}
+          onChange={(val) => productsActions.changeAmount(val)}
         />
       </Section>
     );
@@ -805,11 +832,13 @@ class ProductDetail extends Component {
   }
 
   renderVendorInfo() {
-    if (config.version !== VERSION_MVE || !this.state.vendor) {
+    const { vendor } = this.state;
+    const { navigator } = this.props;
+
+    if (config.version !== VERSION_MVE || !vendor) {
       return null;
     }
-    const { navigator } = this.props;
-    const { vendor } = this.state;
+
     return (
       <Section
         title={i18n.gettext('Vendor')}
@@ -817,13 +846,13 @@ class ProductDetail extends Component {
       >
         <View style={styles.vendorWrapper}>
           <Text style={styles.vendorName}>
-            {this.state.vendor.company}
+            {vendor.company}
           </Text>
           <Text style={styles.vendorProductCount}>
             {i18n.gettext('%1 item(s)', vendor.products_count)}
           </Text>
           <Text style={styles.vendorDescription}>
-            {stripTags(this.state.vendor.description)}
+            {stripTags(vendor.description)}
           </Text>
           <TouchableOpacity
             style={styles.vendorInfoBtn}
@@ -882,18 +911,10 @@ class ProductDetail extends Component {
   }
 
   renderAddToCart() {
-    const { hideWishList } = this.props;
+    const { hideWishList, navigator } = this.props;
+
     return (
       <View style={styles.addToCartContainer}>
-        <TouchableOpacity
-          style={styles.addToCartBtn}
-          onPress={() => this.handleAddToCart()}
-        >
-          <Text style={styles.addToCartBtnText}>
-            {i18n.gettext('Add to cart').toUpperCase()}
-          </Text>
-        </TouchableOpacity>
-
         {!hideWishList
           && (
             <TouchableOpacity
@@ -903,20 +924,36 @@ class ProductDetail extends Component {
               <Icon name="favorite" size={24} style={styles.addToWishListIcon} />
             </TouchableOpacity>
           )}
+
+        <View style={styles.inAppPaymentWrapper}>
+          <InAppPayment
+            navigator={navigator}
+            onPress={this.handleApplePay}
+          />
+        </View>
+
+        <TouchableOpacity
+          style={styles.addToCartBtn}
+          onPress={() => {
+            this.handleAddToCart();
+          }}
+        >
+          <Text style={styles.addToCartBtnText}>
+            {i18n.gettext('Add to cart').toUpperCase()}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
-  renderSpinner = () => (
-    <Spinner visible mode="content" />
-  );
-
   render() {
     const { fetching } = this.state;
     const { cart } = this.props;
+
     if (fetching) {
-      return this.renderSpinner();
+      return (<Spinner visible mode="content" />);
     }
+
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView
@@ -947,8 +984,8 @@ class ProductDetail extends Component {
 
 export default connect(
   state => ({
-    auth: state.auth,
     cart: state.cart,
+    auth: state.auth,
     vendors: state.vendors,
     wishList: state.wishList,
     discussion: state.discussion,

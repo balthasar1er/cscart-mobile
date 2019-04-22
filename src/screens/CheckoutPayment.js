@@ -266,18 +266,23 @@ class CheckoutStepThree extends Component {
       this.setState({
         fetching: false,
       });
-      paymentsActions.settlements(orderId.order_id, false, (data) => {
-        navigator.push({
-          screen: 'SettlementsCompleteWebView',
-          backButtonTitle: '',
-          title: this.state.selectedItem.payment,
-          // backButtonHidden: true,
-          passProps: {
-            orderId: orderId.order_id,
-            ...data.data,
-          },
+      const data = {
+        order_id: orderId.order_id,
+        replay: false,
+      };
+      paymentsActions.settlements(data)
+        .then((response) => {
+          navigator.push({
+            screen: 'SettlementsCompleteWebView',
+            backButtonTitle: '',
+            title: this.state.selectedItem.payment,
+            // backButtonHidden: true,
+            passProps: {
+              orderId: orderId.order_id,
+              ...response.data.data,
+            },
+          });
         });
-      });
     });
     return null;
   }
