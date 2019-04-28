@@ -434,6 +434,7 @@ class ProductDetail extends Component {
         `sra_products/${product.product_id}/?${formatOptionsToUrl(this.state)}`
       ).then(
         (res) => {
+          res.data.amount = product.amount;
           this.setState({ product: { ...product, ...res.data }, fetchingChangedOptions: false });
         }
       );
@@ -621,7 +622,7 @@ class ProductDetail extends Component {
   }
 
   renderPrice() {
-    const { product, amount, fetchingChangedOptions } = this.state;
+    const { product, fetchingChangedOptions } = this.state;
     let discountPrice = null;
     let discountTitle = null;
     let showDiscount = false;
@@ -651,7 +652,7 @@ class ProductDetail extends Component {
           </Text>
         )}
         <Text style={styles.priceText}>
-          {formatPrice(`${product.price_formatted.symbol}${product.price * (amount || 1)}`)}
+          {formatPrice(`${product.price_formatted.symbol}${product.price * (product.amount || 1)}`)}
         </Text>
       </View>
     );
@@ -759,7 +760,7 @@ class ProductDetail extends Component {
   }
 
   renderOptions() {
-    const { product, amount, fetchingChangedOptions } = this.state;
+    const { product, fetchingChangedOptions } = this.state;
 
     if (fetchingChangedOptions) {
       return (
@@ -776,7 +777,7 @@ class ProductDetail extends Component {
         <QtyOption
           value={product.amount}
           step={parseInt(product.qty_step, 10) || 1}
-          onChange={(val) => productsActions.changeAmount(val)}
+          onChange={(val) => { productsActions.changeAmount(val); }}
         />
       </Section>
     );
