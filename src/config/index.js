@@ -20,4 +20,15 @@ export default {
   demo: true,
   demoUsername: 'customer@example.com',
   demoPassword: 'customer',
+
+  // Apple pay payments
+  applePay: true,
+  applePayMerchantIdentifier: 'merchant.com.cscart',
+  applePayMerchantName: 'CSCartmultivendor',
+  applePaySupportedNetworks: ['visa'],
+
+  // Google pay payments
+  googlePay: true,
+  googlePayApiKey: 'api-key',
+  googlePaySupportedNetworks: ['visa'],
 };

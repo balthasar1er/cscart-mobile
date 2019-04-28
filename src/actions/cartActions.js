@@ -52,12 +52,14 @@ export function fetch(fetching = true, calculateShipping = 'A') {
           type: CART_SUCCESS,
           payload: response.data,
         });
+        return response;
       })
       .catch((error) => {
         dispatch({
           type: CART_FAIL,
           error,
         });
+        return error;
       });
   };
 }
@@ -116,7 +118,20 @@ export function saveUserData(data) {
   };
 }
 
-export function add(data) {
+export function getUpdatedDetailsForShippingAddress(data) {
+  return () => Api.put('/sra_cart_content/', { user_data: data })
+    .then(() => Api.get('/sra_cart_content/', { params: { calculate_shipping: 'A' } }))
+    .then(response => response.data)
+    .catch(error => error);
+}
+
+export function getUpdatedDetailsForShippingOption(ids) {
+  return () => Api.get('/sra_cart_content/', { params: { shipping_ids: ids, calculate_shipping: 'E' } })
+    .then(response => response.data)
+    .catch(error => error);
+}
+
+export function add(data, notify = true) {
   return (dispatch) => {
     dispatch({ type: ADD_TO_CART_REQUEST });
     return Api.post('/sra_cart_content/', data)
@@ -125,18 +140,19 @@ export function add(data) {
           type: ADD_TO_CART_SUCCESS,
           payload: response.data,
         });
-        // Calculate cart
-        setTimeout(() => fetch(false)(dispatch), 50);
-        dispatch({
-          type: NOTIFICATION_SHOW,
-          payload: {
-            type: 'success',
-            title: i18n.gettext('Success'),
-            text: i18n.gettext('The product was added to your cart.'),
-            closeLastModal: false,
-          },
-        });
+        if (notify) {
+          dispatch({
+            type: NOTIFICATION_SHOW,
+            payload: {
+              type: 'success',
+              title: i18n.gettext('Success'),
+              text: i18n.gettext('The product was added to your cart.'),
+              closeLastModal: false,
+            },
+          });
+        }
       })
+      .then(() => fetch(false)(dispatch))
       .catch((error) => {
         // Out of stock error
         if (error.response.data.status === 409) {
@@ -154,6 +170,7 @@ export function add(data) {
           type: ADD_TO_CART_FAIL,
           error,
         });
+        return error.response;
       });
   };
 }
@@ -167,6 +184,7 @@ export function clear() {
           type: CART_CLEAR_SUCCESS,
           payload: response.data,
         });
+        return response;
       })
       .catch((error) => {
         dispatch({
