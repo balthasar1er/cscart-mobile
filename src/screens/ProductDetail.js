@@ -56,6 +56,8 @@ import {
   FEATURE_TYPE_CHECKBOX,
 } from '../constants';
 
+import Api from '../services/api';
+
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
@@ -275,6 +277,7 @@ class ProductDetail extends Component {
       fetching: true,
       selectedOptions: {},
       canWriteComments: false,
+      fetchingChangedOptions: false,
     };
 
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -296,11 +299,11 @@ class ProductDetail extends Component {
     };
 
     iconsLoaded.then(() => {
-      const { hideSearch } = this.props;
+      const { hideSearch, navigator } = this.props;
       if (hideSearch) {
         buttons.rightButtons.splice(-1, 1);
       }
-      this.props.navigator.setButtons(buttons);
+      navigator.setButtons(buttons);
     });
   }
 
@@ -316,6 +319,7 @@ class ProductDetail extends Component {
       productDetail, navigator, vendors, discussion, auth,
     } = nextProps;
     const product = productDetail;
+    const { vendorActions } = this.props;
 
     if (!product) {
       return;
@@ -332,12 +336,11 @@ class ProductDetail extends Component {
       !this.isVendorFetchRequestSent
     ) {
       this.isVendorFetchRequestSent = true;
-      this.props.vendorActions.fetch(product.company_id);
+      vendorActions.fetch(product.company_id);
     }
 
     const defaultOptions = { ...this.state.selectedOptions };
     product.options.forEach((option) => {
-
       // Fixme: Server returned inconsistent data.
       if (!option.variants) {
         option.variants = [];
@@ -374,7 +377,7 @@ class ProductDetail extends Component {
       vendor: vendors.items[product.company_id] || null,
       canWriteComments: (!activeDiscussion.disable_adding
         && productDetail.discussion_type !== DISCUSSION_DISABLED) && auth.logged,
-    }, () => this.calculatePrice());
+    });
 
     navigator.setTitle({
       title: product.product,
@@ -400,38 +403,27 @@ class ProductDetail extends Component {
   }
 
   calculatePrice = () => {
-    const { selectedOptions, product, amount } = this.state;
-    const { productDetail } = this.props;
-    let newPrice = 0;
-    let newListPrice = 0;
-    newPrice += parseInt(productDetail.price, 10);
-    newListPrice += parseInt(productDetail.list_price, 10);
-    Object.keys(selectedOptions).forEach((key) => {
-      newPrice += +selectedOptions[key].modifier;
-      newListPrice += +selectedOptions[key].modifier;
-    });
-
-    if (amount) {
-      newPrice *= amount;
-      newListPrice *= amount;
+    function formatOptionsToUrl(state) {
+      let options = '';
+      Object.keys(state.selectedOptions).forEach(
+        (optionId) => {
+          options += `${encodeURIComponent(`selected_options[${optionId}]`)}=${state.selectedOptions[optionId].variant_id}&`;
+        }
+      );
+      options = options.substr(0, options.length - 1);
+      return options;
     }
 
-    const priceFormated = product.price_formatted.price.replace(/[\s\d]+/, `${newPrice} `);
-    const newListPriceFormated = product.list_price_formatted.price.replace(/[\s\d]+/, `${newListPrice} `);
+    const { product } = this.state;
 
-    this.setState({
-      product: {
-        ...product,
-        price: newPrice,
-        price_formatted: {
-          ...product.price_formatted,
-          price: `${priceFormated}`,
-        },
-        list_price_formatted: {
-          ...product.list_price_formatted,
-          price: `${newListPriceFormated}`
+    this.setState({ fetchingChangedOptions: true }, () => {
+      Api.get(
+        `sra_products/${product.product_id}/?${formatOptionsToUrl(this.state)}`
+      ).then(
+        (res) => {
+          this.setState({ product: { ...product, ...res.data }, fetchingChangedOptions: false });
         }
-      },
+      );
     });
   }
 
@@ -533,7 +525,7 @@ class ProductDetail extends Component {
             screen: 'Gallery',
             animationType: 'fade',
             passProps: {
-              images: [...this.state.images],
+              images: [...images],
               activeIndex: index,
             },
           });
@@ -600,22 +592,22 @@ class ProductDetail extends Component {
   }
 
   renderPrice() {
-    const { product } = this.state;
+    const { product, amount, fetchingChangedOptions } = this.state;
     let discountPrice = null;
     let discountTitle = null;
     let showDiscount = false;
 
     if (toInteger(product.discount)) {
-      discountPrice = product.base_price_formatted.price;
+      discountPrice = `${product.base_price_formatted.symbol}${product.base_price}`;
       discountTitle = `${i18n.gettext('Old price')}: `;
       showDiscount = true;
     } else if (toInteger(product.list_price)) {
-      discountPrice = product.list_price_formatted.price;
+      discountPrice = `${product.list_price_formatted.symbol}${product.list_price}`;
       discountTitle = `${i18n.gettext('List price')}: `;
       showDiscount = true;
     }
 
-    if (!product.price) {
+    if (!product.price || fetchingChangedOptions) {
       return null;
     }
 
@@ -630,7 +622,7 @@ class ProductDetail extends Component {
           </Text>
         )}
         <Text style={styles.priceText}>
-          {formatPrice(product.price_formatted.price)}
+          {formatPrice(`${product.price_formatted.symbol}${product.price * (amount || 1)}`)}
         </Text>
       </View>
     );
@@ -738,7 +730,15 @@ class ProductDetail extends Component {
   }
 
   renderOptions() {
-    const { product, amount } = this.state;
+    const { product, amount, fetchingChangedOptions } = this.state;
+
+    if (fetchingChangedOptions) {
+      return (
+        <Section>
+          <Spinner visible mode="content" />
+        </Section>
+      );
+    }
 
     return (
       <Section>
@@ -747,9 +747,7 @@ class ProductDetail extends Component {
           value={amount}
           step={parseInt(product.qty_step, 10) || 1}
           onChange={(val) => {
-            this.setState({
-              amount: val,
-            }, () => this.calculatePrice());
+            this.setState({ amount: val });
           }}
         />
       </Section>
@@ -805,11 +803,13 @@ class ProductDetail extends Component {
   }
 
   renderVendorInfo() {
-    if (config.version !== VERSION_MVE || !this.state.vendor) {
+    const { vendor } = this.state;
+    const { navigator } = this.props;
+
+    if (config.version !== VERSION_MVE || !vendor) {
       return null;
     }
-    const { navigator } = this.props;
-    const { vendor } = this.state;
+
     return (
       <Section
         title={i18n.gettext('Vendor')}
@@ -817,13 +817,13 @@ class ProductDetail extends Component {
       >
         <View style={styles.vendorWrapper}>
           <Text style={styles.vendorName}>
-            {this.state.vendor.company}
+            {vendor.company}
           </Text>
           <Text style={styles.vendorProductCount}>
             {i18n.gettext('%1 item(s)', vendor.products_count)}
           </Text>
           <Text style={styles.vendorDescription}>
-            {stripTags(this.state.vendor.description)}
+            {stripTags(vendor.description)}
           </Text>
           <TouchableOpacity
             style={styles.vendorInfoBtn}
