@@ -417,14 +417,13 @@ class ProductDetail extends Component {
 
   calculatePrice = () => {
     function formatOptionsToUrl(state) {
-      let options = '';
+      const options = [];
       Object.keys(state.selectedOptions).forEach(
         (optionId) => {
-          options += `${encodeURIComponent(`selected_options[${optionId}]`)}=${state.selectedOptions[optionId].variant_id}&`;
+          options.push(`${encodeURIComponent(`selected_options[${optionId}]`)}=${state.selectedOptions[optionId].variant_id}`);
         }
       );
-      options = options.substr(0, options.length - 1);
-      return options;
+      return options.join('&');
     }
 
     const { product } = this.state;
@@ -628,11 +627,11 @@ class ProductDetail extends Component {
     let showDiscount = false;
 
     if (toInteger(product.discount)) {
-      discountPrice = `${product.base_price_formatted.symbol}${product.base_price}`;
+      discountPrice = product.base_price_formatted.price;
       discountTitle = `${i18n.gettext('Old price')}: `;
       showDiscount = true;
     } else if (toInteger(product.list_price)) {
-      discountPrice = `${product.list_price_formatted.symbol}${product.list_price}`;
+      discountPrice = product.list_price_formatted.price;
       discountTitle = `${i18n.gettext('List price')}: `;
       showDiscount = true;
     }
