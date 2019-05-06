@@ -17,6 +17,7 @@ import {
 import format from 'date-fns/format';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
+import _ from 'lodash';
 import { stripTags, formatPrice, getProductImagesPaths } from '../utils';
 
 // Import actions.
@@ -42,6 +43,7 @@ import Icon from '../components/Icon';
 import i18n from '../utils/i18n';
 import theme from '../config/theme';
 import config from '../config';
+
 
 import {
   iconsLoaded,
@@ -415,7 +417,7 @@ class ProductDetail extends Component {
     }
   }
 
-  calculatePrice = () => {
+  calculatePrice = ({ showLoader = true }) => {
     function formatOptionsToUrl(state) {
       const options = [];
       Object.keys(state.selectedOptions).forEach(
@@ -426,14 +428,13 @@ class ProductDetail extends Component {
       return options.join('&');
     }
 
-    const { product } = this.state;
+    const { product, amount } = this.state;
 
-    this.setState({ fetchingChangedOptions: true }, () => {
+    this.setState({ fetchingChangedOptions: showLoader }, () => {
       Api.get(
-        `sra_products/${product.product_id}/?${formatOptionsToUrl(this.state)}`
+        `sra_products/${product.product_id}/?${formatOptionsToUrl(this.state)}&amount=${amount}`
       ).then(
         (res) => {
-          res.data.amount = product.amount;
           this.setState({ product: { ...product, ...res.data }, fetchingChangedOptions: false });
         }
       );
@@ -651,7 +652,7 @@ class ProductDetail extends Component {
           </Text>
         )}
         <Text style={styles.priceText}>
-          {formatPrice(`${product.price_formatted.symbol}${product.price * (product.amount || 1)}`)}
+          {formatPrice(`${product.price_formatted.price}`)}
         </Text>
       </View>
     );
@@ -768,7 +769,6 @@ class ProductDetail extends Component {
         </Section>
       );
     }
-    const { productsActions } = this.props;
 
     return (
       <Section>
@@ -776,7 +776,14 @@ class ProductDetail extends Component {
         <QtyOption
           value={product.amount}
           step={parseInt(product.qty_step, 10) || 1}
-          onChange={(val) => { productsActions.changeAmount(val); }}
+          onChange={(val) => {
+            this.setState(
+              { amount: val },
+              _.debounce(() => {
+                this.calculatePrice({ showLoader: false });
+              }, 700)
+            );
+          }}
         />
       </Section>
     );
