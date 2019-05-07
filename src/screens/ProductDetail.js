@@ -222,6 +222,13 @@ const styles = EStyleSheet.create({
   },
 });
 
+const throttledPriceCalculating = _.throttle(
+  (context) => {
+    context.calculatePrice({ showLoader: false });
+  },
+  1000
+);
+
 class ProductDetail extends Component {
   static navigatorStyle = {
     navBarBackgroundColor: theme.$navBarBackgroundColor,
@@ -255,7 +262,6 @@ class ProductDetail extends Component {
     }),
     productsActions: PropTypes.shape({
       fetchOptions: PropTypes.func,
-      changeAmount: PropTypes.func,
     }),
     cartActions: PropTypes.shape({
       add: PropTypes.func,
@@ -435,7 +441,10 @@ class ProductDetail extends Component {
         `sra_products/${product.product_id}/?${formatOptionsToUrl(this.state)}&amount=${amount}`
       ).then(
         (res) => {
-          this.setState({ product: { ...product, ...res.data }, fetchingChangedOptions: false });
+          this.setState({
+            product: { ...product, ...res.data },
+            fetchingChangedOptions: false
+          });
         }
       );
     });
@@ -760,7 +769,7 @@ class ProductDetail extends Component {
   }
 
   renderOptions() {
-    const { product, fetchingChangedOptions } = this.state;
+    const { product, amount, fetchingChangedOptions } = this.state;
 
     if (fetchingChangedOptions) {
       return (
@@ -774,14 +783,12 @@ class ProductDetail extends Component {
       <Section>
         {product.options.map(o => this.renderOptionItem(o))}
         <QtyOption
-          value={product.amount}
+          value={amount}
           step={parseInt(product.qty_step, 10) || 1}
           onChange={(val) => {
             this.setState(
               { amount: val },
-              _.debounce(() => {
-                this.calculatePrice({ showLoader: false });
-              }, 700)
+              () => { throttledPriceCalculating(this); }
             );
           }}
         />
