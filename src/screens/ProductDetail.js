@@ -646,7 +646,13 @@ class ProductDetail extends Component {
       showDiscount = true;
     }
 
-    if (!product.price || fetchingChangedOptions) {
+    if (fetchingChangedOptions) {
+      return (
+        <Spinner visible mode="content" />
+      );
+    }
+
+    if (!product.price) {
       return null;
     }
 
@@ -769,15 +775,7 @@ class ProductDetail extends Component {
   }
 
   renderOptions() {
-    const { product, amount, fetchingChangedOptions } = this.state;
-
-    if (fetchingChangedOptions) {
-      return (
-        <Section>
-          <Spinner visible mode="content" />
-        </Section>
-      );
-    }
+    const { product, amount } = this.state;
 
     return (
       <Section>
