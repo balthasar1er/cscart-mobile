@@ -57,3 +57,6 @@ buck-out/
 
 # Langs
 messages.pot
+
+# Dependencies
+third-party

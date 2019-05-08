@@ -6,6 +6,7 @@ import {
   TextInput,
   Platform,
   TouchableOpacity,
+  I18nManager
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -26,7 +27,7 @@ const styles = EStyleSheet.create({
   },
   itemText: {
     paddingTop: 4,
-    fontSize: '1rem',
+    fontSize: '1rem'
   },
   itemBtn: {
     width: 30,
@@ -41,7 +42,9 @@ const styles = EStyleSheet.create({
     borderRadius: 4,
     borderColor: '#cccccc',
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
+    textAlign: I18nManager.isRTL ? 'right' : 'left',
+    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr'
   },
   inputWrapper: {
     position: 'relative'
