@@ -467,7 +467,7 @@ class ProductDetail extends Component {
 
   handleAddToCart = (showNotification = true) => {
     const productOptions = {};
-    const { product, selectedOptions } = this.state;
+    const { product, selectedOptions, amount } = this.state;
     const { auth, navigator, cartActions } = this.props;
 
     if (!auth.logged) {
@@ -487,7 +487,7 @@ class ProductDetail extends Component {
     const products = {
       [product.product_id]: {
         product_id: product.product_id,
-        amount: product.amount,
+        amount,
         product_options: productOptions,
       },
     };
@@ -531,7 +531,7 @@ class ProductDetail extends Component {
 
     this.setState({
       selectedOptions: newOptions,
-    }, () => this.calculatePrice());
+    }, () => this.calculatePrice({ showLoader: true }));
   }
 
   renderDiscountLabel() {
