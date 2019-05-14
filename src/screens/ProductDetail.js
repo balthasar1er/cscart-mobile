@@ -96,6 +96,12 @@ const styles = EStyleSheet.create({
     color: '$darkColor',
     textAlign: 'left'
   },
+  outOfStockText: {
+    color: '$dangerColor',
+    marginTop: 10,
+    fontSize: '0.8rem',
+    fontWeight: 'bold',
+  },
   listPriceText: {
     textDecorationLine: 'line-through',
     color: '$darkColor',
@@ -662,6 +668,9 @@ class ProductDetail extends Component {
         <Text style={styles.priceText}>
           {formatPrice(product.price_formatted.price)}
         </Text>
+        <Text style={styles.outOfStockText}>
+          {i18n.gettext('Out of stock')}
+        </Text>
       </View>
     );
   }
@@ -912,6 +921,8 @@ class ProductDetail extends Component {
 
   renderAddToCart() {
     const { hideWishList, navigator } = this.props;
+    const { product } = this.state;
+    const inStock = Number(product.inventory_amount);
 
     return (
       <View style={styles.addToCartContainer}>
@@ -936,6 +947,7 @@ class ProductDetail extends Component {
 
         <TouchableOpacity
           style={styles.addToCartBtn}
+          disabled={!inStock}
           onPress={() => {
             this.handleAddToCart();
           }}
