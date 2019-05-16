@@ -651,9 +651,7 @@ class ProductDetail extends Component {
       showDiscount = true;
     }
 
-    if (!product.price) {
-      return null;
-    }
+    const inStock = !Number(product.amount);
 
     return (
       <View>
@@ -665,12 +663,16 @@ class ProductDetail extends Component {
             </Text>
           </Text>
         )}
-        <Text style={styles.priceText}>
-          {formatPrice(product.price_formatted.price)}
-        </Text>
-        <Text style={styles.outOfStockText}>
-          {i18n.gettext('Out of stock')}
-        </Text>
+        {product.price && (
+          <Text style={styles.priceText}>
+            {formatPrice(product.price_formatted.price)}
+          </Text>
+        )}
+        {inStock && (
+          <Text style={styles.outOfStockText}>
+            {i18n.gettext('Out of stock')}
+          </Text>
+        )}
       </View>
     );
   }
@@ -922,7 +924,7 @@ class ProductDetail extends Component {
   renderAddToCart() {
     const { hideWishList, navigator } = this.props;
     const { product } = this.state;
-    const inStock = Number(product.inventory_amount);
+    const inStock = !Number(product.amount);
 
     return (
       <View style={styles.addToCartContainer}>
@@ -947,7 +949,7 @@ class ProductDetail extends Component {
 
         <TouchableOpacity
           style={styles.addToCartBtn}
-          disabled={!inStock}
+          disabled={inStock}
           onPress={() => {
             this.handleAddToCart();
           }}

@@ -38,7 +38,7 @@ export default function (state = initialState, action) {
         options: Object.keys(action.payload.product.product_options)
           .map(k => action.payload.product.product_options[k]),
         fetching: false,
-        amount: parseInt(action.payload.product.qty_step, 10) || 1,
+        amount: parseInt(action.payload.product.qty_step, 10) || action.payload.product.amount,
       };
 
     case FETCH_ONE_PRODUCT_FAIL:
