@@ -492,7 +492,7 @@ class ProductDetail extends Component {
     const products = {
       [product.product_id]: {
         product_id: product.product_id,
-        amount: product.amount,
+        amount: product.selectedAmount,
         product_options: productOptions,
       },
     };
@@ -522,7 +522,7 @@ class ProductDetail extends Component {
     const products = {
       [product.product_id]: {
         product_id: product.product_id,
-        amount: product.amount,
+        amount: product.selectedAmount,
         product_options: productOptions,
       },
     };
@@ -786,8 +786,8 @@ class ProductDetail extends Component {
       <Section>
         {product.options.map(o => this.renderOptionItem(o))}
         <QtyOption
-          value={product.amount}
-          step={parseInt(product.qty_step, 10) || 1}
+          value={product.selectedAmount}
+          step={product.qty_step}
           onChange={(val) => productsActions.changeAmount(val)}
         />
       </Section>
