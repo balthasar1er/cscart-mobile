@@ -432,8 +432,8 @@ class ProductDetail extends Component {
     });
 
     if (product.amount) {
-      newPrice *= product.amount;
-      newListPrice *= product.amount;
+      newPrice *= product.selectedAmount;
+      newListPrice *= product.selectedAmount;
     }
 
     const priceFormated = product.price_formatted.price.replace(/[\s\d]+/, `${newPrice} `);
