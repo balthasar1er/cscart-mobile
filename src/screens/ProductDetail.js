@@ -431,7 +431,7 @@ class ProductDetail extends Component {
       newListPrice += +selectedOptions[key].modifier;
     });
 
-    if (product.amount) {
+    if (product.amount && product.selectedAmount) {
       newPrice *= product.selectedAmount;
       newListPrice *= product.selectedAmount;
     }
@@ -923,8 +923,6 @@ class ProductDetail extends Component {
 
   renderAddToCart() {
     const { hideWishList, navigator } = this.props;
-    const { product } = this.state;
-    const inStock = !Number(product.amount);
 
     return (
       <View style={styles.addToCartContainer}>
@@ -949,7 +947,6 @@ class ProductDetail extends Component {
 
         <TouchableOpacity
           style={styles.addToCartBtn}
-          disabled={inStock}
           onPress={() => {
             this.handleAddToCart();
           }}
