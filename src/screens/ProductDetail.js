@@ -99,6 +99,12 @@ const styles = EStyleSheet.create({
     color: '$darkColor',
     textAlign: 'left'
   },
+  outOfStockText: {
+    color: '$dangerColor',
+    marginTop: 10,
+    fontSize: '0.8rem',
+    fontWeight: 'bold',
+  },
   listPriceText: {
     textDecorationLine: 'line-through',
     color: '$darkColor',
@@ -518,7 +524,7 @@ class ProductDetail extends Component {
     const products = {
       [product.product_id]: {
         product_id: product.product_id,
-        amount: product.amount,
+        amount: product.selectedAmount,
         product_options: productOptions,
       },
     };
@@ -657,6 +663,8 @@ class ProductDetail extends Component {
       return null;
     }
 
+    const inStock = !Number(product.amount);
+
     return (
       <View>
         {showDiscount && (
@@ -667,9 +675,16 @@ class ProductDetail extends Component {
             </Text>
           </Text>
         )}
-        <Text style={styles.priceText}>
-          {formatPrice(`${product.price_formatted.price}`)}
-        </Text>
+        {product.price && (
+          <Text style={styles.priceText}>
+            {formatPrice(product.price_formatted.price)}
+          </Text>
+        )}
+        {inStock && (
+          <Text style={styles.outOfStockText}>
+            {i18n.gettext('Out of stock')}
+          </Text>
+        )}
       </View>
     );
   }

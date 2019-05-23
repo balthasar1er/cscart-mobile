@@ -34,7 +34,7 @@ const styles = EStyleSheet.create({
 });
 
 const cachedCountries = getCountries();
-const Form = t.form.Form;
+const { Form } = t.form;
 const Country = t.enums(cachedCountries);
 
 const billingFields = {
