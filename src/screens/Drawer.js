@@ -149,6 +149,9 @@ const styles = EStyleSheet.create({
     borderColor: '$drawerHeaderBackgroundColor',
     marginTop: 14,
     marginBottom: 14,
+  },
+  redColor: {
+    color: '$primaryColor',
   }
 });
 
@@ -182,11 +185,13 @@ class Drawer extends Component {
   };
 
   componentDidMount() {
-    this.props.pagesActions.fetch(config.layoutId);
+    const { pagesActions } = this.props;
+    pagesActions.fetch(config.layoutId);
   }
 
   handleOpenPage = (page) => {
-    this.props.navigator.handleDeepLink({
+    const { navigator } = this.props;
+    navigator.handleDeepLink({
       link: `dispatch=pages.view&page_id=${page.page_id}`,
       payload: {
         title: page.page,
@@ -196,13 +201,19 @@ class Drawer extends Component {
   }
 
   closeDrawer() {
-    this.props.navigator.toggleDrawer({
+    const { navigator } = this.props;
+    navigator.toggleDrawer({
       side: 'left',
     });
   }
 
   renderHeader() {
-    const { cart, auth } = this.props;
+    const {
+      cart,
+      auth,
+      authActions,
+      navigator
+    } = this.props;
     if (auth.logged) {
       return (
         <View style={styles.header}>
@@ -213,8 +224,8 @@ class Drawer extends Component {
           <TouchableOpacity
             style={styles.signOutBtn}
             onPress={() => {
-              this.props.authActions.logout();
-              this.props.navigator.handleDeepLink({
+              authActions.logout();
+              navigator.handleDeepLink({
                 link: 'home/',
                 payload: {},
               });
@@ -246,7 +257,7 @@ class Drawer extends Component {
             style={styles.signInBtn}
             onPress={() => {
               this.closeDrawer();
-              this.props.navigator.showModal({
+              navigator.showModal({
                 screen: 'Login',
               });
             }}
@@ -264,7 +275,7 @@ class Drawer extends Component {
             style={styles.signInBtn}
             onPress={() => {
               this.closeDrawer();
-              this.props.navigator.showModal({
+              navigator.showModal({
                 screen: 'Registration',
                 title: i18n.gettext('Registration'),
                 passProps: {
@@ -336,32 +347,64 @@ class Drawer extends Component {
     );
   }
 
+  renderVendorMenu = () => (
+    <View>
+      {this.renderMenuItem('assessment', i18n.gettext('Dashboard'), () => {})}
+      {this.renderMenuItem('archive', i18n.gettext('Vendor Orders'), () => {})}
+      {this.renderMenuItem('forum', i18n.gettext('Vendor Message Center'), () => {})}
+      {this.renderMenuItem('pages', i18n.gettext('Vendor Products'), () => {})}
+      {this.renderMenuItem(
+        'add-circle',
+        i18n.gettext('Add product'),
+        () => {},
+        styles.redColor
+      )}
+      <View style={styles.devider} />
+    </View>
+  );
+
+  renderMenuItem = (icon, text, onPress, customStyle = {}) => {
+    return (
+      <TouchableOpacity
+        style={styles.itemBtn}
+        onPress={onPress}
+      >
+        <View style={styles.itemBtnWrapper}>
+          <Icon name={icon} style={[styles.itemBtnIcon, customStyle]} />
+          <Text style={[styles.itemBtnText, customStyle]}>
+            {text}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
   render() {
-    const { navigator, pages, auth } = this.props;
+    const {
+      navigator,
+      pages,
+      auth,
+      cart,
+      wishList,
+    } = this.props;
     const pagesList = pages.items
       .map(p => this.renderItem(p.page, () => this.handleOpenPage(p)));
+
     return (
       <View style={styles.container}>
         {this.renderHeader()}
         <ScrollView style={styles.scroll}>
           <View style={styles.mainMenu}>
-            <TouchableOpacity
-              style={styles.itemBtn}
-              onPress={() => {
-                navigator.handleDeepLink({
-                  link: 'home/',
-                  payload: {},
-                });
-                this.closeDrawer();
-              }}
-            >
-              <View style={styles.itemBtnWrapper}>
-                <Icon name="home" style={styles.itemBtnIcon} />
-                <Text style={styles.itemBtnText}>
-                  {i18n.gettext('Home')}
-                </Text>
-              </View>
-            </TouchableOpacity>
+
+            {auth.logged && this.renderVendorMenu()}
+
+            {this.renderMenuItem('home', i18n.gettext('Home'), () => {
+              navigator.handleDeepLink({
+                link: 'home/',
+                payload: {},
+              });
+              this.closeDrawer();
+            })}
 
             <TouchableOpacity
               style={styles.itemBtn}
@@ -377,76 +420,50 @@ class Drawer extends Component {
                 <Text style={styles.itemBtnText}>
                   {i18n.gettext('Cart')}
                 </Text>
-                {this.renderBadge(this.props.cart.amount)}
+                {this.renderBadge(cart.amount)}
               </View>
             </TouchableOpacity>
 
-            {auth.logged &&
-              (
-                <TouchableOpacity
-                  style={styles.itemBtn}
-                  onPress={() => {
-                    navigator.showModal({
-                      screen: 'WishList',
-                    });
-                    this.closeDrawer();
-                  }}
-                >
-                  <View style={styles.itemBtnWrapper}>
-                    <Icon name="favorite" style={styles.itemBtnIcon} />
-                    <Text style={styles.itemBtnText}>
-                      {i18n.gettext('Wish List')}
-                    </Text>
-                    {this.renderBadge(this.props.wishList.items.length)}
-                  </View>
-                </TouchableOpacity>
-              )
-            }
+            {auth.logged && (
+              <TouchableOpacity
+                style={styles.itemBtn}
+                onPress={() => {
+                  navigator.showModal({
+                    screen: 'WishList',
+                  });
+                  this.closeDrawer();
+                }}
+              >
+                <View style={styles.itemBtnWrapper}>
+                  <Icon name="favorite" style={styles.itemBtnIcon} />
+                  <Text style={styles.itemBtnText}>
+                    {i18n.gettext('Wish List')}
+                  </Text>
+                  {this.renderBadge(wishList.items.length)}
+                </View>
+              </TouchableOpacity>
+            )}
 
-            {auth.logged &&
-              (
-                <TouchableOpacity
-                  style={styles.itemBtn}
-                  onPress={() => {
-                    navigator.showModal({
-                      screen: 'Profile',
-                      title: i18n.gettext('Profile'),
-                      passProps: {},
-                    });
-                    this.closeDrawer();
-                  }}
-                >
-                  <View style={styles.itemBtnWrapper}>
-                    <Icon name="person" style={styles.itemBtnIcon} />
-                    <Text style={styles.itemBtnText}>
-                      {i18n.gettext('My Profile')}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              )
-            }
+            {auth.logged && (
+              this.renderMenuItem('person', i18n.gettext('My Profile'), () => {
+                navigator.showModal({
+                  screen: 'Profile',
+                  title: i18n.gettext('Profile'),
+                  passProps: {},
+                });
+                this.closeDrawer();
+              })
+            )}
 
-            {auth.logged &&
-              (
-                <TouchableOpacity
-                  style={styles.itemBtn}
-                  onPress={() => {
-                    navigator.handleDeepLink({
-                      link: 'dispatch=orders.search',
-                      payload: {},
-                    });
-                    this.closeDrawer();
-                  }}
-                >
-                  <View style={styles.itemBtnWrapper}>
-                    <Icon name="receipt" style={styles.itemBtnIcon} />
-                    <Text style={styles.itemBtnText}>
-                      {i18n.gettext('Orders')}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              )
-            }
+            {auth.logged && (
+              this.renderMenuItem('receipt', i18n.gettext('Orders'), () => {
+                navigator.handleDeepLink({
+                  link: 'dispatch=orders.search',
+                  payload: {},
+                });
+                this.closeDrawer();
+              })
+            )}
           </View>
           <View style={styles.devider} />
           <View style={styles.pagesMenu}>

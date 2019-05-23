@@ -60,3 +60,7 @@ messages.pot
 
 # Dependencies
 third-party
+
+# user
+!*users/com.simtech.multivendor
+users/
