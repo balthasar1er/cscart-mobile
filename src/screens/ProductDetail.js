@@ -293,6 +293,7 @@ class ProductDetail extends Component {
       selectedOptions: {},
       canWriteComments: false,
       fetchingChangedOptions: false,
+      amount: 1,
     };
 
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
