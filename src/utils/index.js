@@ -4,6 +4,7 @@ import has from 'lodash/has';
 import get from 'lodash/get';
 import values from 'lodash/values';
 import countries from '../config/countries';
+import i18n from './i18n';
 
 // Calculate product image width and items count.
 const WINDOW_WIDTH = Dimensions.get('window').width;
@@ -25,9 +26,6 @@ export const PRODUCT_NUM_COLUMNS = Math.floor(WINDOW_WIDTH / PRODUCT_AVERAGE_SIZ
 export const PRODUCT_IMAGE_WIDTH = (
   Math.floor((WINDOW_WIDTH / PRODUCT_NUM_COLUMNS) * 10000) / 10000
 ) - IMAGE_PADDING;
-
-// Get device info
-export const lang = DeviceInfo.getDeviceLocale().split('-')[0];
 
 // Strip tags
 export const stripTags = (str) => {
@@ -139,4 +137,62 @@ export function parseQueryString(query) {
     };
   }
   return obj;
+}
+
+export function getOrderStatus(status) {
+  switch (status) {
+    case 'P':
+      return {
+        text: i18n.gettext('Processed'),
+        style: { color: '#97cf4d' }
+      };
+
+    case 'C':
+      return {
+        text: i18n.gettext('Complete'),
+        style: { color: '#97cf4d' }
+      };
+
+    case 'O':
+      return {
+        text: i18n.gettext('Open'),
+        style: { color: '#ff9522' }
+      };
+
+    case 'F':
+      return {
+        text: i18n.gettext('Failed'),
+        style: { color: '#ff5215' }
+      };
+
+    case 'D':
+      return {
+        text: i18n.gettext('Declined'),
+        style: { color: '#ff5215' }
+      };
+
+    case 'B':
+      return {
+        text: i18n.gettext('Backordered'),
+        style: { color: '#28abf6' }
+      };
+
+    case 'I':
+      return {
+        text: i18n.gettext('Canceled'),
+        style: { color: '#c2c2c2' }
+      };
+
+    case 'Y':
+      return {
+        text: i18n.gettext('Awaiting call'),
+        style: { color: '#b63a21' }
+      };
+
+    default:
+      return {
+        text: i18n.gettext(''),
+        style: { color: '#000000' }
+      };
+  }
 }
