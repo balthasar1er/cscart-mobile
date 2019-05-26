@@ -347,21 +347,42 @@ class Drawer extends Component {
     );
   }
 
-  renderVendorMenu = () => (
-    <View>
-      {this.renderMenuItem('assessment', i18n.gettext('Dashboard'), () => {})}
-      {this.renderMenuItem('archive', i18n.gettext('Vendor Orders'), () => {})}
-      {this.renderMenuItem('forum', i18n.gettext('Vendor Message Center'), () => {})}
-      {this.renderMenuItem('pages', i18n.gettext('Vendor Products'), () => {})}
-      {this.renderMenuItem(
-        'add-circle',
-        i18n.gettext('Add product'),
-        () => {},
-        styles.redColor
-      )}
-      <View style={styles.devider} />
-    </View>
-  );
+  renderVendorMenu = () => {
+    const { navigator } = this.props;
+    return (
+      <View>
+        {this.renderMenuItem('assessment', i18n.gettext('Dashboard'), () => {})}
+        {this.renderMenuItem('archive', i18n.gettext('Vendor Orders'), () => {
+          this.closeDrawer();
+          navigator.handleDeepLink({
+            link: 'vendor/orders',
+            payload: {},
+          });
+        })}
+        {this.renderMenuItem('forum', i18n.gettext('Vendor Message Center'), () => {})}
+        {this.renderMenuItem('pages', i18n.gettext('Vendor Products'), () => {
+          this.closeDrawer();
+          navigator.handleDeepLink({
+            link: 'vendor/add_product',
+            payload: {},
+          });
+        })}
+        {this.renderMenuItem(
+          'add-circle',
+          i18n.gettext('Add product'),
+          () => {
+            this.closeDrawer();
+            navigator.handleDeepLink({
+              link: 'vendor/add_product',
+              payload: {},
+            });
+          },
+          styles.redColor
+        )}
+        <View style={styles.devider} />
+      </View>
+    );
+  };
 
   renderMenuItem = (icon, text, onPress, customStyle = {}) => {
     return (

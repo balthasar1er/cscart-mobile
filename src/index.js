@@ -107,6 +107,7 @@ class App extends React.Component {
           leftDrawerWidth: Platform.OS === 'ios' ? 84 : 100,
           contentOverlayColor: theme.$contentOverlayColor,
         },
+        disableOpenGesture: true
       },
     });
   }
