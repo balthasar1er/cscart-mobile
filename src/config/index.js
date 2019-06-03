@@ -1,13 +1,13 @@
 export default {
-  username: 'tester@example.com',
+  username: 'ascherbachenko@cs-cart.com',
   // API KEY
-  apiKey: 'db3a2e9d812a59da9002b4f2b3abcf09',
+  apiKey: '62f5a9c133da276c516cc7f491f8a644',
   // API URL
-  baseUrl: 'http://aeremin.u.simtech/5192/api/4.0/',
+  baseUrl: 'http://mobile.mve.demo.cs-cart.com/api/4.0/',
   // SITE URL
-  siteUrl: 'http://aeremin.u.simtech/5192/',
+  siteUrl: 'http://mobile.mve.demo.cs-cart.com/',
   // SHOP NAME
-  shopName: 'Simtech',
+  shopName: 'CS-Cart Mobile',
   // SHOP DEFAULT LAYOUT ID
   layoutId: 3, // Default www.mobile.demo.cs-cart.com layout id
   // VERSION MVE OR ULT
