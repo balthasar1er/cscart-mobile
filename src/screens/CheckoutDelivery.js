@@ -10,7 +10,6 @@ import _ from 'lodash';
 
 // Import components
 import CheckoutSteps from '../components/CheckoutSteps';
-import FormBlockField from '../components/FormBlockField';
 import FormBlock from '../components/FormBlock';
 import CartFooter from '../components/CartFooter';
 import Spinner from '../components/Spinner';
@@ -20,7 +19,7 @@ import * as authActions from '../actions/authActions';
 import * as cartActions from '../actions/cartActions';
 
 import i18n from '../utils/i18n';
-import { getCountries, getStates, formatPrice } from '../utils';
+import { formatPrice } from '../utils';
 
 // theme
 import theme from '../config/theme';
@@ -35,9 +34,7 @@ const styles = EStyleSheet.create({
   },
 });
 
-const cachedCountries = getCountries();
 const { Form } = t.form;
-const Country = t.enums(cachedCountries);
 
 const fieldTypes = {
   ADDRESS_TYPE: 'N',
@@ -56,184 +53,6 @@ const fieldTypes = {
   TEXT_AREA: 'T',
   USER_GROUP: 'U',
   VENDOR_TERMS: 'B',
-};
-
-const billingFields = {
-  b_firstname: t.String,
-  b_lastname: t.String,
-  email: t.String,
-  b_phone: t.maybe(t.String),
-  b_address: t.String,
-  b_address_2: t.maybe(t.String),
-  b_city: t.String,
-  b_country: Country,
-  b_state: t.String,
-  b_zipcode: t.String,
-};
-const BillingOptions = {
-  disableOrder: true,
-  fields: {
-    b_firstname: {
-      label: i18n.gettext('First name'),
-      returnKeyType: 'done',
-      clearButtonMode: 'while-editing',
-    },
-    b_lastname: {
-      label: i18n.gettext('Last name'),
-      returnKeyType: 'done',
-      clearButtonMode: 'while-editing',
-    },
-    email: {
-      label: i18n.gettext('Email'),
-      keyboardType: 'email-address',
-      returnKeyType: 'done',
-      clearButtonMode: 'while-editing',
-    },
-    b_phone: {
-      label: i18n.gettext('Phone'),
-      keyboardType: 'phone-pad',
-      returnKeyType: 'done',
-      clearButtonMode: 'while-editing',
-      i18n: {
-        optional: '',
-        required: '',
-      },
-      help: `${i18n.gettext('(Optional)')}`,
-    },
-    b_address: {
-      label: i18n.gettext('Address'),
-      multiline: true,
-      numberOfLines: 4,
-      clearButtonMode: 'while-editing',
-      returnKeyType: 'done',
-    },
-    b_address_2: {
-      label: i18n.gettext('Address 2'),
-      multiline: true,
-      numberOfLines: 4,
-      clearButtonMode: 'while-editing',
-      returnKeyType: 'done',
-      i18n: {
-        optional: '',
-        required: '',
-      },
-      help: `${i18n.gettext('(Optional)')}`,
-    },
-    b_city: {
-      label: i18n.gettext('City'),
-      returnKeyType: 'done',
-      clearButtonMode: 'while-editing',
-    },
-    b_country: {
-      label: i18n.gettext('Country'),
-      nullOption: {
-        value: '',
-        text: i18n.gettext('Select country')
-      },
-    },
-    b_state: {
-      label: i18n.gettext('State'),
-      nullOption: {
-        value: '',
-        text: i18n.gettext('Select state')
-      },
-    },
-    b_zipcode: {
-      label: i18n.gettext('Zip code'),
-      keyboardType: 'numeric',
-      returnKeyType: 'done',
-      clearButtonMode: 'while-editing',
-    },
-  }
-};
-
-const shippingFields = {
-  s_firstname: t.String,
-  s_lastname: t.String,
-  email: t.String,
-  s_phone: t.maybe(t.String),
-  s_address: t.String,
-  s_address_2: t.maybe(t.String),
-  s_city: t.String,
-  s_country: Country,
-  s_state: t.String,
-  s_zipcode: t.String,
-};
-const ShippingOptions = {
-  disableOrder: true,
-  fields: {
-    s_firstname: {
-      label: i18n.gettext('First name'),
-      returnKeyType: 'done',
-      clearButtonMode: 'while-editing',
-    },
-    s_lastname: {
-      label: i18n.gettext('Last name'),
-      returnKeyType: 'done',
-      clearButtonMode: 'while-editing',
-    },
-    email: {
-      label: i18n.gettext('Email'),
-      keyboardType: 'email-address',
-      returnKeyType: 'done',
-      clearButtonMode: 'while-editing',
-    },
-    s_phone: {
-      label: i18n.gettext('Phone'),
-      keyboardType: 'phone-pad',
-      returnKeyType: 'done',
-      clearButtonMode: 'while-editing',
-      i18n: {
-        optional: '',
-        required: '',
-      },
-      help: `${i18n.gettext('(Optional)')}`,
-    },
-    s_address: {
-      label: i18n.gettext('Address'),
-      multiline: true,
-      numberOfLines: 4,
-      clearButtonMode: 'while-editing',
-      returnKeyType: 'done',
-    },
-    s_address_2: {
-      label: i18n.gettext('Address 2'),
-      multiline: true,
-      numberOfLines: 4,
-      clearButtonMode: 'while-editing',
-      returnKeyType: 'done',
-      i18n: {
-        optional: '',
-        required: '',
-      },
-      help: `${i18n.gettext('(Optional)')}`,
-    },
-    s_city: {
-      label: i18n.gettext('City'),
-      returnKeyType: 'done',
-      clearButtonMode: 'while-editing',
-    },
-    s_country: {
-      label: i18n.gettext('Country'),
-      nullOption: {
-        value: '',
-        text: i18n.gettext('Select country')
-      },
-    },
-    s_state: {
-      label: i18n.gettext('State'),
-      nullOption: {
-        value: '',
-        text: i18n.gettext('Select state')
-      },
-    },
-    s_zipcode: {
-      label: i18n.gettext('Zip code'),
-      keyboardType: 'numeric',
-      returnKeyType: 'done',
-      clearButtonMode: 'while-editing',
-    },
-  }
 };
 
 class Checkout extends Component {
