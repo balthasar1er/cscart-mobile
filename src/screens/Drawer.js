@@ -355,7 +355,7 @@ class Drawer extends Component {
         {this.renderMenuItem('archive', i18n.gettext('Vendor Orders'), () => {
           this.closeDrawer();
           navigator.handleDeepLink({
-            link: 'vendor/orders',
+            link: 'vendor/orders/',
             payload: {},
           });
         })}
@@ -363,7 +363,7 @@ class Drawer extends Component {
         {this.renderMenuItem('pages', i18n.gettext('Vendor Products'), () => {
           this.closeDrawer();
           navigator.handleDeepLink({
-            link: 'vendor/add_product',
+            link: 'vendor/products/',
             payload: {},
           });
         })}
@@ -373,7 +373,7 @@ class Drawer extends Component {
           () => {
             this.closeDrawer();
             navigator.handleDeepLink({
-              link: 'vendor/add_product',
+              link: 'vendor/add_product/',
               payload: {},
             });
           },

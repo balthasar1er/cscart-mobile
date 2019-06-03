@@ -58,14 +58,19 @@ export const registerDrawerDeepLinks = (event, navigator) => {
       screen: 'Layouts',
       animated: false,
     });
-  } else if (link === 'vendor/orders') {
+  } else if (link === 'vendor/orders/') {
     navigator.resetTo({
       screen: 'OrdersVendorManage',
       animated: false,
     });
-  } else if (link === 'vendor/add_product') {
+  } else if (link === 'vendor/add_product/') {
     navigator.resetTo({
-      screen: 'AddProductVendorManage',
+      screen: 'VendorManageAddProduct',
+      animated: false,
+    });
+  } else if (link === 'vendor/products/') {
+    navigator.resetTo({
+      screen: 'VendorManageProducts',
       animated: false,
     });
   } else if (link.startsWith('http://') || link.startsWith('https://')) {
