@@ -117,5 +117,9 @@
   "Wrong password.": "كلمة مرور خاطئة",
   "Your message": "رسالتك",
   "Your name": "إسمك",
-  "Out of stock": "Out of stock"
+  "Out of stock": "غير متوفر بالمخزون",
+  "Open": "الحالية",
+  "Sorting: A to Z": "ترتيب هجائي: من أ إلى ي",
+  "List price": "قبل الخصم",
+  "Discount": "الخصم"
 }
