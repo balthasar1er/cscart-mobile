@@ -12,6 +12,7 @@ import format from 'date-fns/format';
 
 // Components
 import i18n from '../utils/i18n';
+import CartFooter from './CartFooter';
 
 const FIELD_DATE = 'D';
 const FIELD_CHECKBOX = 'C';
@@ -24,6 +25,9 @@ const FIELD_STATE = 'A';
 
 const styles = EStyleSheet.create({
   contentContainer: {
+    padding: 0,
+  },
+  form: {
     padding: 12,
   },
   btn: {
@@ -352,7 +356,7 @@ export default class ProfileForm extends Component {
     return (
       <KeyboardAwareScrollView contentContainerStyle={styles.contentContainer}>
         {forms.map((form, index) => (
-          <View key={form.type}>
+          <View key={form.type} style={styles.form}>
             {(isEdit && form.description !== '') && (
               <View>
                 <Text style={styles.header}>
@@ -369,14 +373,26 @@ export default class ProfileForm extends Component {
             />
           </View>
         ))}
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={this.handleValidate}
-        >
-          <Text style={styles.btnText}>
-            {isEdit ? i18n.gettext('Save') : i18n.gettext('Register')}
-          </Text>
-        </TouchableOpacity>
+        {
+          this.props.cartFooterEnabled
+            ? (
+              <CartFooter
+                totalPrice={this.props.totalPrice}
+                btnText={this.props.btnText}
+                onBtnPress={() => { this.props.onBtnPress(forms, this.handleValidate); }}
+              />
+            )
+            : (
+              <TouchableOpacity
+                style={styles.btn}
+                onPress={this.handleValidate}
+              >
+                <Text style={styles.btnText}>
+                  {isEdit ? i18n.gettext('Save') : i18n.gettext('Register')}
+                </Text>
+              </TouchableOpacity>
+            )
+        }
       </KeyboardAwareScrollView>
     );
   }
