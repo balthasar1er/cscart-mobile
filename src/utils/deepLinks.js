@@ -60,7 +60,7 @@ export const registerDrawerDeepLinks = (event, navigator) => {
     });
   } else if (link === 'vendor/orders/') {
     navigator.resetTo({
-      screen: 'OrdersVendorManage',
+      screen: 'VendorManageOrders',
       animated: false,
     });
   } else if (link === 'vendor/add_product/') {

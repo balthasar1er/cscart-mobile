@@ -8,6 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+import Swipeout from 'react-native-swipeout';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
@@ -121,6 +122,10 @@ class Orders extends Component {
           },
         ],
         rightButtons: [
+          {
+            id: 'add',
+            icon: iconsMap.add,
+          }
         ],
       });
     });
@@ -136,52 +141,67 @@ class Orders extends Component {
     }
   }
 
-  renderItem = ({
-    product,
-    product_code,
-    product_id,
-    price,
-    amount,
-  }) => {
+  renderItem = (item) => {
     const { navigator } = this.props;
 
+    const swipeoutBtns = [
+      {
+        text: i18n.gettext('Status'),
+        type: 'status',
+        backgroundColor: '#ff6002',
+        onPress: () => this.handleStatus(item),
+      },
+      {
+        text: i18n.gettext('Delete'),
+        type: 'delete',
+        backgroundColor: '#ff362b',
+        onPress: () => this.handleDelete(item),
+      },
+    ];
+
     return (
-      <TouchableOpacity
-        onPress={() => navigator.push({
-          screen: 'VendorManageEditProduct',
-          backButtonTitle: '',
-          passProps: {
-            orderId: product_id,
-          },
-        })}
+      <Swipeout
+        autoClose
+        right={swipeoutBtns}
+        backgroundColor={theme.$navBarBackgroundColor}
       >
-        <View style={styles.listItem}>
-          <View style={styles.listItemImage}>
-            {/* <Image
-              style={styles.productImage}
-              source={{ uri: imageUri }}
-              resizeMode="contain"
-              resizeMethod="resize"
-            /> */}
-            <Text>Image</Text>
-          </View>
-          <View style={styles.listItemContent}>
-            <View>
-              <Text style={styles.listItemHeader}>
-                {product}
-              </Text>
+        <TouchableOpacity
+          onPress={() => navigator.push({
+            screen: 'VendorManageEditProduct',
+            backButtonTitle: '',
+            passProps: {
+              orderId: item.product_id,
+            },
+          })}
+        >
+          <View style={styles.listItem}>
+            <View style={styles.listItemImage}>
+              {/* <Image
+                style={styles.productImage}
+                source={{ uri: imageUri }}
+                resizeMode="contain"
+                resizeMethod="resize"
+              /> */}
+              <Text>Image</Text>
             </View>
-            <View>
-              <Text style={styles.listItemText}>
-                {product_code}
-              </Text>
-              <Text style={styles.listItemText}>
-                {price} * {amount !== 0 && `${i18n.gettext('In stock')}: ${amount}`}
-              </Text>
+            <View style={styles.listItemContent}>
+              <View>
+                <Text style={styles.listItemHeader}>
+                  {item.product}
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.listItemText}>
+                  {item.product_code}
+                </Text>
+                <Text style={styles.listItemText}>
+                  {item.price} * {item.amount !== 0 && `${i18n.gettext('In stock')}: ${item.amount}`}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </Swipeout>
     );
   };
 
