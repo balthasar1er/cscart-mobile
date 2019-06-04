@@ -59,19 +59,22 @@ export const registerDrawerDeepLinks = (event, navigator) => {
       animated: false,
     });
   } else if (link === 'vendor/orders/') {
-    navigator.resetTo({
+    navigator.push({
       screen: 'VendorManageOrders',
       animated: false,
+      backButtonTitle: '',
     });
   } else if (link === 'vendor/add_product/') {
-    navigator.resetTo({
+    navigator.push({
       screen: 'VendorManageAddProduct',
       animated: false,
+      backButtonTitle: '',
     });
   } else if (link === 'vendor/products/') {
-    navigator.resetTo({
+    navigator.push({
       screen: 'VendorManageProducts',
       animated: false,
+      backButtonTitle: '',
     });
   } else if (link.startsWith('http://') || link.startsWith('https://')) {
     Linking.canOpenURL(link).then((supported) => {

@@ -109,10 +109,10 @@ class AddProduct extends Component {
     const { navigator } = this.props;
     iconsLoaded.then(() => {
       navigator.setButtons({
-        leftButtons: [
+        rightButtons: [
           {
             id: 'sideMenu',
-            icon: iconsMap.menu,
+            icon: iconsMap['keyboard-arrow-right'],
           },
         ],
       });
