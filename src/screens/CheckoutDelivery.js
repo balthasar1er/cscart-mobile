@@ -24,8 +24,6 @@ import { formatPrice } from '../utils';
 // theme
 import theme from '../config/theme';
 import ProfileForm from '../components/ProfileForm';
-//import console = require('console');
-//import console = require('console');
 
 const styles = EStyleSheet.create({
   container: {
@@ -73,12 +71,15 @@ class Checkout extends Component {
     if (fieldsFetching) {
       authActions
         .profileFields({
-          location: 'checkout'
+          location: 'checkout',
+          action: 'update'
         })
-        .then((sections) => {
-          delete sections.E;
+        .then(({ fields }) => {
+          // eslint-disable-next-line no-param-reassign
+          delete fields.E;
+
           this.setState({
-            fields: sections,
+            fields,
             fieldsFetching: false,
           });
         });

@@ -275,7 +275,7 @@ export default class ProfileForm extends Component {
     // Reset state.
     if (countryCache && stateCache) {
       if (stateCache.values[countryCache.value]) {
-        if(!stateCache.values[countryCache.value]) {
+        if (!stateCache.values[countryCache.value]) {
           formValues[stateCache.field_id] = '';
         }
       }
