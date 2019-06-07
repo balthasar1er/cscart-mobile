@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import {
   View,
@@ -354,25 +354,27 @@ export default class ProfileForm extends Component {
     const { isEdit } = this.props;
 
     return (
-      <KeyboardAwareScrollView contentContainerStyle={styles.contentContainer}>
-        {forms.map((form, index) => (
-          <View key={form.type} style={styles.form}>
-            {(isEdit && form.description !== '') && (
-              <View>
-                <Text style={styles.header}>
-                  {form.description}
-                </Text>
-              </View>
-            )}
-            <Form
-              ref={(ref) => { this.formsRef[form.type] = ref; }}
-              type={form.formFields}
-              options={form.formOptions}
-              value={form.formValues}
-              onChange={values => this.handleChange(values, index)}
-            />
-          </View>
-        ))}
+      <Fragment>
+        <KeyboardAwareScrollView contentContainerStyle={styles.contentContainer}>
+          {forms.map((form, index) => (
+            <View key={form.type} style={styles.form}>
+              {(isEdit && form.description !== '') && (
+                <View>
+                  <Text style={styles.header}>
+                    {form.description}
+                  </Text>
+                </View>
+              )}
+              <Form
+                ref={(ref) => { this.formsRef[form.type] = ref; }}
+                type={form.formFields}
+                options={form.formOptions}
+                value={form.formValues}
+                onChange={values => this.handleChange(values, index)}
+              />
+            </View>
+          ))}
+        </KeyboardAwareScrollView>
         {
           this.props.cartFooterEnabled
             ? (
@@ -393,7 +395,7 @@ export default class ProfileForm extends Component {
               </TouchableOpacity>
             )
         }
-      </KeyboardAwareScrollView>
+      </Fragment>
     );
   }
 }

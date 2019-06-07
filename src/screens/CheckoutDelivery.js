@@ -4,14 +4,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import * as t from 'tcomb-form-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import _ from 'lodash';
 
 // Import components
 import CheckoutSteps from '../components/CheckoutSteps';
-import FormBlock from '../components/FormBlock';
-import CartFooter from '../components/CartFooter';
 import Spinner from '../components/Spinner';
 
 // Import actions.
@@ -31,11 +26,9 @@ const styles = EStyleSheet.create({
     backgroundColor: '#FAFAFA',
   },
   contentContainer: {
-    padding: 14,
+    padding: 14
   },
 });
-
-const { Form } = t.form;
 
 class Checkout extends Component {
   static navigatorStyle = {
@@ -58,7 +51,6 @@ class Checkout extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sections: {},
       fieldsFetching: true
     };
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -127,9 +119,9 @@ class Checkout extends Component {
 
     return (
       <View style={styles.container}>
-        <KeyboardAwareScrollView style={styles.contentContainer}>
+        <View style={styles.contentContainer}>
           <CheckoutSteps step={1} />
-        </KeyboardAwareScrollView>
+        </View>
 
         <ProfileForm
           fields={fields}
