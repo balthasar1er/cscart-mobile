@@ -16,7 +16,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import theme from '../../config/theme';
 
 // Components
-import Section from '../../components/Section';
 import Icon from '../../components/Icon';
 import StepsLine from '../../components/StepsLine';
 

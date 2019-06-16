@@ -289,6 +289,15 @@ class EditProduct extends Component {
                     {this.renderMenuItem(
                       i18n.gettext('Categories'),
                       categories.map(item => item.category).join(', '),
+                      () => {
+                        navigator.push({
+                          screen: 'VendorManageCategoriesPicker',
+                          backButtonTitle: '',
+                          passProps: {
+                            selected: categories,
+                          },
+                        });
+                      }
                     )}
                     {this.renderMenuItem(
                       i18n.gettext('Shipping properties'),
