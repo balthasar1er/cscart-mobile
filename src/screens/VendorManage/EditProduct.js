@@ -242,6 +242,7 @@ class EditProduct extends Component {
               status,
               product,
               list_price,
+              product_code,
               amount,
               categories,
               weight,
@@ -270,7 +271,20 @@ class EditProduct extends Component {
                     )}
                     {this.renderMenuItem(
                       i18n.gettext('Pricing / Inventory'),
-                      i18n.gettext('%1, List price: %2, In stock: %3', product, list_price, amount)
+                      i18n.gettext('%1, List price: %2, In stock: %3', product, list_price, amount),
+                      () => {
+                        navigator.push({
+                          screen: 'VendorManagePricingInventory',
+                          backButtonTitle: '',
+                          passProps: {
+                            values: {
+                              list_price,
+                              product_code,
+                              amount,
+                            }
+                          },
+                        });
+                      }
                     )}
                     {this.renderMenuItem(
                       i18n.gettext('Categories'),
@@ -279,6 +293,18 @@ class EditProduct extends Component {
                     {this.renderMenuItem(
                       i18n.gettext('Shipping properties'),
                       `${i18n.gettext('Weight: %1', weight)}${free_shipping ? i18n.gettext('Free shipping') : ''}`,
+                      () => {
+                        navigator.push({
+                          screen: 'VendorManageShippingProperties',
+                          backButtonTitle: '',
+                          passProps: {
+                            values: {
+                              weight,
+                              free_shipping,
+                            }
+                          },
+                        });
+                      }
                     )}
                   </Section>
                 </ScrollView>
