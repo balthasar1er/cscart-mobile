@@ -38,9 +38,6 @@ const styles = EStyleSheet.create({
   },
 });
 
-
-// const DESTRUCTIVE_INDEX = 5;
-
 const itemsList = [
   i18n.gettext('Processed'),
   i18n.gettext('On hold'),

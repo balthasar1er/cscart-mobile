@@ -115,6 +115,12 @@ class Orders extends Component {
     const { navigator } = this.props;
     iconsLoaded.then(() => {
       navigator.setButtons({
+        leftButtons: [
+          {
+            id: 'sideMenu',
+            icon: iconsMap.menu,
+          },
+        ],
         rightButtons: [
           {
             id: 'add',
@@ -129,9 +135,13 @@ class Orders extends Component {
     const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
     if (event.type === 'NavBarButtonPress') {
+      if (event.id === 'sideMenu') {
+        navigator.toggleDrawer({ side: 'left' });
+      }
       if (event.id === 'add') {
         navigator.push({
-          screen: 'VendorManageAddProduct',
+          screen: 'VendorManageAddProductStep1',
+          backButtonTitle: '',
           passProps: {}
         });
       }

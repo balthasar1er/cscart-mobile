@@ -59,19 +59,19 @@ export const registerDrawerDeepLinks = (event, navigator) => {
       animated: false,
     });
   } else if (link === 'vendor/orders/') {
-    navigator.push({
+    navigator.resetTo({
       screen: 'VendorManageOrders',
       animated: false,
       backButtonTitle: '',
     });
   } else if (link === 'vendor/add_product/') {
-    navigator.push({
-      screen: 'VendorManageAddProduct',
+    navigator.resetTo({
+      screen: 'VendorManageAddProductStep1',
       animated: false,
       backButtonTitle: '',
     });
   } else if (link === 'vendor/products/') {
-    navigator.push({
+    navigator.resetTo({
       screen: 'VendorManageProducts',
       animated: false,
       backButtonTitle: '',

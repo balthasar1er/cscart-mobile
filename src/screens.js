@@ -27,8 +27,8 @@ import CheckoutShipping from './screens/CheckoutShipping';
 import CheckoutDelivery from './screens/CheckoutDelivery';
 import SettlementsCompleteWebView from './screens/SettlementsCompleteWebView';
 import VendorManageOrders from './screens/VendorManage/Orders';
-import VendorManageAddProduct from './screens/VendorManage/AddProduct';
 import VendorManageProducts from './screens/VendorManage/Products';
+import VendorManageAddProductStep1 from './screens/VendorManage/AddProductStep1';
 
 // register all screens of the app (including internal ones)
 export default function registerScreens(store, Provider) {
@@ -59,6 +59,6 @@ export default function registerScreens(store, Provider) {
   Navigation.registerComponent('CheckoutComplete', () => CheckoutComplete, store, Provider);
   Navigation.registerComponent('SettlementsCompleteWebView', () => SettlementsCompleteWebView, store, Provider);
   Navigation.registerComponent('VendorManageOrders', () => VendorManageOrders, store, Provider);
-  Navigation.registerComponent('VendorManageAddProduct', () => VendorManageAddProduct, store, Provider);
+  Navigation.registerComponent('VendorManageAddProductStep1', () => VendorManageAddProductStep1, store, Provider);
   Navigation.registerComponent('VendorManageProducts', () => VendorManageProducts, store, Provider);
 }

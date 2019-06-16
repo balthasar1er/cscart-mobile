@@ -1,4 +1,3 @@
-import DeviceInfo from 'react-native-device-info';
 import { Dimensions } from 'react-native';
 import has from 'lodash/has';
 import get from 'lodash/get';
