@@ -142,7 +142,9 @@ class Orders extends Component {
         navigator.push({
           screen: 'VendorManageAddProductStep1',
           backButtonTitle: '',
-          passProps: {}
+          passProps: {
+            showBack: true,
+          }
         });
       }
     }
@@ -178,6 +180,7 @@ class Orders extends Component {
             backButtonTitle: '',
             passProps: {
               productID: item.product_id,
+              showBack: true,
             },
           })}
         >

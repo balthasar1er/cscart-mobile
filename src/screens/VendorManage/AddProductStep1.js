@@ -56,6 +56,7 @@ const IMAGE_NUM_COLUMNS = 4;
 
 class AddProductStep1 extends Component {
   static propTypes = {
+    showBack: PropTypes.bool,
     navigator: PropTypes.shape({
       setTitle: PropTypes.func,
       setButtons: PropTypes.func,
@@ -90,11 +91,11 @@ class AddProductStep1 extends Component {
   }
 
   componentWillMount() {
-    const { navigator } = this.props;
+    const { navigator, showBack } = this.props;
     iconsLoaded.then(() => {
       navigator.setButtons({
         leftButtons: [
-          {
+          showBack ? {} : {
             id: 'sideMenu',
             icon: iconsMap.menu,
           },

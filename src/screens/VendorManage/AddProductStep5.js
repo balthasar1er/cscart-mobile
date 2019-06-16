@@ -86,18 +86,17 @@ class AddProductStep5 extends Component {
       if (event.id === 'next') {
         const value = this.refs.form.getValue();
         if (value) {
-          console.log(this.props.stepsData, value);
-          // navigator.push({
-          //   screen: 'VendorManageAddProductStep5',
-          //   backButtonTitle: '',
-          //   passProps: {
-          //     stepsData: {
-          //       ...stepsData,
-          //       code: value.code,
-          //       in_stock: value.in_stock,
-          //     },
-          //   },
-          // });
+          navigator.push({
+            screen: 'VendorManageEditProduct',
+            backButtonTitle: '',
+            passProps: {
+              stepsData: {
+                ...this.props.stepsData,
+                code: value.code,
+                in_stock: value.in_stock,
+              },
+            },
+          });
         }
       }
     }

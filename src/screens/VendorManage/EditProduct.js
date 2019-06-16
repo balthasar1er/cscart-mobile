@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as t from 'tcomb-form-native';
+import ActionSheet from 'react-native-actionsheet';
 import {
   View,
   Text,
@@ -80,6 +81,18 @@ const formOptions = {
   },
 };
 
+const MORE_ACTIONS_LIST = [
+  i18n.gettext('Delete This Product'),
+  i18n.gettext('Cancel'),
+];
+
+const STATUS_ACTIONS_LIST = [
+  i18n.gettext('Make Product Disabled'),
+  i18n.gettext('Make Product Hidden'),
+  i18n.gettext('Make Product Active'),
+  i18n.gettext('Cancel'),
+];
+
 const GET_PRODUCTS = gql`
 query {
   product(id: 247, get_icon: true, get_detailed: true, get_additional: true) {
@@ -122,6 +135,7 @@ query {
 
 class EditProduct extends Component {
   static propTypes = {
+    showBack: PropTypes.bool,
     stepsData: PropTypes.shape({}),
     navigator: PropTypes.shape({
       setTitle: PropTypes.func,
@@ -142,11 +156,11 @@ class EditProduct extends Component {
   }
 
   componentWillMount() {
-    const { navigator } = this.props;
+    const { navigator, showBack } = this.props;
     iconsLoaded.then(() => {
       navigator.setButtons({
         leftButtons: [
-          {
+          showBack ? {} : {
             title: i18n.gettext('Cancel'),
             id: 'next',
             showAsAction: 'ifRoom',
@@ -168,24 +182,41 @@ class EditProduct extends Component {
     const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
     if (event.type === 'NavBarButtonPress') {
+      if (event.id === 'more') {
+        this.ActionSheet.show();
+      }
     }
   }
 
-  renderMenuItem = (title, subTitle) => {
-    return (
-      <TouchableOpacity style={styles.menuItem}>
-        <View style={styles.menuItemText}>
-          <Text style={styles.menuItemTitle}>{title}</Text>
-          <Text
-            style={styles.menuItemSubTitle}
-          >
-            {subTitle}
-          </Text>
-        </View>
-        <Icon name="keyboard-arrow-right" style={styles.btnIcon} />
-      </TouchableOpacity>
-    );
+  handleMoreActionSheet = (index) => {
+    const { navigator } = this.props;
+    if (index === 0) {
+      navigator.pop();
+      console.log(index, 'delete');
+    }
   }
+
+  handleStatusActionSheet = (index) => {
+    const { navigator } = this.props;
+    if (index === 0) {
+      navigator.pop();
+      console.log(index, 'delete');
+    }
+  }
+
+  renderMenuItem = (title, subTitle, fn = () => {}) => (
+    <TouchableOpacity style={styles.menuItem} onPress={fn}>
+      <View style={styles.menuItemText}>
+        <Text style={styles.menuItemTitle}>{title}</Text>
+        <Text
+          style={styles.menuItemSubTitle}
+        >
+          {subTitle}
+        </Text>
+      </View>
+      <Icon name="keyboard-arrow-right" style={styles.btnIcon} />
+    </TouchableOpacity>
+  );
 
   render() {
     const { navigator } = this.props;
@@ -233,6 +264,9 @@ class EditProduct extends Component {
                     {this.renderMenuItem(
                       i18n.gettext('Status'),
                       getProductStatus(status).text,
+                      () => {
+                        this.StatusActionSheet.show();
+                      }
                     )}
                     {this.renderMenuItem(
                       i18n.gettext('Pricing / Inventory'),
@@ -252,6 +286,20 @@ class EditProduct extends Component {
             );
           }}
         </Query>
+        <ActionSheet
+          ref={(ref) => { this.ActionSheet = ref; }}
+          options={MORE_ACTIONS_LIST}
+          cancelButtonIndex={1}
+          destructiveButtonIndex={0}
+          onPress={this.handleMoreActionSheet}
+        />
+        <ActionSheet
+          ref={(ref) => { this.StatusActionSheet = ref; }}
+          options={STATUS_ACTIONS_LIST}
+          cancelButtonIndex={3}
+          destructiveButtonIndex={0}
+          onPress={this.handleStatusActionSheet}
+        />
       </GraphQL>
     );
   }
