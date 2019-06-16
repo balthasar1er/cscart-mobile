@@ -177,7 +177,7 @@ class Orders extends Component {
             screen: 'VendorManageEditProduct',
             backButtonTitle: '',
             passProps: {
-              orderId: item.product_id,
+              productID: item.product_id,
             },
           })}
         >

@@ -138,6 +138,34 @@ export function parseQueryString(query) {
   return obj;
 }
 
+export function getProductStatus(status) {
+  switch (status) {
+    case 'A':
+      return {
+        text: i18n.gettext('Active'),
+        style: { color: '#97cf4d' }
+      };
+
+    case 'H':
+      return {
+        text: i18n.gettext('Hidden'),
+        style: { color: '#97cf4d' }
+      };
+
+    case 'D':
+      return {
+        text: i18n.gettext('Disabled'),
+        style: { color: '#ff9522' }
+      };
+
+    default:
+      return {
+        text: i18n.gettext(''),
+        style: { color: '#000000' }
+      };
+  }
+}
+
 export function getOrderStatus(status) {
   switch (status) {
     case 'P':

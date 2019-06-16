@@ -33,6 +33,7 @@ import VendorManageAddProductStep2 from './screens/VendorManage/AddProductStep2'
 import VendorManageAddProductStep3 from './screens/VendorManage/AddProductStep3';
 import VendorManageAddProductStep4 from './screens/VendorManage/AddProductStep4';
 import VendorManageAddProductStep5 from './screens/VendorManage/AddProductStep5';
+import VendorManageEditProduct from './screens/VendorManage/EditProduct';
 
 // register all screens of the app (including internal ones)
 export default function registerScreens(store, Provider) {
@@ -69,4 +70,5 @@ export default function registerScreens(store, Provider) {
   Navigation.registerComponent('VendorManageAddProductStep3', () => VendorManageAddProductStep3, store, Provider);
   Navigation.registerComponent('VendorManageAddProductStep4', () => VendorManageAddProductStep4, store, Provider);
   Navigation.registerComponent('VendorManageAddProductStep5', () => VendorManageAddProductStep5, store, Provider);
+  Navigation.registerComponent('VendorManageEditProduct', () => VendorManageEditProduct, store, Provider);
 }
