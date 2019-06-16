@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   View,
@@ -16,17 +15,16 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 // Styles
 import theme from '../../config/theme';
 
-// Import actions.
-import * as authActions from '../../actions/authActions';
-
 // Components
 import Section from '../../components/Section';
 import Icon from '../../components/Icon';
+import StepsLine from '../../components/StepsLine';
 
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
 
 import {
+  iconsMap,
   iconsLoaded,
 } from '../../utils/navIcons';
 
@@ -66,6 +64,14 @@ class AddProductStep1 extends Component {
     }),
   };
 
+  static navigatorStyle = {
+    navBarBackgroundColor: theme.$navBarBackgroundColor,
+    navBarButtonColor: theme.$navBarButtonColor,
+    navBarButtonFontSize: theme.$navBarButtonFontSize,
+    navBarTextColor: theme.$navBarTextColor,
+    screenBackgroundColor: theme.$screenBackgroundColor,
+  };
+
   constructor(props) {
     super(props);
 
@@ -87,6 +93,12 @@ class AddProductStep1 extends Component {
     const { navigator } = this.props;
     iconsLoaded.then(() => {
       navigator.setButtons({
+        leftButtons: [
+          {
+            id: 'sideMenu',
+            icon: iconsMap.menu,
+          },
+        ],
         rightButtons: [
           {
             title: i18n.gettext('Next'),
@@ -103,11 +115,23 @@ class AddProductStep1 extends Component {
   }
 
   onNavigatorEvent(event) {
+    const { selected } = this.state;
     const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
     if (event.type === 'NavBarButtonPress') {
       if (event.id === 'sideMenu') {
         navigator.toggleDrawer({ side: 'left' });
+      }
+      if (event.id === 'next') {
+        navigator.push({
+          screen: 'VendorManageAddProductStep2',
+          backButtonTitle: '',
+          passProps: {
+            stepsData: {
+              images: selected,
+            },
+          },
+        });
       }
     }
   }
@@ -169,9 +193,7 @@ class AddProductStep1 extends Component {
 
   renderHeader = () => (
     <View style={styles.header}>
-      <Section>
-        <Text>{i18n.gettext('Step 1 from 5')}</Text>
-      </Section>
+      <StepsLine step={1} total={5} />
     </View>
   );
 
@@ -231,10 +253,5 @@ class AddProductStep1 extends Component {
 export default connect(
   state => ({
     nav: state.nav,
-    auth: state.auth,
-    flash: state.flash,
-  }),
-  dispatch => ({
-    authActions: bindActionCreators(authActions, dispatch),
   })
 )(AddProductStep1);
