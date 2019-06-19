@@ -69,7 +69,7 @@ const styles = EStyleSheet.create({
 
 const GET_PRODUCTS = gql`
 query getProducts($page: Int) {
-  products(page: $page, items_per_page: 100) {
+  products(page: $page, items_per_page: 50) {
     product
     price
     amount
@@ -111,6 +111,11 @@ class Orders extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      page: 1,
+      hasMore: true,
+    };
 
     props.navigator.setTitle({
       title: i18n.gettext('Vendor products').toUpperCase(),
@@ -227,10 +232,11 @@ class Orders extends Component {
   };
 
   render() {
+    const { page, hasMore } = this.state;
     return (
       <GraphQL>
         <Query query={GET_PRODUCTS} variables={{ page: 1 }}>
-          {({ loading, error, data, fetchMore }) => {
+          {({ loading, error, data, fetchMore, }) => {
             if (loading) {
               return (
                 <Spinner visible mode="content" />
@@ -245,12 +251,25 @@ class Orders extends Component {
                   data={data.products}
                   ListEmptyComponent={<EmptyList />}
                   renderItem={({ item }) => this.renderItem(item)}
-                  onEndReached={(data) => {
-                    // fetchMore({
-                    //   variables: {
-                    //     page: 
-                    //   }
-                    // });
+                  onEndReached={() => {
+                    if (!hasMore) {
+                      return;
+                    }
+                    fetchMore({
+                      variables: { page: page + 1 },
+                      updateQuery: (prev, { fetchMoreResult, variables }) => {
+                        this.setState({
+                          page: variables.page,
+                          hasMore: fetchMoreResult.products.length !== 0,
+                        });
+                        return {
+                          products: [
+                            ...prev.products,
+                            ...fetchMoreResult.products,
+                          ],
+                        };
+                      }
+                    });
                   }}
                 />
               </View>
