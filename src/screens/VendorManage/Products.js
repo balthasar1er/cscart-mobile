@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import {
   View,
   Text,
+  Image,
   FlatList,
   TouchableOpacity,
 } from 'react-native';
@@ -27,6 +28,8 @@ import EmptyList from '../../components/EmptyList';
 // Graphql
 import GraphQL from '../../services/GraphQL';
 
+import { getImagePath } from '../../utils';
+
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
 
@@ -46,10 +49,15 @@ const styles = EStyleSheet.create({
     padding: 14,
     borderBottomWidth: 1,
     borderColor: '#f1f1f1',
+    backgroundColor: '#fff',
   },
   listItemImage: {
-    width: 40,
+    width: 50,
     marginRight: 14,
+  },
+  productImage: {
+    width: 50,
+    height: 50,
   },
   listItemHeader: {
     fontWeight: 'bold'
@@ -60,15 +68,20 @@ const styles = EStyleSheet.create({
 });
 
 const GET_PRODUCTS = gql`
-  query {
-    products(page: 1, items_per_page: 100) {
-      product
-      price
-      amount
-      product_code
-      product_id
+query getProducts($page: Int) {
+  products(page: $page, items_per_page: 100) {
+    product
+    price
+    amount
+    product_code
+    product_id
+    main_pair {
+      icon {
+        image_path
+      }
     }
   }
+}
 `;
 
 class Orders extends Component {
@@ -98,11 +111,6 @@ class Orders extends Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      page: 1,
-      hasMore: true,
-    };
 
     props.navigator.setTitle({
       title: i18n.gettext('Vendor products').toUpperCase(),
@@ -168,6 +176,8 @@ class Orders extends Component {
       },
     ];
 
+    const imageUri = getImagePath(item);
+
     return (
       <Swipeout
         autoClose
@@ -186,13 +196,14 @@ class Orders extends Component {
         >
           <View style={styles.listItem}>
             <View style={styles.listItemImage}>
-              {/* <Image
-                style={styles.productImage}
-                source={{ uri: imageUri }}
-                resizeMode="contain"
-                resizeMethod="resize"
-              /> */}
-              <Text>Image</Text>
+              {imageUri !== null && (
+                <Image
+                  style={styles.productImage}
+                  source={{ uri: imageUri }}
+                  resizeMode="contain"
+                  resizeMethod="resize"
+                />
+              )}
             </View>
             <View style={styles.listItemContent}>
               <View>
@@ -218,8 +229,8 @@ class Orders extends Component {
   render() {
     return (
       <GraphQL>
-        <Query query={GET_PRODUCTS}>
-          {({ loading, error, data }) => {
+        <Query query={GET_PRODUCTS} variables={{ page: 1 }}>
+          {({ loading, error, data, fetchMore }) => {
             if (loading) {
               return (
                 <Spinner visible mode="content" />
@@ -234,6 +245,13 @@ class Orders extends Component {
                   data={data.products}
                   ListEmptyComponent={<EmptyList />}
                   renderItem={({ item }) => this.renderItem(item)}
+                  onEndReached={(data) => {
+                    // fetchMore({
+                    //   variables: {
+                    //     page: 
+                    //   }
+                    // });
+                  }}
                 />
               </View>
             );

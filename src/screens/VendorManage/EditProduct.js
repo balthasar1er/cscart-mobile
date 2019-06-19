@@ -94,8 +94,8 @@ const STATUS_ACTIONS_LIST = [
 ];
 
 const GET_PRODUCTS = gql`
-query {
-  product(id: 247, get_icon: true, get_detailed: true, get_additional: true) {
+query getProducts($pid: Int!) {
+  product(id: $pid, get_icon: true, get_detailed: true, get_additional: true) {
     product_id
     product
     price
@@ -118,7 +118,6 @@ query {
       category_id
       category
     }
-    
     image_pairs {
       icon {
         image_path
@@ -136,6 +135,7 @@ query {
 class EditProduct extends Component {
   static propTypes = {
     showBack: PropTypes.bool,
+    productID: PropTypes.number,
     stepsData: PropTypes.shape({}),
     navigator: PropTypes.shape({
       setTitle: PropTypes.func,
@@ -219,10 +219,11 @@ class EditProduct extends Component {
   );
 
   render() {
-    const { navigator } = this.props;
+    const { navigator, productID } = this.props;
+
     return (
       <GraphQL>
-        <Query query={GET_PRODUCTS}>
+        <Query query={GET_PRODUCTS} variables={{ pid: productID }}>
           {({ loading, error, data }) => {
             if (loading) {
               return (

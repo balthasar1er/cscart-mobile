@@ -351,7 +351,7 @@ class Drawer extends Component {
     const { navigator } = this.props;
     return (
       <View>
-        {this.renderMenuItem('assessment', i18n.gettext('Dashboard'), () => {})}
+        {/* {this.renderMenuItem('assessment', i18n.gettext('Dashboard'), () => {})} */}
         {this.renderMenuItem('archive', i18n.gettext('Vendor Orders'), () => {
           this.closeDrawer();
           navigator.handleDeepLink({
@@ -359,7 +359,7 @@ class Drawer extends Component {
             payload: {},
           });
         })}
-        {this.renderMenuItem('forum', i18n.gettext('Vendor Message Center'), () => {})}
+        {/* {this.renderMenuItem('forum', i18n.gettext('Vendor Message Center'), () => {})} */}
         {this.renderMenuItem('pages', i18n.gettext('Vendor Products'), () => {
           this.closeDrawer();
           navigator.handleDeepLink({
