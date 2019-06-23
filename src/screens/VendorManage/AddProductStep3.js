@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as t from 'tcomb-form-native';
 import {
@@ -15,6 +16,9 @@ import theme from '../../config/theme';
 import Section from '../../components/Section';
 import CheckoutSteps from '../../components/CheckoutSteps';
 import { steps } from '../../services/vendors';
+
+// Action
+import * as productsActions from '../../actions/vendorManage/productsActions';
 
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
@@ -38,9 +42,9 @@ const styles = EStyleSheet.create({
 
 const Form = t.form.Form;
 const formFields = t.struct({
-  price: t.String,
-  in_stock: t.String,
-  list_price: t.String,
+  price: t.Number,
+  in_stock: t.Number,
+  list_price: t.Number,
 });
 const formOptions = {
   disableOrder: true,
@@ -49,6 +53,7 @@ const formOptions = {
 class AddProductStep4 extends Component {
   static propTypes = {
     stepsData: PropTypes.shape({}),
+    productsActions: PropTypes.shape({}),
     navigator: PropTypes.shape({
       setTitle: PropTypes.func,
       setButtons: PropTypes.func,
@@ -63,7 +68,6 @@ class AddProductStep4 extends Component {
     props.navigator.setTitle({
       title: i18n.gettext('Enter the price').toUpperCase(),
     });
-
     this.formRef = React.createRef();
 
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -89,26 +93,38 @@ class AddProductStep4 extends Component {
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
+
     if (event.type === 'NavBarButtonPress') {
       if (event.id === 'next') {
-        const value = this.formRef.current.getValue();
-        if (value) {
-          navigator.push({
-            screen: 'VendorManageEditProduct',
-            backButtonTitle: '',
-            passProps: {
-              stepsData: {
-                ...this.props.stepsData,
-                price: value.price,
-                list_price: value.list_price,
-                in_stock: value.in_stock,
-              },
-            },
-          });
-        }
+        this.handleCreate();
       }
     }
   }
+
+  handleCreate = async () => {
+    const { navigator, productsActions, stepsData } = this.props;
+    const values = this.formRef.current.getValue();
+
+    if (values) {
+      const newProductID = await productsActions.createProduct({
+        product: `${stepsData.name}`,
+        price: values.price,
+        category_ids: [],
+        full_description: `${stepsData.description}`,
+        amount: values.in_stock,
+      });
+
+      if (newProductID) {
+        navigator.push({
+          screen: 'VendorManageEditProduct',
+          backButtonTitle: '',
+          passProps: {
+            productID: newProductID
+          },
+        });
+      }
+    }
+  };
 
   renderHeader = () => (
     <View style={styles.header}>
@@ -138,4 +154,7 @@ export default connect(
   state => ({
     nav: state.nav,
   }),
+  dispatch => ({
+    productsActions: bindActionCreators(productsActions, dispatch)
+  })
 )(AddProductStep4);

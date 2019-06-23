@@ -26,7 +26,7 @@ export default class extends PureComponent {
   };
 
   static defaultProps = {
-    btnText: i18n.gettext('save'),
+    btnText: i18n.gettext('Save'),
   };
 
   render() {

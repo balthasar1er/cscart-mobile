@@ -102,6 +102,10 @@ class Products extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      refreshing: false,
+    };
+
     props.navigator.setTitle({
       title: i18n.gettext('Vendor products').toUpperCase(),
     });
@@ -154,6 +158,10 @@ class Products extends Component {
       });
       notificationsActions.hide(notify.id);
     }
+
+    this.setState({
+      refreshing: false,
+    });
   }
 
   onNavigatorEvent(event) {
@@ -182,6 +190,15 @@ class Products extends Component {
     }
 
     productsActions.fetchProducts(page);
+  }
+
+  handleRefresh = () => {
+    const { productsActions } = this.props;
+    this.setState({
+      refreshing: true,
+    });
+
+    productsActions.fetchProducts(0);
   }
 
   handleStatusActionSheet = (index) => {
@@ -270,6 +287,7 @@ class Products extends Component {
 
   render() {
     const { loading, products } = this.props;
+    const { refreshing } = this.state;
 
     if (loading) {
       return (
@@ -285,6 +303,8 @@ class Products extends Component {
           ListEmptyComponent={<EmptyList />}
           renderItem={({ item }) => this.renderItem(item)}
           onEndReached={this.handleLoadMore}
+          refreshing={refreshing}
+          onRefresh={() => this.handleRefresh()}
         />
         <ActionSheet
           ref={(ref) => { this.StatusActionSheet = ref; }}

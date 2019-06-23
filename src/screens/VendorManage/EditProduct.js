@@ -21,10 +21,8 @@ import Spinner from '../../components/Spinner';
 import Icon from '../../components/Icon';
 import BottomActions from '../../components/BottomActions';
 
-import * as notificationsActions from '../../actions/notificationsActions';
-
-// Graphql
-import { getProductDetail, updateProduct, deleteProduct } from '../../services/vendors';
+// Action
+import * as productsActions from '../../actions/vendorManage/productsActions';
 
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
@@ -97,12 +95,11 @@ const STATUS_ACTIONS_LIST = [
 
 class EditProduct extends Component {
   static propTypes = {
-    showBack: PropTypes.bool,
     productID: PropTypes.number,
-    notificationsActions: PropTypes.shape({
-      hide: PropTypes.func,
-    }),
     stepsData: PropTypes.shape({}),
+    productsActions: PropTypes.shape({}),
+    product: PropTypes.shape({}),
+    loading: PropTypes.bool,
     navigator: PropTypes.shape({
       setTitle: PropTypes.func,
       setButtons: PropTypes.func,
@@ -115,31 +112,19 @@ class EditProduct extends Component {
     super(props);
 
     this.formRef = React.createRef();
-    this.state = {
-      loading: true,
-      product: {},
-    };
-
-    props.navigator.setTitle({
-      title: i18n.gettext('Edit').toUpperCase(),
-    });
-
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   componentWillMount() {
-    const { navigator, showBack } = this.props;
+    const {
+      navigator,
+      productID,
+      productsActions
+    } = this.props;
+    productsActions.fetchProduct(productID);
+
     iconsLoaded.then(() => {
       navigator.setButtons({
-        leftButtons: [
-          showBack ? {} : {
-            title: i18n.gettext('Cancel'),
-            id: 'next',
-            showAsAction: 'ifRoom',
-            buttonColor: theme.$primaryColor,
-            buttonFontSize: 16,
-          },
-        ],
         rightButtons: [
           {
             id: 'more',
@@ -148,10 +133,6 @@ class EditProduct extends Component {
         ],
       });
     });
-  }
-
-  componentDidMount() {
-    this.handleFetchDetail();
   }
 
   onNavigatorEvent(event) {
@@ -164,36 +145,16 @@ class EditProduct extends Component {
     }
   }
 
-  handleFetchDetail = async () => {
-    const { productID, navigator } = this.props;
-    try {
-      const { data } = await getProductDetail(productID);
-      navigator.setTitle({
-        title: i18n.gettext(data.product.product).toUpperCase(),
-      });
-      this.setState({
-        product: data.product,
-        loading: false,
-      });
-    } catch (error) {
-      // pass
-    }
-  }
-
-  handleMoreActionSheet = async (index) => {
-    const { navigator } = this.props;
-    const { product } = this.state;
+  handleMoreActionSheet = (index) => {
+    const { navigator, product, productsActions } = this.props;
     if (index === 0) {
-      const result = await deleteProduct(product.product_id);
-      if (result) {
-        navigator.pop();
-      }
+      productsActions.deleteProduct(product.product_id);
+      navigator.pop();
     }
   }
 
-  handleStatusActionSheet = async (index) => {
-    const { notificationsActions } = this.props;
-    const { product } = this.state;
+  handleStatusActionSheet = (index) => {
+    const { product, productsActions } = this.props;
     const statuses = [
       'D',
       'H',
@@ -202,65 +163,27 @@ class EditProduct extends Component {
     const activeStatus = statuses[index];
 
     if (activeStatus) {
-      await updateProduct(
+      productsActions.updateProduct(
         product.product_id,
         {
-          status: statuses[index],
+          status: activeStatus,
         }
       );
-
-      notificationsActions.show({
-        type: 'success',
-        title: i18n.gettext('Success'),
-        text: i18n.gettext('Product saved.'),
-        closeLastModal: false,
-      });
-
-      this.setState({
-        product: {
-          ...product,
-          status: statuses[index],
-        }
-      });
     }
   }
 
-  handleSave = async () => {
-    const { notificationsActions } = this.props;
-    const { product } = this.state;
+  handleSave = () => {
+    const { product, productsActions } = this.props;
     const values = this.formRef.current.getValue();
+
     if (!values) { return; }
-    try {
-      const result = await updateProduct(
-        product.product_id,
-        { ...values }
-      );
 
-      if (result.errors) {
-        notificationsActions.show({
-          type: 'info',
-          title: i18n.gettext('Error'),
-          text: i18n.gettext('Save error.'),
-          closeLastModal: false,
-        });
+    productsActions.updateProduct(
+      product.product_id,
+      {
+        ...values
       }
-
-      notificationsActions.show({
-        type: 'success',
-        title: i18n.gettext('Success'),
-        text: i18n.gettext('Product saved.'),
-        closeLastModal: false,
-      });
-
-      this.setState({
-        product: {
-          ...product,
-          ...values,
-        },
-      });
-    } catch (error) {
-      // pass
-    }
+    );
   };
 
   renderMenuItem = (title, subTitle, fn = () => {}) => (
@@ -278,14 +201,17 @@ class EditProduct extends Component {
   );
 
   render() {
-    const { navigator } = this.props;
-    const { loading, product } = this.state;
+    const { navigator, loading, product } = this.props;
 
     if (loading) {
       return (
         <Spinner visible mode="content" />
       );
     }
+
+    navigator.setTitle({
+      title: i18n.gettext(product.product || '').toUpperCase(),
+    });
 
     return (
       <View style={styles.container}>
@@ -313,11 +239,6 @@ class EditProduct extends Component {
                 navigator.push({
                   screen: 'VendorManagePricingInventory',
                   backButtonTitle: '',
-                  passProps: {
-                    values: {
-                      ...product,
-                    }
-                  },
                 });
               }
             )}
@@ -374,8 +295,10 @@ class EditProduct extends Component {
 export default connect(
   state => ({
     notifications: state.notifications,
+    loading: state.vendorManageProducts.loadingCurrent,
+    product: state.vendorManageProducts.current,
   }),
   dispatch => ({
-    notificationsActions: bindActionCreators(notificationsActions, dispatch),
+    productsActions: bindActionCreators(productsActions, dispatch)
   })
 )(EditProduct);

@@ -15,6 +15,10 @@ import {
   VENDOR_UPDATE_PRODUCT_FAIL,
   VENDOR_UPDATE_PRODUCT_SUCCESS,
 
+  VENDOR_CREATE_PRODUCT_REQUEST,
+  VENDOR_CREATE_PRODUCT_FAIL,
+  VENDOR_CREATE_PRODUCT_SUCCESS,
+
   NOTIFICATION_SHOW,
 } from '../../constants';
 import * as vendorService from '../../services/vendors';
@@ -22,7 +26,10 @@ import i18n from '../../utils/i18n';
 
 export function fetchProducts(page = 0) {
   return async (dispatch) => {
-    dispatch({ type: VENDOR_FETCH_PRODUCTS_REQUEST });
+    dispatch({
+      type: VENDOR_FETCH_PRODUCTS_REQUEST,
+      payload: page,
+    });
     const nextPage = page + 1;
 
     try {
@@ -52,7 +59,7 @@ export function fetchProduct(id = 0) {
       const result = await vendorService.getProductDetail(id);
       dispatch({
         type: VENDOR_FETCH_PRODUCT_SUCCESS,
-        payload: result.data.products,
+        payload: result.data.product,
       });
     } catch (error) {
       dispatch({
@@ -97,6 +104,10 @@ export function updateProduct(id = null, product = {}) {
   return async (dispatch) => {
     dispatch({
       type: VENDOR_UPDATE_PRODUCT_REQUEST,
+      payload: {
+        id,
+        product
+      },
     });
 
     try {
@@ -123,5 +134,44 @@ export function updateProduct(id = null, product = {}) {
         error,
       });
     }
+  };
+}
+
+export function createProduct(product) {
+  return async (dispatch) => {
+    dispatch({
+      type: VENDOR_CREATE_PRODUCT_REQUEST,
+    });
+
+    try {
+      const result = await vendorService.createProduct(product);
+
+      if (result.errors && result.errors.length) {
+        dispatch({
+          type: NOTIFICATION_SHOW,
+          payload: {
+            type: 'info',
+            title: i18n.gettext('Error'),
+            text: i18n.gettext(result.errors.join('\n')),
+            closeLastModal: false,
+          },
+        });
+        return null;
+      }
+
+      dispatch({
+        type: VENDOR_CREATE_PRODUCT_SUCCESS,
+        payload: result,
+      });
+
+      return result.data.create_product;
+    } catch (error) {
+      dispatch({
+        type: VENDOR_CREATE_PRODUCT_FAIL,
+        error,
+      });
+    }
+
+    return null;
   };
 }

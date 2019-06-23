@@ -15,7 +15,6 @@ import productDetail from './productDetail';
 import vendorCategories from './vendorCategories';
 
 import vendorManageProducts from './vendorManage/products';
-import vendorManageProductDetail from './vendorManage/productDetail';
 
 export default combineReducers({
   cart,
@@ -33,5 +32,4 @@ export default combineReducers({
   vendorCategories,
 
   vendorManageProducts,
-  vendorManageProductDetail,
 });

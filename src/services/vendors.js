@@ -92,6 +92,16 @@ export const deleteProduct = (id) => {
 };
 
 
+export const createProduct = (product) => {
+  const QUERY = `
+    mutation createProduct($product: CreateProductInput!) {
+      create_product(product: $product)
+    }
+  `;
+  return gql(QUERY, { product }).then(result => result.data);
+};
+
+
 export const getProductsList = (page = 1) => {
   const QUERY = `query getProducts($page: Int) {
     products(page: $page, items_per_page: 50) {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as t from 'tcomb-form-native';
 import {
@@ -10,6 +11,10 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Components
 import Section from '../../components/Section';
+import BottomActions from '../../components/BottomActions';
+
+// Actions
+import * as productsActions from '../../actions/vendorManage/productsActions';
 
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
@@ -50,6 +55,8 @@ class ShippingProperties extends Component {
       push: PropTypes.func,
       setOnNavigatorEvent: PropTypes.func,
     }),
+    productsActions: PropTypes.shape({}),
+    product: PropTypes.shape({}),
   };
 
   constructor(props) {
@@ -59,6 +66,7 @@ class ShippingProperties extends Component {
       title: i18n.gettext('Shipping Properties').toUpperCase(),
     });
 
+    this.formRef = React.createRef();
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
@@ -67,21 +75,34 @@ class ShippingProperties extends Component {
     registerDrawerDeepLinks(event, navigator);
   }
 
+  handleSave = () => {
+    const { product, productsActions } = this.props;
+    const values = this.formRef.current.getValue();
+
+    if (!values) { return; }
+
+    productsActions.updateProduct(
+      product.product_id,
+      { ...values }
+    );
+  };
+
   render() {
-    const { values } = this.props;
+    const { product } = this.props;
 
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Section>
             <Form
-              ref="form"
+              ref={this.formRef}
               type={formFields}
               options={formOptions}
-              value={values}
+              value={product}
             />
           </Section>
         </ScrollView>
+        <BottomActions onBtnPress={this.handleSave} />
       </View>
     );
   }
@@ -89,6 +110,9 @@ class ShippingProperties extends Component {
 
 export default connect(
   state => ({
-    nav: state.nav,
+    product: state.vendorManageProducts.current,
   }),
+  dispatch => ({
+    productsActions: bindActionCreators(productsActions, dispatch),
+  })
 )(ShippingProperties);
