@@ -64,6 +64,8 @@ class AddProductStep4 extends Component {
       title: i18n.gettext('Enter the price').toUpperCase(),
     });
 
+    this.formRef = React.createRef();
+
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
@@ -89,7 +91,7 @@ class AddProductStep4 extends Component {
     registerDrawerDeepLinks(event, navigator);
     if (event.type === 'NavBarButtonPress') {
       if (event.id === 'next') {
-        const value = this.refs.form.getValue();
+        const value = this.formRef.current.getValue();
         if (value) {
           navigator.push({
             screen: 'VendorManageEditProduct',
@@ -121,7 +123,7 @@ class AddProductStep4 extends Component {
           {this.renderHeader()}
           <Section>
             <Form
-              ref="form"
+              ref={this.formRef}
               type={formFields}
               options={formOptions}
             />

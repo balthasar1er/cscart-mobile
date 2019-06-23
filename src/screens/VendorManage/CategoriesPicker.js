@@ -12,7 +12,7 @@ import {
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Graphql
-import GraphQL from '../../services/GraphQL';
+// import GraphQL from '../../services/GraphQL';
 
 // Components
 import Icon from '../../components/Icon';
@@ -147,35 +147,36 @@ class CategoriesPicker extends Component {
 
   render() {
     return (
-      <GraphQL>
-        <Query query={GET_CATEGORIES}>
-          {({ loading, error, data }) => {
-            if (loading) {
-              return (
-                <Spinner visible mode="content" />
-              );
-            }
+      null
+      // <GraphQL>
+      //   <Query query={GET_CATEGORIES}>
+      //     {({ loading, error, data }) => {
+      //       if (loading) {
+      //         return (
+      //           <Spinner visible mode="content" />
+      //         );
+      //       }
 
-            if (error) {
-              return `Error! ${error.message}`;
-            }
-            return (
-              <View style={styles.container}>
-                <FlatList
-                  contentContainerStyle={styles.scrollContainer}
-                  data={data.categories}
-                  keyExtractor={item => `${item.category_id}`}
-                  numColumns={1}
-                  renderItem={this.renderCategoryItem}
-                  onEndReachedThreshold={1}
-                  onEndReached={() => this.handleLoadMore()}
-                  ListEmptyComponent={() => this.renderEmptyList()}
-                />
-              </View>
-            );
-          }}
-        </Query>
-      </GraphQL>
+      //       if (error) {
+      //         return `Error! ${error.message}`;
+      //       }
+      //       return (
+      //         <View style={styles.container}>
+      //           <FlatList
+      //             contentContainerStyle={styles.scrollContainer}
+      //             data={data.categories}
+      //             keyExtractor={item => `${item.category_id}`}
+      //             numColumns={1}
+      //             renderItem={this.renderCategoryItem}
+      //             onEndReachedThreshold={1}
+      //             onEndReached={() => this.handleLoadMore()}
+      //             ListEmptyComponent={() => this.renderEmptyList()}
+      //           />
+      //         </View>
+      //       );
+      //     }}
+      //   </Query>
+      // </GraphQL>
     );
   }
 }

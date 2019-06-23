@@ -19,11 +19,12 @@ import theme from '../../config/theme';
 import Section from '../../components/Section';
 import Spinner from '../../components/Spinner';
 import Icon from '../../components/Icon';
+import BottomActions from '../../components/BottomActions';
 
 import * as notificationsActions from '../../actions/notificationsActions';
 
 // Graphql
-import { getProductDetail, updateProduct } from '../../services/vendors';
+import { getProductDetail, updateProduct, deleteProduct } from '../../services/vendors';
 
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
@@ -179,19 +180,48 @@ class EditProduct extends Component {
     }
   }
 
-  handleMoreActionSheet = (index) => {
+  handleMoreActionSheet = async (index) => {
     const { navigator } = this.props;
+    const { product } = this.state;
     if (index === 0) {
-      navigator.pop();
-      console.log(index, 'delete');
+      const result = await deleteProduct(product.product_id);
+      if (result) {
+        navigator.pop();
+      }
     }
   }
 
-  handleStatusActionSheet = (index) => {
-    const { navigator } = this.props;
-    if (index === 0) {
-      navigator.pop();
-      console.log(index, 'delete');
+  handleStatusActionSheet = async (index) => {
+    const { notificationsActions } = this.props;
+    const { product } = this.state;
+    const statuses = [
+      'D',
+      'H',
+      'A'
+    ];
+    const activeStatus = statuses[index];
+
+    if (activeStatus) {
+      await updateProduct(
+        product.product_id,
+        {
+          status: statuses[index],
+        }
+      );
+
+      notificationsActions.show({
+        type: 'success',
+        title: i18n.gettext('Success'),
+        text: i18n.gettext('Product saved.'),
+        closeLastModal: false,
+      });
+
+      this.setState({
+        product: {
+          ...product,
+          status: statuses[index],
+        }
+      });
     }
   }
 
@@ -320,12 +350,8 @@ class EditProduct extends Component {
               }
             )}
           </Section>
-          <View>
-            <TouchableOpacity onPress={this.handleSave}>
-              <Text>{i18n.gettext('save')}</Text>
-            </TouchableOpacity>
-          </View>
         </ScrollView>
+        <BottomActions onBtnPress={this.handleSave} />
         <ActionSheet
           ref={(ref) => { this.ActionSheet = ref; }}
           options={MORE_ACTIONS_LIST}

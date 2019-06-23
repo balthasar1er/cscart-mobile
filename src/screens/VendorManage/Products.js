@@ -11,19 +11,18 @@ import {
 } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import ActionSheet from 'react-native-actionsheet';
 
 // Styles
 import theme from '../../config/theme';
 
 // Import actions.
 import * as notificationsActions from '../../actions/notificationsActions';
+import * as productsActions from '../../actions/vendorManage/productsActions';
 
 // Components
 import Spinner from '../../components/Spinner';
 import EmptyList from '../../components/EmptyList';
-
-// Graphql
-import { getProductsList, deleteProduct } from '../../services/vendors';
 
 import { getImagePath } from '../../utils';
 
@@ -34,6 +33,13 @@ import {
   iconsMap,
   iconsLoaded,
 } from '../../utils/navIcons';
+
+const STATUS_ACTIONS_LIST = [
+  i18n.gettext('Make Product Disabled'),
+  i18n.gettext('Make Product Hidden'),
+  i18n.gettext('Make Product Active'),
+  i18n.gettext('Cancel'),
+];
 
 const styles = EStyleSheet.create({
   container: {
@@ -78,6 +84,11 @@ class Products extends Component {
     notificationsActions: PropTypes.shape({
       hide: PropTypes.func,
     }),
+    productsActions: PropTypes.shape({}),
+    hasMore: PropTypes.bool,
+    loading: PropTypes.bool,
+    page: PropTypes.number,
+    products: PropTypes.arrayOf(PropTypes.shape({})),
   };
 
   static navigatorStyle = {
@@ -90,13 +101,6 @@ class Products extends Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      page: 1,
-      hasMore: true,
-      loading: true,
-      items: [],
-    };
 
     props.navigator.setTitle({
       title: i18n.gettext('Vendor products').toUpperCase(),
@@ -171,63 +175,47 @@ class Products extends Component {
     }
   }
 
-  handleLoadMore = async () => {
-    const { page, items, hasMore } = this.state;
-    try {
-      if (!hasMore) {
-        return;
-      }
-      const result = await getProductsList(page);
-      this.setState({
-        page: page + 1,
-        loading: false,
-        items: [
-          ...items,
-          ...result.data.products,
-        ],
-        hasMore: result.data.products.length !== 0
-      });
-    } catch (error) {
-      // pass
+  handleLoadMore = () => {
+    const { productsActions, hasMore, page } = this.props;
+    if (!hasMore) {
+      return;
     }
+
+    productsActions.fetchProducts(page);
   }
 
-  handleDelete = async ({ product_id }) => {
-    const { notificationsActions } = this.props;
-    const { items } = this.state;
-    try {
-      const result = await deleteProduct(product_id);
-      this.setState({
-        items: items.filter(item => item.product_id !== product_id),
-      });
-
-      if (result) {
-        notificationsActions.show({
-          type: 'success',
-          title: i18n.gettext('Success'),
-          text: i18n.gettext('Product has been removed.'),
-          closeLastModal: false,
-        });
+  handleStatusActionSheet = (index) => {
+    const { productsActions } = this.props;
+    const statuses = [
+      'D',
+      'H',
+      'A'
+    ];
+    const activeStatus = statuses[index];
+    productsActions.updateProduct(
+      this.product_id, {
+        status: activeStatus,
       }
-    } catch (error) {
-      // pass
-    }
+    );
   }
 
   renderItem = (item) => {
-    const { navigator } = this.props;
+    const { navigator, productsActions } = this.props;
     const swipeoutBtns = [
       {
         text: i18n.gettext('Status'),
         type: 'status',
         backgroundColor: '#ff6002',
-        onPress: () => this.handleStatus(item),
+        onPress: () => {
+          this.product_id = item.product_id;
+          this.StatusActionSheet.show();
+        },
       },
       {
         text: i18n.gettext('Delete'),
         type: 'delete',
         backgroundColor: '#ff362b',
-        onPress: () => this.handleDelete(item),
+        onPress: () => productsActions.deleteProduct(item.product_id),
       },
     ];
     const imageUri = getImagePath(item);
@@ -281,7 +269,7 @@ class Products extends Component {
   };
 
   render() {
-    const { loading, items } = this.state;
+    const { loading, products } = this.props;
 
     if (loading) {
       return (
@@ -293,10 +281,17 @@ class Products extends Component {
       <View style={styles.container}>
         <FlatList
           keyExtractor={(item, index) => `order_${index}`}
-          data={items}
+          data={products}
           ListEmptyComponent={<EmptyList />}
           renderItem={({ item }) => this.renderItem(item)}
           onEndReached={this.handleLoadMore}
+        />
+        <ActionSheet
+          ref={(ref) => { this.StatusActionSheet = ref; }}
+          options={STATUS_ACTIONS_LIST}
+          cancelButtonIndex={3}
+          destructiveButtonIndex={0}
+          onPress={this.handleStatusActionSheet}
         />
       </View>
     );
@@ -306,8 +301,13 @@ class Products extends Component {
 export default connect(
   state => ({
     notifications: state.notifications,
+    products: state.vendorManageProducts.items,
+    hasMore: state.vendorManageProducts.hasMore,
+    loading: state.vendorManageProducts.loading,
+    page: state.vendorManageProducts.page,
   }),
   dispatch => ({
+    productsActions: bindActionCreators(productsActions, dispatch),
     notificationsActions: bindActionCreators(notificationsActions, dispatch),
   })
 )(Products);

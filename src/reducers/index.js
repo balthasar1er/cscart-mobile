@@ -14,6 +14,9 @@ import notifications from './notifications';
 import productDetail from './productDetail';
 import vendorCategories from './vendorCategories';
 
+import vendorManageProducts from './vendorManage/products';
+import vendorManageProductDetail from './vendorManage/productDetail';
+
 export default combineReducers({
   cart,
   auth,
@@ -28,4 +31,7 @@ export default combineReducers({
   notifications,
   productDetail,
   vendorCategories,
+
+  vendorManageProducts,
+  vendorManageProductDetail,
 });
