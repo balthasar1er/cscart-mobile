@@ -6,14 +6,12 @@ import * as t from 'tcomb-form-native';
 import ActionSheet from 'react-native-actionsheet';
 import {
   View,
+  Image,
   Text,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-
-// Styles
-import theme from '../../config/theme';
 
 // Components
 import Section from '../../components/Section';
@@ -63,6 +61,21 @@ const styles = EStyleSheet.create({
   },
   btnIcon: {
     color: '#898989',
+  },
+  horizontalScroll: {
+    marginTop: 20,
+    marginLeft: 20,
+  },
+  imgWrapper: {
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#F0F0F0',
+    padding: 4,
+  },
+  img: {
+    width: 100,
+    height: 100,
   }
 });
 
@@ -186,6 +199,44 @@ class EditProduct extends Component {
     );
   };
 
+  renderImages = () => {
+    const { product, navigator } = this.props;
+    const images = [];
+
+    if (product.main_pair) {
+      images.push(product.main_pair.icon.image_path);
+    }
+
+    if (product.image_pairs) {
+      images.forEach((item) => {
+        images.push(item.icon.image_path);
+      });
+    }
+
+    return (
+      <ScrollView contentContainerStyle={styles.horizontalScroll} horizontal>
+        {images.map((item, index) => (
+          <View style={styles.imgWrapper}>
+            <TouchableOpacity
+              onPress={() => {
+                navigator.showModal({
+                  screen: 'Gallery',
+                  animationType: 'fade',
+                  passProps: {
+                    images: [...images],
+                    activeIndex: index,
+                  },
+                });
+              }}
+            >
+              <Image source={{ uri: item }} style={styles.img} />
+            </TouchableOpacity>
+          </View>
+        ))}
+      </ScrollView>
+    );
+  }
+
   renderMenuItem = (title, subTitle, fn = () => {}) => (
     <TouchableOpacity style={styles.menuItem} onPress={fn}>
       <View style={styles.menuItemText}>
@@ -216,6 +267,7 @@ class EditProduct extends Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {this.renderImages()}
           <Section>
             <Form
               ref={this.formRef}
@@ -257,7 +309,7 @@ class EditProduct extends Component {
             )}
             {this.renderMenuItem(
               i18n.gettext('Shipping properties'),
-              `${i18n.gettext('Weight: %1', product.weight)}${product.free_shipping ? i18n.gettext('Free shipping') : ''}`,
+              `${i18n.gettext('Weight: %1 ', product.weight)} ${product.free_shipping ? i18n.gettext('Free shipping') : ''}`,
               () => {
                 navigator.push({
                   screen: 'VendorManageShippingProperties',
