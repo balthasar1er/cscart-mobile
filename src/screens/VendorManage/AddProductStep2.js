@@ -13,7 +13,8 @@ import theme from '../../config/theme';
 
 // Components
 import Section from '../../components/Section';
-import StepsLine from '../../components/StepsLine';
+import CheckoutSteps from '../../components/CheckoutSteps';
+import { steps } from '../../services/vendors';
 
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
@@ -26,6 +27,9 @@ const styles = EStyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '$grayColor',
+  },
+  header: {
+    marginTop: 14,
   },
   scrollContainer: {
     paddingBottom: 14,
@@ -121,11 +125,17 @@ class AddProductStep2 extends Component {
     }
   }
 
+  renderHeader = () => (
+    <View style={styles.header}>
+      <CheckoutSteps step={1} steps={steps} />
+    </View>
+  );
+
   render() {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <StepsLine step={2} total={5} />
+          {this.renderHeader()}
           <Section>
             <Form
               ref="form"

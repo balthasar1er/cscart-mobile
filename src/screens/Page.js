@@ -8,9 +8,6 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-// Import actions.
-import * as notificationsActions from '../actions/notificationsActions';
-
 // theme
 import theme from '../config/theme';
 
@@ -56,8 +53,5 @@ class Page extends Component {
 export default connect(
   state => ({
     auth: state.auth,
-  }),
-  dispatch => ({
-    notificationsActions: bindActionCreators(notificationsActions, dispatch),
   })
 )(Page);

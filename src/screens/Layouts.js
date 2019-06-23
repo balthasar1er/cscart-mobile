@@ -281,9 +281,11 @@ class Layouts extends Component {
   render() {
     const { layouts } = this.props;
     const blocksList = layouts.blocks.map((block, index) => this.renderBlock(block, index));
+
     if (layouts.fetching) {
       return (<Spinner visible mode="content" />);
     }
+
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>

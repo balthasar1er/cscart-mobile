@@ -98,10 +98,17 @@ const styles = EStyleSheet.create({
 
 export default class extends Component {
   static propTypes = {
+    steps: PropTypes.arrayOf(PropTypes.string),
     step: PropTypes.number,
   }
 
   static defaultProps = {
+    steps: [
+      i18n.gettext('Authentication'),
+      i18n.gettext('Delivery'),
+      i18n.gettext('Shipping'),
+      i18n.gettext('Payment method'),
+    ]
   }
 
   constructor(props) {
@@ -109,18 +116,13 @@ export default class extends Component {
 
     this.state = {
       stepId: 0,
-      steps: [
-        i18n.gettext('Authentication'),
-        i18n.gettext('Delivery'),
-        i18n.gettext('Shipping'),
-        i18n.gettext('Payment method'),
-      ],
     };
   }
 
   componentDidMount() {
+    const { step } = this.props;
     this.setState({
-      stepId: this.props.step,
+      stepId: step,
     });
   }
 
@@ -132,7 +134,8 @@ export default class extends Component {
   );
 
   renderPassedSteps() {
-    const { stepId, steps } = this.state;
+    const { stepId } = this.state;
+    const { steps } = this.props;
     const stepsList = [];
     for (let i = 0; i < steps.length; i += 1) {
       if (i === stepId) {
@@ -151,13 +154,15 @@ export default class extends Component {
   }
 
   renderActiveStep() {
-    const activeStep = this.state.steps[this.state.stepId];
+    const { steps } = this.props;
+    const { stepId } = this.state;
+    const activeStep = steps[stepId];
     return (
       <View style={styles.stepContainer}>
         <View style={styles.stepContent}>
           <View style={styles.roundNumber}>
             <Text style={styles.roundNumberText}>
-              {this.state.stepId + 1}
+              {stepId + 1}
             </Text>
           </View>
           <Text>
@@ -170,7 +175,8 @@ export default class extends Component {
   }
 
   renderNextSteps() {
-    const { stepId, steps } = this.state;
+    const { steps } = this.props;
+    const { stepId } = this.state;
     const stepsList = [];
     for (let i = (stepId + 1); i < steps.length; i += 1) {
       stepsList.push(

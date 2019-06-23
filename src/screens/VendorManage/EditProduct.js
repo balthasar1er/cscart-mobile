@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as t from 'tcomb-form-native';
 import ActionSheet from 'react-native-actionsheet';
@@ -10,8 +11,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
 
 // Styles
 import theme from '../../config/theme';
@@ -21,8 +20,10 @@ import Section from '../../components/Section';
 import Spinner from '../../components/Spinner';
 import Icon from '../../components/Icon';
 
+import * as notificationsActions from '../../actions/notificationsActions';
+
 // Graphql
-import GraphQL from '../../services/GraphQL';
+import { getProductDetail, updateProduct } from '../../services/vendors';
 
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
@@ -69,7 +70,7 @@ const styles = EStyleSheet.create({
 const Form = t.form.Form;
 const formFields = t.struct({
   product: t.String,
-  full_description: t.String,
+  full_description: t.maybe(t.String),
   price: t.Number,
 });
 const formOptions = {
@@ -93,49 +94,13 @@ const STATUS_ACTIONS_LIST = [
   i18n.gettext('Cancel'),
 ];
 
-const GET_PRODUCTS = gql`
-query getProducts($pid: Int!) {
-  product(id: $pid, get_icon: true, get_detailed: true, get_additional: true) {
-    product_id
-    product
-    price
-    full_description
-    list_price
-    status
-    product_code
-    amount
-    weight
-    free_shipping
-    product_features {
-      feature_id
-      value
-      variant_id
-      variant
-      feature_type
-      description
-    }
-    categories {
-      category_id
-      category
-    }
-    image_pairs {
-      icon {
-        image_path
-      }
-    },
-    main_pair {
-      icon {
-        image_path
-      }
-    }
-  }
-}
-`;
-
 class EditProduct extends Component {
   static propTypes = {
     showBack: PropTypes.bool,
     productID: PropTypes.number,
+    notificationsActions: PropTypes.shape({
+      hide: PropTypes.func,
+    }),
     stepsData: PropTypes.shape({}),
     navigator: PropTypes.shape({
       setTitle: PropTypes.func,
@@ -147,6 +112,12 @@ class EditProduct extends Component {
 
   constructor(props) {
     super(props);
+
+    this.formRef = React.createRef();
+    this.state = {
+      loading: true,
+      product: {},
+    };
 
     props.navigator.setTitle({
       title: i18n.gettext('Edit').toUpperCase(),
@@ -178,6 +149,10 @@ class EditProduct extends Component {
     });
   }
 
+  componentDidMount() {
+    this.handleFetchDetail();
+  }
+
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
@@ -185,6 +160,22 @@ class EditProduct extends Component {
       if (event.id === 'more') {
         this.ActionSheet.show();
       }
+    }
+  }
+
+  handleFetchDetail = async () => {
+    const { productID, navigator } = this.props;
+    try {
+      const { data } = await getProductDetail(productID);
+      navigator.setTitle({
+        title: i18n.gettext(data.product.product).toUpperCase(),
+      });
+      this.setState({
+        product: data.product,
+        loading: false,
+      });
+    } catch (error) {
+      // pass
     }
   }
 
@@ -204,6 +195,44 @@ class EditProduct extends Component {
     }
   }
 
+  handleSave = async () => {
+    const { notificationsActions } = this.props;
+    const { product } = this.state;
+    const values = this.formRef.current.getValue();
+    if (!values) { return; }
+    try {
+      const result = await updateProduct(
+        product.product_id,
+        { ...values }
+      );
+
+      if (result.errors) {
+        notificationsActions.show({
+          type: 'info',
+          title: i18n.gettext('Error'),
+          text: i18n.gettext('Save error.'),
+          closeLastModal: false,
+        });
+      }
+
+      notificationsActions.show({
+        type: 'success',
+        title: i18n.gettext('Success'),
+        text: i18n.gettext('Product saved.'),
+        closeLastModal: false,
+      });
+
+      this.setState({
+        product: {
+          ...product,
+          ...values,
+        },
+      });
+    } catch (error) {
+      // pass
+    }
+  };
+
   renderMenuItem = (title, subTitle, fn = () => {}) => (
     <TouchableOpacity style={styles.menuItem} onPress={fn}>
       <View style={styles.menuItemText}>
@@ -219,109 +248,84 @@ class EditProduct extends Component {
   );
 
   render() {
-    const { navigator, productID } = this.props;
+    const { navigator } = this.props;
+    const { loading, product } = this.state;
+
+    if (loading) {
+      return (
+        <Spinner visible mode="content" />
+      );
+    }
 
     return (
-      <GraphQL>
-        <Query query={GET_PRODUCTS} variables={{ pid: productID }}>
-          {({ loading, error, data }) => {
-            if (loading) {
-              return (
-                <Spinner visible mode="content" />
-              );
-            }
-
-            if (error) {
-              return `Error! ${error.message}`;
-            }
-
-            navigator.setTitle({
-              title: i18n.gettext(data.product.product).toUpperCase(),
-            });
-
-            const {
-              status,
-              product,
-              list_price,
-              product_code,
-              amount,
-              categories,
-              weight,
-              free_shipping,
-            } = data.product;
-
-            return (
-              <View style={styles.container}>
-                <ScrollView contentContainerStyle={styles.scrollContainer}>
-                  <Section>
-                    <Form
-                      ref="form"
-                      type={formFields}
-                      value={data.product}
-                      options={formOptions}
-                    />
-                  </Section>
-
-                  <Section wrapperStyle={{ padding: 0 }}>
-                    {this.renderMenuItem(
-                      i18n.gettext('Status'),
-                      getProductStatus(status).text,
-                      () => {
-                        this.StatusActionSheet.show();
-                      }
-                    )}
-                    {this.renderMenuItem(
-                      i18n.gettext('Pricing / Inventory'),
-                      i18n.gettext('%1, List price: %2, In stock: %3', product, list_price, amount),
-                      () => {
-                        navigator.push({
-                          screen: 'VendorManagePricingInventory',
-                          backButtonTitle: '',
-                          passProps: {
-                            values: {
-                              list_price,
-                              product_code,
-                              amount,
-                            }
-                          },
-                        });
-                      }
-                    )}
-                    {this.renderMenuItem(
-                      i18n.gettext('Categories'),
-                      categories.map(item => item.category).join(', '),
-                      () => {
-                        navigator.push({
-                          screen: 'VendorManageCategoriesPicker',
-                          backButtonTitle: '',
-                          passProps: {
-                            selected: categories,
-                          },
-                        });
-                      }
-                    )}
-                    {this.renderMenuItem(
-                      i18n.gettext('Shipping properties'),
-                      `${i18n.gettext('Weight: %1', weight)}${free_shipping ? i18n.gettext('Free shipping') : ''}`,
-                      () => {
-                        navigator.push({
-                          screen: 'VendorManageShippingProperties',
-                          backButtonTitle: '',
-                          passProps: {
-                            values: {
-                              weight,
-                              free_shipping,
-                            }
-                          },
-                        });
-                      }
-                    )}
-                  </Section>
-                </ScrollView>
-              </View>
-            );
-          }}
-        </Query>
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Section>
+            <Form
+              ref={this.formRef}
+              type={formFields}
+              value={product}
+              options={formOptions}
+            />
+          </Section>
+          <Section wrapperStyle={{ padding: 0 }}>
+            {this.renderMenuItem(
+              i18n.gettext('Status'),
+              getProductStatus(product.status).text,
+              () => {
+                this.StatusActionSheet.show();
+              }
+            )}
+            {this.renderMenuItem(
+              i18n.gettext('Pricing / Inventory'),
+              i18n.gettext('%1, List price: %2, In stock: %3', product.product, product.list_price, product.amount),
+              () => {
+                navigator.push({
+                  screen: 'VendorManagePricingInventory',
+                  backButtonTitle: '',
+                  passProps: {
+                    values: {
+                      ...product,
+                    }
+                  },
+                });
+              }
+            )}
+            {this.renderMenuItem(
+              i18n.gettext('Categories'),
+              product.categories.map(item => item.category).join(', '),
+              () => {
+                navigator.push({
+                  screen: 'VendorManageCategoriesPicker',
+                  backButtonTitle: '',
+                  passProps: {
+                    selected: product.categories,
+                  },
+                });
+              }
+            )}
+            {this.renderMenuItem(
+              i18n.gettext('Shipping properties'),
+              `${i18n.gettext('Weight: %1', product.weight)}${product.free_shipping ? i18n.gettext('Free shipping') : ''}`,
+              () => {
+                navigator.push({
+                  screen: 'VendorManageShippingProperties',
+                  backButtonTitle: '',
+                  passProps: {
+                    values: {
+                      ...product
+                    }
+                  },
+                });
+              }
+            )}
+          </Section>
+          <View>
+            <TouchableOpacity onPress={this.handleSave}>
+              <Text>{i18n.gettext('save')}</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
         <ActionSheet
           ref={(ref) => { this.ActionSheet = ref; }}
           options={MORE_ACTIONS_LIST}
@@ -336,13 +340,16 @@ class EditProduct extends Component {
           destructiveButtonIndex={0}
           onPress={this.handleStatusActionSheet}
         />
-      </GraphQL>
+      </View>
     );
   }
 }
 
 export default connect(
   state => ({
-    nav: state.nav,
+    notifications: state.notifications,
   }),
+  dispatch => ({
+    notificationsActions: bindActionCreators(notificationsActions, dispatch),
+  })
 )(EditProduct);

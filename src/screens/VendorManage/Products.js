@@ -11,22 +11,19 @@ import {
 } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
 
 // Styles
 import theme from '../../config/theme';
 
 // Import actions.
-import * as authActions from '../../actions/authActions';
-import * as ordersActions from '../../actions/ordersActions';
+import * as notificationsActions from '../../actions/notificationsActions';
 
 // Components
 import Spinner from '../../components/Spinner';
 import EmptyList from '../../components/EmptyList';
 
 // Graphql
-import GraphQL from '../../services/GraphQL';
+import { getProductsList, deleteProduct } from '../../services/vendors';
 
 import { getImagePath } from '../../utils';
 
@@ -67,37 +64,19 @@ const styles = EStyleSheet.create({
   },
 });
 
-const GET_PRODUCTS = gql`
-query getProducts($page: Int) {
-  products(page: $page, items_per_page: 50) {
-    product
-    price
-    amount
-    product_code
-    product_id
-    main_pair {
-      icon {
-        image_path
-      }
-    }
-  }
-}
-`;
-
-class Orders extends Component {
+class Products extends Component {
   static propTypes = {
-    ordersActions: PropTypes.shape({
-      login: PropTypes.func,
-    }),
-    orders: PropTypes.shape({
-      fetching: PropTypes.bool,
-      items: PropTypes.arrayOf(PropTypes.object),
-    }),
     navigator: PropTypes.shape({
       setTitle: PropTypes.func,
       setButtons: PropTypes.func,
       push: PropTypes.func,
       setOnNavigatorEvent: PropTypes.func,
+    }),
+    notifications: PropTypes.shape({
+      items: PropTypes.arrayOf(PropTypes.object),
+    }),
+    notificationsActions: PropTypes.shape({
+      hide: PropTypes.func,
     }),
   };
 
@@ -115,6 +94,8 @@ class Orders extends Component {
     this.state = {
       page: 1,
       hasMore: true,
+      loading: true,
+      items: [],
     };
 
     props.navigator.setTitle({
@@ -144,6 +125,33 @@ class Orders extends Component {
     });
   }
 
+  componentDidMount() {
+    this.handleLoadMore();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { notificationsActions } = this.props;
+    const { navigator } = nextProps;
+
+    if (nextProps.notifications.items.length) {
+      const notify = nextProps.notifications.items[nextProps.notifications.items.length - 1];
+      if (notify.closeLastModal) {
+        navigator.dismissModal();
+      }
+      navigator.showInAppNotification({
+        screen: 'Notification',
+        autoDismissTimerSec: 1,
+        passProps: {
+          dismissWithSwipe: true,
+          title: notify.title,
+          type: notify.type,
+          text: notify.text,
+        },
+      });
+      notificationsActions.hide(notify.id);
+    }
+  }
+
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
@@ -163,9 +171,51 @@ class Orders extends Component {
     }
   }
 
+  handleLoadMore = async () => {
+    const { page, items, hasMore } = this.state;
+    try {
+      if (!hasMore) {
+        return;
+      }
+      const result = await getProductsList(page);
+      this.setState({
+        page: page + 1,
+        loading: false,
+        items: [
+          ...items,
+          ...result.data.products,
+        ],
+        hasMore: result.data.products.length !== 0
+      });
+    } catch (error) {
+      // pass
+    }
+  }
+
+  handleDelete = async ({ product_id }) => {
+    const { notificationsActions } = this.props;
+    const { items } = this.state;
+    try {
+      const result = await deleteProduct(product_id);
+      this.setState({
+        items: items.filter(item => item.product_id !== product_id),
+      });
+
+      if (result) {
+        notificationsActions.show({
+          type: 'success',
+          title: i18n.gettext('Success'),
+          text: i18n.gettext('Product has been removed.'),
+          closeLastModal: false,
+        });
+      }
+    } catch (error) {
+      // pass
+    }
+  }
+
   renderItem = (item) => {
     const { navigator } = this.props;
-
     const swipeoutBtns = [
       {
         text: i18n.gettext('Status'),
@@ -180,7 +230,6 @@ class Orders extends Component {
         onPress: () => this.handleDelete(item),
       },
     ];
-
     const imageUri = getImagePath(item);
 
     return (
@@ -232,64 +281,33 @@ class Orders extends Component {
   };
 
   render() {
-    const { page, hasMore } = this.state;
-    return (
-      <GraphQL>
-        <Query query={GET_PRODUCTS} variables={{ page: 1 }}>
-          {({ loading, error, data, fetchMore, }) => {
-            if (loading) {
-              return (
-                <Spinner visible mode="content" />
-              );
-            }
-            if (error) return `Error! ${error.message}`;
+    const { loading, items } = this.state;
 
-            return (
-              <View style={styles.container}>
-                <FlatList
-                  keyExtractor={(item, index) => `order_${index}`}
-                  data={data.products}
-                  ListEmptyComponent={<EmptyList />}
-                  renderItem={({ item }) => this.renderItem(item)}
-                  onEndReached={() => {
-                    if (!hasMore) {
-                      return;
-                    }
-                    fetchMore({
-                      variables: { page: page + 1 },
-                      updateQuery: (prev, { fetchMoreResult, variables }) => {
-                        this.setState({
-                          page: variables.page,
-                          hasMore: fetchMoreResult.products.length !== 0,
-                        });
-                        return {
-                          products: [
-                            ...prev.products,
-                            ...fetchMoreResult.products,
-                          ],
-                        };
-                      }
-                    });
-                  }}
-                />
-              </View>
-            );
-          }}
-        </Query>
-      </GraphQL>
+    if (loading) {
+      return (
+        <Spinner visible mode="content" />
+      );
+    }
+
+    return (
+      <View style={styles.container}>
+        <FlatList
+          keyExtractor={(item, index) => `order_${index}`}
+          data={items}
+          ListEmptyComponent={<EmptyList />}
+          renderItem={({ item }) => this.renderItem(item)}
+          onEndReached={this.handleLoadMore}
+        />
+      </View>
     );
   }
 }
 
 export default connect(
   state => ({
-    nav: state.nav,
-    auth: state.auth,
-    flash: state.flash,
-    orders: state.orders,
+    notifications: state.notifications,
   }),
   dispatch => ({
-    authActions: bindActionCreators(authActions, dispatch),
-    ordersActions: bindActionCreators(ordersActions, dispatch),
+    notificationsActions: bindActionCreators(notificationsActions, dispatch),
   })
-)(Orders);
+)(Products);

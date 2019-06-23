@@ -162,7 +162,6 @@ class Drawer extends Component {
       showModal: PropTypes.func,
       toggleDrawer: PropTypes.func,
       handleDeepLink: PropTypes.func,
-      showInAppNotification: PropTypes.func,
     }),
     cart: PropTypes.shape({
       amount: PropTypes.number,

@@ -17,7 +17,9 @@ import theme from '../../config/theme';
 
 // Components
 import Icon from '../../components/Icon';
-import StepsLine from '../../components/StepsLine';
+import CheckoutSteps from '../../components/CheckoutSteps';
+
+import { steps } from '../../services/vendors';
 
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
@@ -36,7 +38,7 @@ const styles = EStyleSheet.create({
     paddingBottom: 14,
   },
   header: {
-    marginBottom: 20,
+    marginTop: 14,
   },
   imageWrapper: {
     position: 'relative',
@@ -193,7 +195,7 @@ class AddProductStep1 extends Component {
 
   renderHeader = () => (
     <View style={styles.header}>
-      <StepsLine step={1} total={5} />
+      <CheckoutSteps step={0} steps={steps} />
     </View>
   );
 
