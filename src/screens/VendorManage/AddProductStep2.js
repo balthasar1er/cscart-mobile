@@ -35,9 +35,29 @@ const styles = EStyleSheet.create({
 const Form = t.form.Form;
 const formFields = t.struct({
   name: t.String,
+  description: t.maybe(t.String),
 });
 const formOptions = {
   disableOrder: true,
+  fields: {
+    description: {
+      label: i18n.gettext('Description'),
+      clearButtonMode: 'while-editing',
+      multiline: true,
+      returnKeyType: 'done',
+      blurOnSubmit: true,
+      stylesheet: {
+        ...Form.stylesheet,
+        textbox: {
+          ...Form.stylesheet.textbox,
+          normal: {
+            ...Form.stylesheet.textbox.normal,
+            height: 150,
+          },
+        }
+      },
+    },
+  }
 };
 
 class AddProductStep2 extends Component {
@@ -92,6 +112,7 @@ class AddProductStep2 extends Component {
               stepsData: {
                 ...this.props.stepsData,
                 name: value.name,
+                description: value.description,
               },
             },
           });

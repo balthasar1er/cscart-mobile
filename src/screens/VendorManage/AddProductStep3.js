@@ -34,32 +34,15 @@ const styles = EStyleSheet.create({
 
 const Form = t.form.Form;
 const formFields = t.struct({
-  description: t.maybe(t.String),
+  price: t.String,
+  in_stock: t.String,
+  list_price: t.String,
 });
 const formOptions = {
   disableOrder: true,
-  fields: {
-    description: {
-      label: i18n.gettext('Description'),
-      clearButtonMode: 'while-editing',
-      multiline: true,
-      returnKeyType: 'done',
-      blurOnSubmit: true,
-      stylesheet: {
-        ...Form.stylesheet,
-        textbox: {
-          ...Form.stylesheet.textbox,
-          normal: {
-            ...Form.stylesheet.textbox.normal,
-            height: 150,
-          },
-        }
-      },
-    },
-  }
 };
 
-class AddProductStep3 extends Component {
+class AddProductStep4 extends Component {
   static propTypes = {
     stepsData: PropTypes.shape({}),
     navigator: PropTypes.shape({
@@ -74,7 +57,7 @@ class AddProductStep3 extends Component {
     super(props);
 
     props.navigator.setTitle({
-      title: i18n.gettext('Enter the description').toUpperCase(),
+      title: i18n.gettext('Enter the price').toUpperCase(),
     });
 
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -98,19 +81,21 @@ class AddProductStep3 extends Component {
   }
 
   onNavigatorEvent(event) {
-    const { navigator, } = this.props;
+    const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
     if (event.type === 'NavBarButtonPress') {
       if (event.id === 'next') {
         const value = this.refs.form.getValue();
         if (value) {
           navigator.push({
-            screen: 'VendorManageAddProductStep4',
+            screen: 'VendorManageEditProduct',
             backButtonTitle: '',
             passProps: {
               stepsData: {
                 ...this.props.stepsData,
-                description: value.description,
+                price: value.price,
+                list_price: value.list_price,
+                in_stock: value.in_stock,
               },
             },
           });
@@ -123,7 +108,7 @@ class AddProductStep3 extends Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <StepsLine step={3} total={5} />
+          <StepsLine step={4} total={5} />
           <Section>
             <Form
               ref="form"
@@ -141,4 +126,4 @@ export default connect(
   state => ({
     nav: state.nav,
   }),
-)(AddProductStep3);
+)(AddProductStep4);
