@@ -13,6 +13,7 @@ import discussion from './discussion';
 import notifications from './notifications';
 import productDetail from './productDetail';
 import vendorCategories from './vendorCategories';
+import profile from './profile';
 
 import vendorManageProducts from './vendorManage/products';
 
@@ -22,6 +23,7 @@ export default combineReducers({
   pages,
   search,
   orders,
+  profile,
   layouts,
   vendors,
   wishList,

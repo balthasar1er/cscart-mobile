@@ -72,6 +72,7 @@ const styles = EStyleSheet.create({
     borderWidth: 1,
     borderColor: '#F0F0F0',
     padding: 4,
+    marginRight: 10,
   },
   img: {
     width: 100,
@@ -208,7 +209,7 @@ class EditProduct extends Component {
     }
 
     if (product.image_pairs) {
-      images.forEach((item) => {
+      product.image_pairs.forEach((item) => {
         images.push(item.icon.image_path);
       });
     }
@@ -216,7 +217,7 @@ class EditProduct extends Component {
     return (
       <ScrollView contentContainerStyle={styles.horizontalScroll} horizontal>
         {images.map((item, index) => (
-          <View style={styles.imgWrapper}>
+          <View style={styles.imgWrapper} key={index}>
             <TouchableOpacity
               onPress={() => {
                 navigator.showModal({

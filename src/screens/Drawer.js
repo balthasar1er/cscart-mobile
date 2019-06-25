@@ -501,6 +501,7 @@ export default connect(
     cart: state.cart,
     wishList: state.wishList,
     pages: state.pages,
+    profile: state.profile,
   }),
   dispatch => ({
     authActions: bindActionCreators(authActions, dispatch),
