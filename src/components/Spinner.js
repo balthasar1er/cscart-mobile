@@ -29,49 +29,38 @@ const styles = EStyleSheet.create({
 
 class Spinner extends Component {
   static propTypes = {
-    visible: PropTypes.bool.isRequired,
+    visible: PropTypes.bool,
     mode: PropTypes.string,
   };
 
   static defaultProps = {
     mode: 'modal',
+    visible: false,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      visible: true,
-    };
+  renderAsModal = () => {
+    const { visible } = this.props;
+    return (
+      <Modal
+        animationType="fade"
+        transparent
+        visible={visible}
+        onRequestClose={() => {}}
+      >
+        <View style={styles.container}>
+          <ActivityIndicator
+            color="white"
+            size="large"
+            style={styles.indicator}
+          />
+        </View>
+      </Modal>
+    );
   }
-
-  componentDidMount() {
-    this.setState({ visible: this.props.visible });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({ visible: nextProps.visible });
-  }
-
-  renderAsModal = () => (
-    <Modal
-      animationType="fade"
-      transparent
-      visible={this.state.visible}
-      onRequestClose={() => {}}
-    >
-      <View style={styles.container}>
-        <ActivityIndicator
-          color="white"
-          size="large"
-          style={styles.indicator}
-        />
-      </View>
-    </Modal>
-  );
 
   renderAsContent = () => {
-    if (!this.state.visible) {
+    const { visible } = this.props;
+    if (!visible) {
       return null;
     }
     return (
