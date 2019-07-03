@@ -85,7 +85,7 @@ class App extends React.Component {
   startApp = () => {
     Navigation.startSingleScreenApp({
       screen: {
-        screen: 'Layouts',
+        screen: 'VendorManageAddProductStep1',
         navigatorStyle: {
           navBarBackgroundColor: theme.$navBarBackgroundColor,
           navBarButtonColor: theme.$navBarButtonColor,

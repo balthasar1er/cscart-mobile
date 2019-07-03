@@ -81,9 +81,10 @@ class AddProductStep4 extends Component {
       const newProductID = await productsActions.createProduct({
         product: `${stepsData.name}`,
         price: values.price,
-        category_ids: [],
+        category_ids: [166],
         full_description: `${stepsData.description}`,
         amount: values.in_stock,
+        images: stepsData.images,
       });
 
       if (newProductID) {

@@ -6,28 +6,28 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  CameraRoll,
   FlatList,
   Dimensions,
 } from 'react-native';
+import { bindActionCreators } from 'redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Styles
-import theme from '../../config/theme';
+import theme from '../config/theme';
+
+// Actions
+import * as imagePickerActions from '../actions/imagePickerActions';
 
 // Components
-import CheckoutSteps from '../../components/CheckoutSteps';
-import Section from '../../components/Section';
-import BottomActions from '../../components/BottomActions';
+import Icon from '../components/Icon';
 
-import { steps } from '../../services/vendors';
-
-import i18n from '../../utils/i18n';
-import { registerDrawerDeepLinks } from '../../utils/deepLinks';
+import i18n from '../utils/i18n';
 
 import {
   iconsMap,
   iconsLoaded,
-} from '../../utils/navIcons';
+} from '../utils/navIcons';
 
 const styles = EStyleSheet.create({
   container: {
@@ -37,22 +37,16 @@ const styles = EStyleSheet.create({
   scrollContainer: {
     paddingBottom: 14,
   },
-  emptyList: {
-    textAlign: 'center',
-  },
-  header: {
-    marginLeft: 14,
-    marginTop: 14,
-  },
   imageWrapper: {
     position: 'relative',
   },
-  containerStyle: {
-    marginTop: -12,
-    marginBottom: 22,
+  selected: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
   },
-  sectionText: {
-    color: '$primaryColor',
+  selectedIcon: {
+    color: '#fff',
   }
 });
 
@@ -60,8 +54,11 @@ const IMAGE_NUM_COLUMNS = 4;
 
 class AddProductStep1 extends Component {
   static propTypes = {
-    images: PropTypes.arrayOf(PropTypes.string),
-    showBack: PropTypes.bool,
+    imagePickerActions: PropTypes.shape({
+      clear: PropTypes.func,
+      toggle: PropTypes.func,
+    }),
+    selected: PropTypes.arrayOf(PropTypes.string),
     navigator: PropTypes.shape({
       setTitle: PropTypes.func,
       setButtons: PropTypes.func,
@@ -81,6 +78,12 @@ class AddProductStep1 extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      photos: [],
+      after: null,
+      hasMore: true,
+    };
+
     props.navigator.setTitle({
       title: i18n.gettext('Select product image').toUpperCase(),
     });
@@ -89,67 +92,65 @@ class AddProductStep1 extends Component {
   }
 
   componentWillMount() {
-    const { navigator, showBack } = this.props;
+    const { navigator } = this.props;
     iconsLoaded.then(() => {
       navigator.setButtons({
         leftButtons: [
-          showBack ? {} : {
-            id: 'sideMenu',
-            icon: iconsMap.menu,
+          {
+            id: 'close',
+            icon: iconsMap.close,
           },
         ],
       });
     });
+    this.getImages();
   }
 
   onNavigatorEvent(event) {
     const { navigator } = this.props;
-    registerDrawerDeepLinks(event, navigator);
     if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'sideMenu') {
-        navigator.toggleDrawer({ side: 'left' });
+      if (event.id === 'close') {
+        navigator.dismissModal();
       }
     }
   }
 
-  handleGoNext = () => {
-    const { navigator, images } = this.props;
+  getImages = async () => {
+    const { photos, hasMore, after } = this.state;
 
-    navigator.push({
-      screen: 'VendorManageAddProductStep2',
-      backButtonTitle: '',
-      passProps: {
-        stepsData: {
-          images,
-        },
-      },
-    });
+    if (!hasMore) {
+      return;
+    }
+
+    try {
+      const params = {
+        first: 40,
+        assetType: 'Photos',
+      };
+
+      if (after) {
+        params.after = after;
+      }
+
+      const images = await CameraRoll.getPhotos(params);
+
+      if (images) {
+        const imagesUris = images.edges.map(edge => edge.node.image.uri);
+        this.setState({
+          photos: [
+            ...photos,
+            ...imagesUris,
+          ],
+          hasMore: images.page_info.has_next_page,
+          after: images.page_info.end_cursor,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  renderHeader = () => {
-    const { navigator } = this.props;
-    return (
-      <View>
-        <View style={styles.header}>
-          <CheckoutSteps step={0} steps={steps} />
-        </View>
-        <Section containerStyle={styles.containerStyle}>
-          <TouchableOpacity
-            onPress={() => {
-              navigator.showModal({
-                screen: 'ImagePicker',
-                passProps: {},
-              });
-            }}
-          >
-            <Text style={styles.sectionText}>
-              {i18n.gettext('Select image')}
-            </Text>
-          </TouchableOpacity>
-        </Section>
-      </View>
-    );
-  };
+  handleLoadMore = () => this.getImages();
 
   renderEmptyList = () => (
     <Text style={styles.emptyList}>
@@ -158,11 +159,14 @@ class AddProductStep1 extends Component {
   );
 
   renderImage = (image) => {
+    const { imagePickerActions, selected } = this.props;
+    const isSelected = selected.some(item => item === image.item);
     const IMAGE_WIDTH = Dimensions.get('window').width / IMAGE_NUM_COLUMNS;
 
     return (
       <TouchableOpacity
         style={styles.imageWrapper}
+        onPress={() => imagePickerActions.toggle(image)}
       >
         <Image
           key={image}
@@ -172,26 +176,28 @@ class AddProductStep1 extends Component {
           }}
           source={{ uri: image.item }}
         />
+        {isSelected && (
+          <View style={styles.selected}>
+            <Icon name="check-circle" style={styles.selectedIcon} />
+          </View>
+        )}
       </TouchableOpacity>
     );
   }
 
   render() {
-    const { images } = this.props;
+    const { photos } = this.state;
     return (
       <View style={styles.container}>
         <FlatList
           contentContainerStyle={styles.scrollContainer}
-          data={images}
+          data={photos}
           keyExtractor={item => item}
-          ListHeaderComponent={() => this.renderHeader()}
           numColumns={IMAGE_NUM_COLUMNS}
           renderItem={this.renderImage}
+          onEndReachedThreshold={1}
+          onEndReached={() => this.handleLoadMore()}
           ListEmptyComponent={() => this.renderEmptyList()}
-        />
-        <BottomActions
-          onBtnPress={this.handleGoNext}
-          btnText={i18n.gettext('Next')}
         />
       </View>
     );
@@ -200,6 +206,9 @@ class AddProductStep1 extends Component {
 
 export default connect(
   state => ({
-    images: state.imagePicker.selected,
+    selected: state.imagePicker.selected,
+  }),
+  dispatch => ({
+    imagePickerActions: bindActionCreators(imagePickerActions, dispatch),
   })
 )(AddProductStep1);

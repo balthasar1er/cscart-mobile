@@ -1,9 +1,14 @@
 import axios from 'axios';
 import base64 from 'base-64';
+import omit from 'lodash/omit';
 
 import config from '../config';
 import store from '../store';
 import i18n from '../utils/i18n';
+
+const headers = {
+  'Content-Type': 'multipart/form-data',
+};
 
 // Config axios defaults.
 const AxiosInstance = axios.create({
@@ -14,13 +19,14 @@ const AxiosInstance = axios.create({
 AxiosInstance.interceptors.request.use((conf) => {
   const state = store.getState();
   const newConf = { ...conf };
-
-  newConf.headers.common['Storefront-Api-Access-Key'] = config.apiKey;
-  newConf.headers.common['Cache-Control'] = 'no-cache';
+  headers['Storefront-Api-Access-Key'] = config.apiKey;
+  headers['Cache-Control'] = 'no-cache';
 
   if (state.auth.token) {
-    newConf.headers.common.Authorization = `Basic ${base64.encode(state.auth.token)}:`;
+    headers.Authorization = `Basic ${base64.encode(state.auth.token)}:`;
   }
+  newConf.headers.common = headers;
+
   return newConf;
 });
 
@@ -91,16 +97,116 @@ export const deleteProduct = (id) => {
   return gql(QUERY, { id }).then(result => result.data);
 };
 
-
 export const createProduct = (product) => {
+  const data = new FormData();
+  const renderImagePairs = () => {
+    const images = [...product.images];
+    const params = [];
+    const pairs = [];
+    const variables = {};
+
+    if (!images.length) {
+      return '';
+    }
+
+    images.forEach((image, index) => {
+      if (index === 1) {
+        variables[index] = ['variables.main'];
+        return params.push(
+          `
+            main_pair: {
+              detailed: {
+                upload: $main
+              }
+            }
+          `
+        );
+      }
+
+      variables[index] = [`variables.image_${index}`];
+      return pairs.push(`
+        {
+          detailed: {
+            upload: $image_${index}
+          }
+        }
+      `);
+    });
+
+    if (pairs.length) {
+      params.push(`
+        image_pairs: [${pairs.join(', ')}]
+      `);
+    }
+
+    data.append('map', JSON.stringify(variables));
+
+    return params.join(', ');
+  };
+
+  const renderParams = () => {
+    const images = [...product.images];
+    const params = [];
+
+    if (!images.length) {
+      return '';
+    }
+
+    images.forEach((image, index) => {
+      const photo = {
+        uri: image,
+        type: 'image/jpeg',
+        name: `photo_${index}.jpg`,
+      };
+      data.append(index, photo);
+
+      if (index === 1) {
+        return params.push('$main: FileUpload');
+      }
+
+      return params.push(
+        `$image_${index}: FileUpload`
+      );
+    });
+    return params.join(', ');
+  };
+
   const QUERY = `
-    mutation createProduct($product: CreateProductInput!) {
-      create_product(product: $product)
+    mutation createProduct(
+      $product: String!,
+      $category_ids: [Int]!,
+      $price: Float!,
+      $full_description: String,
+      $amount: Int
+      ${renderParams()}
+    ) {
+      create_product(product: {
+        product: $product
+        category_ids: $category_ids
+        price: $price
+        full_description: $full_description
+        amount: $amount
+        ${renderImagePairs()}
+      })
     }
   `;
-  return gql(QUERY, { product }).then(result => result.data);
-};
 
+  const serializedData = JSON.stringify({
+    query: QUERY,
+    variables: {
+      ...omit(product, ['images']),
+      main: null,
+      image_0: null,
+    }
+  });
+  data.append('operations', serializedData);
+
+  console.log(data, QUERY, serializedData, 'data');
+  return AxiosInstance.post('', data)
+    .then((result) => {
+      return result.data;
+    }).catch((err) => console.log(err, err.response, err.request, 'err'));
+};
 
 export const getProductsList = (page = 1) => {
   const QUERY = `query getProducts($page: Int) {

@@ -14,6 +14,7 @@ import notifications from './notifications';
 import productDetail from './productDetail';
 import vendorCategories from './vendorCategories';
 import profile from './profile';
+import imagePicker from './imagePicker';
 
 import vendorManageProducts from './vendorManage/products';
 import vendorManageCategories from './vendorManage/categories';
@@ -33,6 +34,7 @@ export default combineReducers({
   notifications,
   productDetail,
   vendorCategories,
+  imagePicker,
 
   vendorManageProducts,
   vendorManageCategories,

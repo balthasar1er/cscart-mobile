@@ -76,7 +76,7 @@ const Section = ({
 Section.propTypes = {
   title: PropTypes.string,
   wrapperStyle: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.number]),
-  containerStyle: PropTypes.shape({}),
+  containerStyle: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.number]),
   showRightButton: PropTypes.bool,
   rightButtonText: PropTypes.string,
   onRightButtonPress: PropTypes.func,
