@@ -8,20 +8,14 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-// Styles
-import theme from '../../config/theme';
-
 // Components
 import Section from '../../components/Section';
 import CheckoutSteps from '../../components/CheckoutSteps';
+import BottomActions from '../../components/BottomActions';
 import { steps } from '../../services/vendors';
 
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
-
-import {
-  iconsLoaded,
-} from '../../utils/navIcons';
 
 const styles = EStyleSheet.create({
   container: {
@@ -29,6 +23,7 @@ const styles = EStyleSheet.create({
     backgroundColor: '$grayColor',
   },
   header: {
+    marginLeft: 14,
     marginTop: 14,
   },
   scrollContainer: {
@@ -82,46 +77,32 @@ class AddProductStep2 extends Component {
       title: i18n.gettext('Enter the name').toUpperCase(),
     });
 
-    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-  }
+    this.formRef = React.createRef();
 
-  componentWillMount() {
-    const { navigator } = this.props;
-    iconsLoaded.then(() => {
-      navigator.setButtons({
-        rightButtons: [
-          {
-            title: i18n.gettext('Next'),
-            id: 'next',
-            showAsAction: 'ifRoom',
-            buttonColor: theme.$primaryColor,
-            buttonFontSize: 16,
-          },
-        ],
-      });
-    });
+    props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'next') {
-        const value = this.refs.form.getValue();
-        if (value) {
-          navigator.push({
-            screen: 'VendorManageAddProductStep3',
-            backButtonTitle: '',
-            passProps: {
-              stepsData: {
-                ...this.props.stepsData,
-                name: value.name,
-                description: value.description,
-              },
-            },
-          });
-        }
-      }
+  }
+
+  handleGoNext = () => {
+    const { navigator, stepsData } = this.props;
+
+    const value = this.formRef.current.getValue();
+    if (value) {
+      navigator.push({
+        screen: 'VendorManageAddProductStep3',
+        backButtonTitle: '',
+        passProps: {
+          stepsData: {
+            ...stepsData,
+            name: value.name,
+            description: value.description,
+          },
+        },
+      });
     }
   }
 
@@ -138,12 +119,16 @@ class AddProductStep2 extends Component {
           {this.renderHeader()}
           <Section>
             <Form
-              ref="form"
+              ref={this.formRef}
               type={formFields}
               options={formOptions}
             />
           </Section>
         </ScrollView>
+        <BottomActions
+          onBtnPress={this.handleGoNext}
+          btnText={i18n.gettext('Next')}
+        />
       </View>
     );
   }

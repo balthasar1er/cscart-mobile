@@ -120,3 +120,17 @@ export const getProductsList = (page = 1) => {
 
   return gql(QUERY, { page }).then(result => result.data);
 };
+
+export const getCategoriesList = (parent = 0, page = 1) => {
+  const QUERY = `
+    query getCategories($parent: Int!, $page: Int!) {
+      categories(parent_category_id: $parent, page: $page, items_per_page: 100) {
+        status
+        category
+        category_id
+      }
+    }
+  `;
+
+  return gql(QUERY, { parent, page }).then(result => result.data);
+};

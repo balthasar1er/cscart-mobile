@@ -1,11 +1,11 @@
 export default {
-  username: 'amelekesov@cs-cart.com',
+  username: 'ascherbachenko@cs-cart.com',
   // API KEY
-  apiKey: 'b82860367ed652783aa8aa73478c87eb',
+  apiKey: '62f5a9c133da276c516cc7f491f8a644',
   // API URL
-  baseUrl: 'http://134.209.117.252/api/4.0/',
+  baseUrl: 'http://mobile.mve.demo.cs-cart.com/api/4.0/',
   // SITE URL
-  siteUrl: 'http://134.209.117.252/',
+  siteUrl: 'http://mobile.mve.demo.cs-cart.com/',
   // SHOP NAME
   shopName: 'CS-Cart Mobile',
   // SHOP DEFAULT LAYOUT ID
@@ -18,8 +18,8 @@ export default {
   pushNotificationsColor: '#26323e',
   // Demo app features
   demo: true,
-  demoUsername: 'amelekesov@cs-cart.com',
-  demoPassword: '7tsey{Pbz>SV7u',
+  demoUsername: 'customer@example.com',
+  demoPassword: 'customer',
 
   // Apple pay payments
   applePay: true,

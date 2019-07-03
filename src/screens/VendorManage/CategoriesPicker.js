@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
 import {
   View,
   Text,
@@ -11,12 +10,13 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-// Graphql
-// import GraphQL from '../../services/GraphQL';
-
 // Components
 import Icon from '../../components/Icon';
 import Spinner from '../../components/Spinner';
+
+// Action
+import * as categoriesActions from '../../actions/vendorManage/categoriesActions';
+import { getCategoriesList } from '../../services/vendors';
 
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
@@ -52,18 +52,15 @@ const styles = EStyleSheet.create({
   }
 });
 
-const GET_CATEGORIES = gql`
-query {
-  categories(items_per_page: 1000) {
-    category_id,
-    category
-  }
-}
-`;
-
 class CategoriesPicker extends Component {
   static propTypes = {
-    selected: PropTypes.arrayOf(PropTypes.object),
+    selected: PropTypes.arrayOf(PropTypes.shape({})),
+    categoriesActions: PropTypes.shape({
+      toggleCategory: PropTypes.func,
+      clear: PropTypes.func,
+    }),
+    parent: PropTypes.number,
+    page: PropTypes.number,
     navigator: PropTypes.shape({
       setTitle: PropTypes.func,
       setButtons: PropTypes.func,
@@ -72,11 +69,17 @@ class CategoriesPicker extends Component {
     }),
   };
 
+  static defaultProps = {
+    parent: 0,
+    page: 0,
+  };
+
   constructor(props) {
     super(props);
 
     this.state = {
-      selected: [],
+      categories: [],
+      loading: true,
     };
 
     props.navigator.setTitle({
@@ -86,11 +89,26 @@ class CategoriesPicker extends Component {
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  componentWillMount() {
-    const { selected } = this.props;
-    this.setState({
-      selected: selected || [],
-    });
+  async componentWillMount() {
+    const { categoriesActions, parent, page } = this.props;
+
+    if (parent === 0) {
+      categoriesActions.clear();
+    }
+
+    try {
+      const response = await getCategoriesList(parent, page + 1);
+      if (response.data.categories) {
+        this.setState({
+          loading: false,
+          categories: response.data.categories,
+        });
+      }
+    } catch (error) {
+      this.setState({
+        loading: false,
+      });
+    }
   }
 
   onNavigatorEvent(event) {
@@ -100,24 +118,7 @@ class CategoriesPicker extends Component {
 
   handleLoadMore = () => {};
 
-  handleToggleCategory = (category) => {
-    const { selected } = this.state;
-
-    if (selected.some(item => category.category_id === item.category_id)) {
-      this.setState({
-        selected: selected.filter(item => category.category_id !== item.category_id),
-      });
-      return;
-    }
-
-    this.setState({
-      selected: [
-        ...selected,
-        category,
-      ]
-    });
-  }
-
+ 
   renderEmptyList = () => (
     <Text style={styles.emptyList}>
       {i18n.gettext('There are no categories')}
@@ -125,13 +126,13 @@ class CategoriesPicker extends Component {
   );
 
   renderCategoryItem = ({ item }) => {
-    const { selected } = this.state;
+    const { selected, categoriesActions } = this.props;
     const isSelected = selected.some(selected => selected.category_id === item.category_id);
 
     return (
       <TouchableOpacity
         style={styles.itemWrapper}
-        onPress={() => this.handleToggleCategory(item)}
+        onPress={() => categoriesActions.toggleCategory(item)}
       >
         {isSelected ? (
           <Icon name="check-circle" style={styles.selected} />
@@ -146,43 +147,38 @@ class CategoriesPicker extends Component {
   }
 
   render() {
-    return (
-      null
-      // <GraphQL>
-      //   <Query query={GET_CATEGORIES}>
-      //     {({ loading, error, data }) => {
-      //       if (loading) {
-      //         return (
-      //           <Spinner visible mode="content" />
-      //         );
-      //       }
+    const { categories, loading } = this.state;
 
-      //       if (error) {
-      //         return `Error! ${error.message}`;
-      //       }
-      //       return (
-      //         <View style={styles.container}>
-      //           <FlatList
-      //             contentContainerStyle={styles.scrollContainer}
-      //             data={data.categories}
-      //             keyExtractor={item => `${item.category_id}`}
-      //             numColumns={1}
-      //             renderItem={this.renderCategoryItem}
-      //             onEndReachedThreshold={1}
-      //             onEndReached={() => this.handleLoadMore()}
-      //             ListEmptyComponent={() => this.renderEmptyList()}
-      //           />
-      //         </View>
-      //       );
-      //     }}
-      //   </Query>
-      // </GraphQL>
+    if (loading) {
+      return (
+        <Spinner visible mode="content" />
+      );
+    }
+
+    return (
+      <View style={styles.container}>
+        <FlatList
+          contentContainerStyle={styles.scrollContainer}
+          data={categories}
+          keyExtractor={item => `${item.category_id}`}
+          numColumns={1}
+          renderItem={this.renderCategoryItem}
+          onEndReachedThreshold={1}
+          onEndReached={() => this.handleLoadMore()}
+          ListEmptyComponent={() => this.renderEmptyList()}
+        />
+      </View>
     );
   }
 }
 
 export default connect(
   state => ({
-    nav: state.nav,
+    // loading: state.vendorManageCategories.loading,
+    selected: state.vendorManageCategories.selected,
+    // hasMore: state.vendorManageCategories.hasMore,
+  }),
+  dispatch => ({
+    categoriesActions: bindActionCreators(categoriesActions, dispatch)
   })
 )(CategoriesPicker);

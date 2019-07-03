@@ -9,12 +9,10 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-// Styles
-import theme from '../../config/theme';
-
 // Components
 import Section from '../../components/Section';
 import CheckoutSteps from '../../components/CheckoutSteps';
+import BottomActions from '../../components/BottomActions';
 import { steps } from '../../services/vendors';
 
 // Action
@@ -23,16 +21,13 @@ import * as productsActions from '../../actions/vendorManage/productsActions';
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
 
-import {
-  iconsLoaded,
-} from '../../utils/navIcons';
-
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '$grayColor',
   },
   header: {
+    marginLeft: 14,
     marginTop: 14,
   },
   scrollContainer: {
@@ -73,32 +68,9 @@ class AddProductStep4 extends Component {
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  componentWillMount() {
-    const { navigator } = this.props;
-    iconsLoaded.then(() => {
-      navigator.setButtons({
-        rightButtons: [
-          {
-            title: i18n.gettext('Next'),
-            id: 'next',
-            showAsAction: 'ifRoom',
-            buttonColor: theme.$primaryColor,
-            buttonFontSize: 16,
-          },
-        ],
-      });
-    });
-  }
-
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
-
-    if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'next') {
-        this.handleCreate();
-      }
-    }
   }
 
   handleCreate = async () => {
@@ -126,6 +98,10 @@ class AddProductStep4 extends Component {
     }
   };
 
+  handleGoNext = () => {
+    this.handleCreate();
+  }
+
   renderHeader = () => (
     <View style={styles.header}>
       <CheckoutSteps step={2} steps={steps} />
@@ -145,6 +121,10 @@ class AddProductStep4 extends Component {
             />
           </Section>
         </ScrollView>
+        <BottomActions
+          onBtnPress={this.handleGoNext}
+          btnText={i18n.gettext('Next')}
+        />
       </View>
     );
   }

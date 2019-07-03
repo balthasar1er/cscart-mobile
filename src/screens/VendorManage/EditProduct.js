@@ -347,7 +347,6 @@ class EditProduct extends Component {
 
 export default connect(
   state => ({
-    notifications: state.notifications,
     loading: state.vendorManageProducts.loadingCurrent,
     product: state.vendorManageProducts.current,
   }),

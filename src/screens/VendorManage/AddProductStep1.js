@@ -18,6 +18,7 @@ import theme from '../../config/theme';
 // Components
 import Icon from '../../components/Icon';
 import CheckoutSteps from '../../components/CheckoutSteps';
+import BottomActions from '../../components/BottomActions';
 
 import { steps } from '../../services/vendors';
 
@@ -38,6 +39,7 @@ const styles = EStyleSheet.create({
     paddingBottom: 14,
   },
   header: {
+    marginLeft: 14,
     marginTop: 14,
   },
   imageWrapper: {
@@ -101,15 +103,6 @@ class AddProductStep1 extends Component {
             icon: iconsMap.menu,
           },
         ],
-        rightButtons: [
-          {
-            title: i18n.gettext('Next'),
-            id: 'next',
-            showAsAction: 'ifRoom',
-            buttonColor: theme.$primaryColor,
-            buttonFontSize: 16,
-          },
-        ],
       });
     });
 
@@ -117,23 +110,11 @@ class AddProductStep1 extends Component {
   }
 
   onNavigatorEvent(event) {
-    const { selected } = this.state;
     const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
     if (event.type === 'NavBarButtonPress') {
       if (event.id === 'sideMenu') {
         navigator.toggleDrawer({ side: 'left' });
-      }
-      if (event.id === 'next') {
-        navigator.push({
-          screen: 'VendorManageAddProductStep2',
-          backButtonTitle: '',
-          passProps: {
-            stepsData: {
-              images: selected,
-            },
-          },
-        });
       }
     }
   }
@@ -193,6 +174,21 @@ class AddProductStep1 extends Component {
     });
   }
 
+  handleGoNext = () => {
+    const { navigator } = this.props;
+    const { selected } = this.state;
+
+    navigator.push({
+      screen: 'VendorManageAddProductStep2',
+      backButtonTitle: '',
+      passProps: {
+        stepsData: {
+          images: selected,
+        },
+      },
+    });
+  }
+
   renderHeader = () => (
     <View style={styles.header}>
       <CheckoutSteps step={0} steps={steps} />
@@ -246,6 +242,10 @@ class AddProductStep1 extends Component {
           onEndReachedThreshold={1}
           onEndReached={() => this.handleLoadMore()}
           ListEmptyComponent={() => this.renderEmptyList()}
+        />
+        <BottomActions
+          onBtnPress={this.handleGoNext}
+          btnText={i18n.gettext('Next')}
         />
       </View>
     );
