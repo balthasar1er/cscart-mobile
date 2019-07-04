@@ -152,6 +152,7 @@ class EditProduct extends Component {
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
+    console.log(event);
     if (event.type === 'NavBarButtonPress') {
       if (event.id === 'more') {
         this.ActionSheet.show();

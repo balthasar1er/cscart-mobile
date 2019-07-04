@@ -160,6 +160,16 @@ export function createProduct(product) {
       }
 
       dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'success',
+          title: i18n.gettext('Success'),
+          text: i18n.gettext('The product was created.'),
+          closeLastModal: false,
+        },
+      });
+
+      dispatch({
         type: VENDOR_CREATE_PRODUCT_SUCCESS,
         payload: result,
       });

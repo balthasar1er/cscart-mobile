@@ -13,10 +13,12 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Section from '../../components/Section';
 import CheckoutSteps from '../../components/CheckoutSteps';
 import BottomActions from '../../components/BottomActions';
+import Spinner from '../../components/Spinner';
 import { steps } from '../../services/vendors';
 
 // Action
 import * as productsActions from '../../actions/vendorManage/productsActions';
+import * as imagePickerActions from '../../actions/imagePickerActions';
 
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
@@ -49,6 +51,9 @@ class AddProductStep4 extends Component {
   static propTypes = {
     stepsData: PropTypes.shape({}),
     productsActions: PropTypes.shape({}),
+    imagePickerActions: PropTypes.shape({
+      clear: PropTypes.func,
+    }),
     navigator: PropTypes.shape({
       setTitle: PropTypes.func,
       setButtons: PropTypes.func,
@@ -59,6 +64,10 @@ class AddProductStep4 extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      loading: false,
+    };
 
     props.navigator.setTitle({
       title: i18n.gettext('Enter the price').toUpperCase(),
@@ -74,34 +83,38 @@ class AddProductStep4 extends Component {
   }
 
   handleCreate = async () => {
-    const { navigator, productsActions, stepsData } = this.props;
+    const { navigator, productsActions, stepsData, imagePickerActions } = this.props;
     const values = this.formRef.current.getValue();
 
     if (values) {
-      const newProductID = await productsActions.createProduct({
-        product: `${stepsData.name}`,
-        price: values.price,
-        category_ids: [166],
-        full_description: `${stepsData.description}`,
-        amount: values.in_stock,
-        images: stepsData.images,
-      });
+      this.setState({ loading: true });
 
-      if (newProductID) {
-        navigator.push({
-          screen: 'VendorManageEditProduct',
-          backButtonTitle: '',
-          passProps: {
-            productID: newProductID
-          },
+      try {
+        const newProductID = await productsActions.createProduct({
+          product: `${stepsData.name}`,
+          price: values.price,
+          category_ids: [166],
+          full_description: `${stepsData.description}`,
+          amount: values.in_stock,
+          images: stepsData.images,
         });
+
+        if (newProductID) {
+          this.setState({ loading: false });
+          imagePickerActions.clear();
+          navigator.push({
+            screen: 'VendorManageProducts',
+            backButtonTitle: '',
+            passProps: {
+              productID: newProductID
+            },
+          });
+        }
+      } catch (error) {
+        this.setState({ loading: false });
       }
     }
   };
-
-  handleGoNext = () => {
-    this.handleCreate();
-  }
 
   renderHeader = () => (
     <View style={styles.header}>
@@ -110,6 +123,7 @@ class AddProductStep4 extends Component {
   );
 
   render() {
+    const { loading } = this.state;
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -123,9 +137,11 @@ class AddProductStep4 extends Component {
           </Section>
         </ScrollView>
         <BottomActions
-          onBtnPress={this.handleGoNext}
-          btnText={i18n.gettext('Next')}
+          onBtnPress={this.handleCreate}
+          btnText={i18n.gettext('Create')}
+          disabled={loading}
         />
+        <Spinner visible={loading} />
       </View>
     );
   }
@@ -136,6 +152,7 @@ export default connect(
     nav: state.nav,
   }),
   dispatch => ({
+    imagePickerActions: bindActionCreators(imagePickerActions, dispatch),
     productsActions: bindActionCreators(productsActions, dispatch)
   })
 )(AddProductStep4);

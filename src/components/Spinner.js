@@ -46,32 +46,37 @@ class Spinner extends Component {
   }
 
   componentDidMount() {
-    this.setState({ visible: this.props.visible });
+    const { visible } = this.props;
+    this.setState({ visible });
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({ visible: nextProps.visible });
   }
 
-  renderAsModal = () => (
-    <Modal
-      animationType="fade"
-      transparent
-      visible={this.state.visible}
-      onRequestClose={() => {}}
-    >
-      <View style={styles.container}>
-        <ActivityIndicator
-          color="white"
-          size="large"
-          style={styles.indicator}
-        />
-      </View>
-    </Modal>
-  );
+  renderAsModal = () => {
+    const { visible } = this.state;
+    return (
+      <Modal
+        animationType="fade"
+        transparent
+        visible={visible}
+        onRequestClose={() => {}}
+      >
+        <View style={styles.container}>
+          <ActivityIndicator
+            color="white"
+            size="large"
+            style={styles.indicator}
+          />
+        </View>
+      </Modal>
+    );
+  }
 
   renderAsContent = () => {
-    if (!this.state.visible) {
+    const { visible } = this.state;
+    if (!visible) {
       return null;
     }
     return (

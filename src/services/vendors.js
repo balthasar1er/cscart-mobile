@@ -12,7 +12,7 @@ const headers = {
 
 // Config axios defaults.
 const AxiosInstance = axios.create({
-  baseURL: `${config.baseUrl}/graphql`,
+  baseURL: `${config.baseUrl}graphql`,
   timeout: 100000,
 });
 
@@ -153,13 +153,6 @@ export const createProduct = (product) => {
     }
 
     images.forEach((image, index) => {
-      const photo = {
-        uri: image,
-        type: 'image/jpeg',
-        name: `photo_${index}.jpg`,
-      };
-      data.append(index, photo);
-
       if (index === 1) {
         return params.push('$main: FileUpload');
       }
@@ -201,11 +194,16 @@ export const createProduct = (product) => {
   });
   data.append('operations', serializedData);
 
-  console.log(data, QUERY, serializedData, 'data');
-  return AxiosInstance.post('', data)
-    .then((result) => {
-      return result.data;
-    }).catch((err) => console.log(err, err.response, err.request, 'err'));
+  product.images.forEach((image, index) => {
+    const photo = {
+      uri: image,
+      type: 'image/jpeg',
+      name: `${index}.jpg`,
+    };
+    data.append(index, photo);
+  });
+
+  return AxiosInstance.post('', data).then(result => result.data);
 };
 
 export const getProductsList = (page = 1) => {

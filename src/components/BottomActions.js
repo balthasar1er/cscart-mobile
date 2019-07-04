@@ -21,7 +21,7 @@ const styles = EStyleSheet.create({
 export default class extends PureComponent {
   static propTypes = {
     onBtnPress: PropTypes.func,
-    isBtnDisabled: PropTypes.bool,
+    disabled: PropTypes.bool,
     btnText: PropTypes.string,
   };
 
@@ -30,13 +30,13 @@ export default class extends PureComponent {
   };
 
   render() {
-    const { onBtnPress, isBtnDisabled, btnText } = this.props;
+    const { onBtnPress, disabled, btnText } = this.props;
     return (
       <View style={styles.container}>
         <Button
           type="primary"
           onPress={() => onBtnPress()}
-          disabled={isBtnDisabled}
+          disabled={disabled}
         >
           <Text style={styles.placeOrderBtnText}>
             {btnText}
