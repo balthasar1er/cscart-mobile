@@ -1,6 +1,7 @@
 import {
-  VENDOR_CATEGORIES_TOGGLE,
   VENDOR_CATEGORIES_CLEAR,
+  VENDOR_PRODUCT_CHANGE_CATEGORY,
+  VENDOR_UPDATE_PRODUCT_SUCCESS,
 } from '../../constants';
 
 const initialState = {
@@ -15,10 +16,16 @@ export default function (state = initialState, action) {
         selected: [],
       };
 
-    case VENDOR_CATEGORIES_TOGGLE:
+    case VENDOR_PRODUCT_CHANGE_CATEGORY:
       return {
         ...state,
-        selected: [1],
+        selected: action.payload,
+      };
+
+    case VENDOR_UPDATE_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        selected: [],
       };
 
     default:

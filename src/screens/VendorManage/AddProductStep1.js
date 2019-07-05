@@ -89,17 +89,17 @@ class AddProductStep1 extends Component {
   }
 
   componentWillMount() {
-    const { navigator, showBack } = this.props;
-    iconsLoaded.then(() => {
-      navigator.setButtons({
-        leftButtons: [
-          showBack ? {} : {
-            id: 'sideMenu',
-            icon: iconsMap.menu,
-          },
-        ],
-      });
-    });
+    // const { navigator, showBack } = this.props;
+    // iconsLoaded.then(() => {
+    //   navigator.setButtons({
+    //     leftButtons: [
+    //       showBack ? {} : {
+    //         id: 'sideMenu',
+    //         icon: iconsMap.menu,
+    //       },
+    //     ],
+    //   });
+    // });
   }
 
   onNavigatorEvent(event) {
@@ -113,7 +113,7 @@ class AddProductStep1 extends Component {
   }
 
   handleGoNext = () => {
-    const { navigator, images } = this.props;
+    const { navigator, images, category_ids } = this.props;
 
     navigator.push({
       screen: 'VendorManageAddProductStep2',
@@ -121,6 +121,7 @@ class AddProductStep1 extends Component {
       passProps: {
         stepsData: {
           images,
+          category_ids,
         },
       },
     });

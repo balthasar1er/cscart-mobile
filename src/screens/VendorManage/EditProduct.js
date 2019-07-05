@@ -113,7 +113,9 @@ class EditProduct extends Component {
     stepsData: PropTypes.shape({}),
     productsActions: PropTypes.shape({}),
     product: PropTypes.shape({}),
+    categories: PropTypes.arrayOf(PropTypes.shape({})),
     loading: PropTypes.bool,
+    showClose: PropTypes.bool,
     navigator: PropTypes.shape({
       setTitle: PropTypes.func,
       setButtons: PropTypes.func,
@@ -133,7 +135,8 @@ class EditProduct extends Component {
     const {
       navigator,
       productID,
-      productsActions
+      productsActions,
+      showClose,
     } = this.props;
     productsActions.fetchProduct(productID);
 
@@ -145,6 +148,12 @@ class EditProduct extends Component {
             icon: iconsMap['more-horiz'],
           },
         ],
+        leftButtons: [
+          showClose ? {
+            id: 'close',
+            icon: iconsMap.close,
+          } : {},
+        ],
       });
     });
   }
@@ -155,6 +164,9 @@ class EditProduct extends Component {
     if (event.type === 'NavBarButtonPress') {
       if (event.id === 'more') {
         this.ActionSheet.show();
+      }
+      if (event.id === 'close') {
+        navigator.dismissAllModals();
       }
     }
   }
@@ -187,16 +199,22 @@ class EditProduct extends Component {
   }
 
   handleSave = () => {
-    const { product, productsActions } = this.props;
+    const { product, productsActions, categories } = this.props;
     const values = this.formRef.current.getValue();
 
     if (!values) { return; }
 
+    const data = {
+      ...values,
+    };
+
+    if (categories.length) {
+      data.category_ids = categories[0].category_id;
+    }
+
     productsActions.updateProduct(
       product.product_id,
-      {
-        ...values
-      }
+      data,
     );
   };
 
@@ -253,7 +271,12 @@ class EditProduct extends Component {
   );
 
   render() {
-    const { navigator, loading, product, productsActions } = this.props;
+    const {
+      navigator,
+      loading,
+      product,
+      productsActions,
+    } = this.props;
 
     if (loading) {
       return (
@@ -354,6 +377,7 @@ export default connect(
   state => ({
     loading: state.vendorManageProducts.loadingCurrent,
     product: state.vendorManageProducts.current,
+    categories: state.vendorManageCategories.selected,
   }),
   dispatch => ({
     productsActions: bindActionCreators(productsActions, dispatch)

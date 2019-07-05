@@ -164,11 +164,23 @@ class CategoriesPicker extends Component {
         });
         return;
       }
+
       categoriesActions.toggleCategory(item);
+
       if (onCategoryPress) {
         onCategoryPress(item);
         navigator.dismissModal();
+        return;
       }
+
+      navigator.push({
+        screen: 'VendorManageAddProductStep1',
+        animated: false,
+        backButtonTitle: '',
+        passProps: {
+          category_ids: [item.category_id],
+        }
+      });
     } catch (error) {
       this.setState({ loading: false });
     }

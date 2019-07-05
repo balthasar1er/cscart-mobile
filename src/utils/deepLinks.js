@@ -65,10 +65,13 @@ export const registerDrawerDeepLinks = (event, navigator) => {
       backButtonTitle: '',
     });
   } else if (link === 'vendor/add_product/') {
-    navigator.resetTo({
-      screen: 'VendorManageAddProductStep1',
-      animated: false,
+    navigator.showModal({
+      screen: 'VendorManageCategoriesPicker',
       backButtonTitle: '',
+      title: i18n.gettext('Categories').toUpperCase(),
+      passProps: {
+        parent: 0,
+      },
     });
   } else if (link === 'vendor/products/') {
     navigator.resetTo({

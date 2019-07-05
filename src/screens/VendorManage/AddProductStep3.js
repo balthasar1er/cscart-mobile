@@ -98,7 +98,7 @@ class AddProductStep4 extends Component {
         const newProductID = await productsActions.createProduct({
           product: `${stepsData.name}`,
           price: values.price,
-          category_ids: [166],
+          category_ids: stepsData.category_ids,
           full_description: `${stepsData.description}`,
           amount: values.in_stock,
           images: stepsData.images,
@@ -106,16 +106,15 @@ class AddProductStep4 extends Component {
 
         if (newProductID) {
           imagePickerActions.clear();
-          setTimeout(() => {
-            this.setState({ loading: false });
-            navigator.push({
-              screen: 'VendorManageProducts',
-              backButtonTitle: '',
-              passProps: {
-                productID: newProductID
-              },
-            });
-          }, 1500);
+          this.setState({ loading: false });
+          navigator.push({
+            screen: 'VendorManageEditProduct',
+            backButtonTitle: '',
+            passProps: {
+              productID: newProductID,
+              showClose: true,
+            },
+          });
         }
       } catch (error) {
         this.setState({ loading: false });
