@@ -232,6 +232,7 @@ export const getCategoriesList = (parent = 0, page = 1) => {
         status
         category
         category_id
+        parent_id
       }
     }
   `;

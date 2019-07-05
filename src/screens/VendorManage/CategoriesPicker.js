@@ -11,15 +11,21 @@ import {
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Components
-import Icon from '../../components/Icon';
 import Spinner from '../../components/Spinner';
+
+// Styles
+import theme from '../../config/theme';
 
 // Action
 import * as categoriesActions from '../../actions/vendorManage/categoriesActions';
 import { getCategoriesList } from '../../services/vendors';
 
 import i18n from '../../utils/i18n';
-import { registerDrawerDeepLinks } from '../../utils/deepLinks';
+
+import {
+  iconsMap,
+  iconsLoaded,
+} from '../../utils/navIcons';
 
 const styles = EStyleSheet.create({
   container: {
@@ -37,12 +43,6 @@ const styles = EStyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#F0F0F0',
   },
-  selected: {
-    color: '#FF6008',
-  },
-  icon: {
-    color: '#898989',
-  },
   itemText: {
     paddingLeft: 14,
   },
@@ -54,13 +54,13 @@ const styles = EStyleSheet.create({
 
 class CategoriesPicker extends Component {
   static propTypes = {
-    selected: PropTypes.arrayOf(PropTypes.shape({})),
+    onCategoryPress: PropTypes.func.isRequired,
+    parent: PropTypes.number,
     categoriesActions: PropTypes.shape({
       toggleCategory: PropTypes.func,
       clear: PropTypes.func,
     }),
-    parent: PropTypes.number,
-    page: PropTypes.number,
+    categories: PropTypes.arrayOf(PropTypes.shape({})),
     navigator: PropTypes.shape({
       setTitle: PropTypes.func,
       setButtons: PropTypes.func,
@@ -69,35 +69,73 @@ class CategoriesPicker extends Component {
     }),
   };
 
+  static navigatorStyle = {
+    navBarBackgroundColor: theme.$navBarBackgroundColor,
+    navBarButtonColor: theme.$navBarButtonColor,
+    navBarButtonFontSize: theme.$navBarButtonFontSize,
+    navBarTextColor: theme.$navBarTextColor,
+    screenBackgroundColor: theme.$screenBackgroundColor,
+  };
+
   static defaultProps = {
-    parent: 0,
-    page: 0,
+    categories: [],
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      categories: [],
       loading: true,
+      categories: [],
     };
-
-    props.navigator.setTitle({
-      title: i18n.gettext('Categories').toUpperCase(),
-    });
 
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   async componentWillMount() {
-    const { categoriesActions, parent, page } = this.props;
+    const {
+      categoriesActions,
+      categories,
+      parent,
+      navigator,
+    } = this.props;
+
+    iconsLoaded.then(() => {
+      navigator.setButtons({
+        rightButtons: [
+          {
+            id: 'close',
+            icon: iconsMap.close,
+          },
+        ],
+      });
+    });
 
     if (parent === 0) {
       categoriesActions.clear();
+      this.handleLoadCategories();
+      return;
     }
 
+    this.setState({
+      loading: false,
+      categories,
+    });
+  }
+
+  onNavigatorEvent(event) {
+    const { navigator } = this.props;
+    if (event.type === 'NavBarButtonPress') {
+      if (event.id === 'close') {
+        navigator.dismissModal();
+      }
+    }
+  }
+
+  handleLoadCategories = async (parent_id = 0, page = 1) => {
+    this.setState({ loading: true });
     try {
-      const response = await getCategoriesList(parent, page + 1);
+      const response = await getCategoriesList(parent_id, page);
       if (response.data.categories) {
         this.setState({
           loading: false,
@@ -105,46 +143,55 @@ class CategoriesPicker extends Component {
         });
       }
     } catch (error) {
-      this.setState({
-        loading: false,
-      });
+      this.setState({ loading: false });
     }
-  }
+  };
 
-  onNavigatorEvent(event) {
-    const { navigator } = this.props;
-    registerDrawerDeepLinks(event, navigator);
+  handleToggle = async (item) => {
+    const { categoriesActions, navigator, onCategoryPress } = this.props;
+    try {
+      const response = await getCategoriesList(item.category_id);
+      if (response.data.categories.length) {
+        navigator.push({
+          screen: 'VendorManageCategoriesPicker',
+          backButtonTitle: '',
+          title: i18n.gettext(item.category).toUpperCase(),
+          passProps: {
+            parent: item.category_id,
+            categories: response.data.categories,
+            onCategoryPress,
+          },
+        });
+        return;
+      }
+      categoriesActions.toggleCategory(item);
+      if (onCategoryPress) {
+        onCategoryPress(item);
+        navigator.dismissModal();
+      }
+    } catch (error) {
+      this.setState({ loading: false });
+    }
   }
 
   handleLoadMore = () => {};
 
- 
   renderEmptyList = () => (
     <Text style={styles.emptyList}>
       {i18n.gettext('There are no categories')}
     </Text>
   );
 
-  renderCategoryItem = ({ item }) => {
-    const { selected, categoriesActions } = this.props;
-    const isSelected = selected.some(selected => selected.category_id === item.category_id);
-
-    return (
-      <TouchableOpacity
-        style={styles.itemWrapper}
-        onPress={() => categoriesActions.toggleCategory(item)}
-      >
-        {isSelected ? (
-          <Icon name="check-circle" style={styles.selected} />
-        ) : (
-          <Icon name="radio-button-unchecked" style={styles.icon} />
-        )}
-        <Text style={styles.itemText}>
-          {item.category}
-        </Text>
-      </TouchableOpacity>
-    );
-  }
+  renderCategoryItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.itemWrapper}
+      onPress={() => this.handleToggle(item)}
+    >
+      <Text style={styles.itemText}>
+        {item.category}
+      </Text>
+    </TouchableOpacity>
+  );
 
   render() {
     const { categories, loading } = this.state;
@@ -174,9 +221,7 @@ class CategoriesPicker extends Component {
 
 export default connect(
   state => ({
-    // loading: state.vendorManageCategories.loading,
     selected: state.vendorManageCategories.selected,
-    // hasMore: state.vendorManageCategories.hasMore,
   }),
   dispatch => ({
     categoriesActions: bindActionCreators(categoriesActions, dispatch)

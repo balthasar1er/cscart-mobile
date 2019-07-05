@@ -12,6 +12,8 @@ import {
   VENDOR_UPDATE_PRODUCT_REQUEST,
   VENDOR_UPDATE_PRODUCT_FAIL,
   VENDOR_UPDATE_PRODUCT_SUCCESS,
+
+  VENDOR_PRODUCT_CHANGE_CATEGORY,
 } from '../../constants';
 
 const initialState = {
@@ -92,7 +94,17 @@ export default function (state = initialState, action) {
 
     case VENDOR_FETCH_PRODUCT_FAIL:
       return {
+        ...state,
         loadingCurrent: true,
+      };
+
+    case VENDOR_PRODUCT_CHANGE_CATEGORY:
+      return {
+        ...state,
+        current: {
+          ...state.current,
+          categories: action.payload,
+        }
       };
 
     default:

@@ -152,7 +152,6 @@ class EditProduct extends Component {
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
-    console.log(event);
     if (event.type === 'NavBarButtonPress') {
       if (event.id === 'more') {
         this.ActionSheet.show();
@@ -254,7 +253,7 @@ class EditProduct extends Component {
   );
 
   render() {
-    const { navigator, loading, product } = this.props;
+    const { navigator, loading, product, productsActions } = this.props;
 
     if (loading) {
       return (
@@ -300,11 +299,16 @@ class EditProduct extends Component {
               i18n.gettext('Categories'),
               product.categories.map(item => item.category).join(', '),
               () => {
-                navigator.push({
+                navigator.showModal({
                   screen: 'VendorManageCategoriesPicker',
                   backButtonTitle: '',
+                  title: i18n.gettext('Categories').toUpperCase(),
                   passProps: {
                     selected: product.categories,
+                    parent: 0,
+                    onCategoryPress: (item) => {
+                      productsActions.changeProductCategory(item);
+                    }
                   },
                 });
               }

@@ -83,7 +83,12 @@ class AddProductStep4 extends Component {
   }
 
   handleCreate = async () => {
-    const { navigator, productsActions, stepsData, imagePickerActions } = this.props;
+    const {
+      navigator,
+      productsActions,
+      stepsData,
+      imagePickerActions,
+    } = this.props;
     const values = this.formRef.current.getValue();
 
     if (values) {
@@ -100,15 +105,17 @@ class AddProductStep4 extends Component {
         });
 
         if (newProductID) {
-          this.setState({ loading: false });
           imagePickerActions.clear();
-          navigator.push({
-            screen: 'VendorManageProducts',
-            backButtonTitle: '',
-            passProps: {
-              productID: newProductID
-            },
-          });
+          setTimeout(() => {
+            this.setState({ loading: false });
+            navigator.push({
+              screen: 'VendorManageProducts',
+              backButtonTitle: '',
+              passProps: {
+                productID: newProductID
+              },
+            });
+          }, 1500);
         }
       } catch (error) {
         this.setState({ loading: false });

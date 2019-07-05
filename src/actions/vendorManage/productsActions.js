@@ -19,6 +19,8 @@ import {
   VENDOR_CREATE_PRODUCT_FAIL,
   VENDOR_CREATE_PRODUCT_SUCCESS,
 
+  VENDOR_PRODUCT_CHANGE_CATEGORY,
+
   NOTIFICATION_SHOW,
 } from '../../constants';
 import * as vendorService from '../../services/vendors';
@@ -183,5 +185,15 @@ export function createProduct(product) {
     }
 
     return null;
+  };
+}
+
+
+export function changeProductCategory(categories) {
+  return (dispatch) => {
+    dispatch({
+      type: VENDOR_PRODUCT_CHANGE_CATEGORY,
+      payload: [categories],
+    });
   };
 }
