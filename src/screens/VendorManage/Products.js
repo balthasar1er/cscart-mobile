@@ -172,12 +172,13 @@ class Products extends Component {
         navigator.toggleDrawer({ side: 'left' });
       }
       if (event.id === 'add') {
-        navigator.push({
-          screen: 'VendorManageAddProductStep1',
+        navigator.showModal({
+          screen: 'VendorManageCategoriesPicker',
           backButtonTitle: '',
+          title: i18n.gettext('Categories').toUpperCase(),
           passProps: {
-            showBack: true,
-          }
+            parent: 0,
+          },
         });
       }
     }
