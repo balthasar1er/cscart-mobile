@@ -5318,6 +5318,11 @@ react-lifecycles-compat@^3.0.0:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
 
+react-native-actionsheet@2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/react-native-actionsheet/-/react-native-actionsheet-2.4.2.tgz#6a00dd51a75ef2c8974312130e405af73191500f"
+  integrity sha512-DBoWIvVwuWXuptF4t46pBqkFxaUxS+rsIdHiA05t0n4BdTIDV2R4s9bLEUVOGzb94D7VxIamsXZPA/3mmw+SXg==
+
 react-native-device-info@0.24.3:
   version "0.24.3"
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-0.24.3.tgz#f15eff8d09fe418eaf5e7c89ddaabbc5ed718fd7"
@@ -5370,9 +5375,10 @@ react-native-navigation@1.1.478:
   dependencies:
     lodash "4.x.x"
 
-react-native-payments@^0.7.1:
+react-native-payments@0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/react-native-payments/-/react-native-payments-0.7.1.tgz#aaa28a6aac7639acbf4b239629f40111bfa5f73c"
+  integrity sha512-NXal4tTP8ov5nmdHhyME2BHnl2LUuGi2QoVFJgDemW+RnNEe+f6NTCOPIW8ipTT9qT6TuUNHxbYFCk49Z0p1pw==
   dependencies:
     es6-error "^4.0.2"
     uuid "^3.1.0"
