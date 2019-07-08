@@ -17,6 +17,7 @@ import {
 import format from 'date-fns/format';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
+import _ from 'lodash';
 import { stripTags, formatPrice, getProductImagesPaths } from '../utils';
 
 // Import actions.
@@ -43,6 +44,7 @@ import i18n from '../utils/i18n';
 import theme from '../config/theme';
 import config from '../config';
 
+
 import {
   iconsLoaded,
   iconsMap
@@ -57,6 +59,7 @@ import {
   FEATURE_TYPE_CHECKBOX,
 } from '../constants';
 
+import Api from '../services/api';
 
 const styles = EStyleSheet.create({
   container: {
@@ -225,6 +228,13 @@ const styles = EStyleSheet.create({
   },
 });
 
+const throttledPriceCalculating = _.throttle(
+  (context) => {
+    context.calculatePrice({ showLoader: false });
+  },
+  1000
+);
+
 class ProductDetail extends Component {
   static navigatorStyle = {
     navBarBackgroundColor: theme.$navBarBackgroundColor,
@@ -258,7 +268,6 @@ class ProductDetail extends Component {
     }),
     productsActions: PropTypes.shape({
       fetchOptions: PropTypes.func,
-      changeAmount: PropTypes.func,
     }),
     cartActions: PropTypes.shape({
       add: PropTypes.func,
@@ -289,6 +298,8 @@ class ProductDetail extends Component {
       fetching: true,
       selectedOptions: {},
       canWriteComments: false,
+      fetchingChangedOptions: false,
+      amount: 1,
     };
 
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -311,7 +322,7 @@ class ProductDetail extends Component {
     };
 
     iconsLoaded.then(() => {
-      const { hideSearch } = this.props;
+      const { hideSearch, navigator } = this.props;
       if (hideSearch) {
         buttons.rightButtons.splice(-1, 1);
       }
@@ -394,7 +405,7 @@ class ProductDetail extends Component {
       vendor: vendors.items[product.company_id] || null,
       canWriteComments: (!activeDiscussion.disable_adding
         && productDetail.discussion_type !== DISCUSSION_DISABLED) && auth.logged,
-    }, () => this.calculatePrice());
+    });
 
     navigator.setTitle({
       title: product.product,
@@ -419,39 +430,30 @@ class ProductDetail extends Component {
     }
   }
 
-  calculatePrice = () => {
-    const { selectedOptions, product } = this.state;
-    const { productDetail } = this.props;
-    let newPrice = 0;
-    let newListPrice = 0;
-    newPrice += parseInt(productDetail.price, 10);
-    newListPrice += parseInt(productDetail.list_price, 10);
-    Object.keys(selectedOptions).forEach((key) => {
-      newPrice += +selectedOptions[key].modifier;
-      newListPrice += +selectedOptions[key].modifier;
-    });
-
-    if (product.amount && product.selectedAmount) {
-      newPrice *= product.selectedAmount;
-      newListPrice *= product.selectedAmount;
+  calculatePrice = ({ showLoader = true }) => {
+    function formatOptionsToUrl(state) {
+      const options = [];
+      Object.keys(state.selectedOptions).forEach(
+        (optionId) => {
+          options.push(`${encodeURIComponent(`selected_options[${optionId}]`)}=${state.selectedOptions[optionId].variant_id}`);
+        }
+      );
+      return options.join('&');
     }
 
-    const priceFormated = product.price_formatted.price.replace(/[\s\d]+/, `${newPrice} `);
-    const newListPriceFormated = product.list_price_formatted.price.replace(/[\s\d]+/, `${newListPrice} `);
+    const { product, amount } = this.state;
 
-    this.setState({
-      product: {
-        ...product,
-        price: newPrice,
-        price_formatted: {
-          ...product.price_formatted,
-          price: `${priceFormated}`,
-        },
-        list_price_formatted: {
-          ...product.list_price_formatted,
-          price: `${newListPriceFormated}`
+    this.setState({ fetchingChangedOptions: showLoader }, () => {
+      Api.get(
+        `sra_products/${product.product_id}/?${formatOptionsToUrl(this.state)}&amount=${amount}`
+      ).then(
+        (res) => {
+          this.setState({
+            product: { ...product, ...res.data },
+            fetchingChangedOptions: false
+          });
         }
-      },
+      );
     });
   }
 
@@ -472,7 +474,7 @@ class ProductDetail extends Component {
 
   handleAddToCart = (showNotification = true) => {
     const productOptions = {};
-    const { product, selectedOptions } = this.state;
+    const { product, selectedOptions, amount } = this.state;
     const { auth, navigator, cartActions } = this.props;
 
     if (!auth.logged) {
@@ -492,7 +494,7 @@ class ProductDetail extends Component {
     const products = {
       [product.product_id]: {
         product_id: product.product_id,
-        amount: product.selectedAmount,
+        amount,
         product_options: productOptions,
       },
     };
@@ -536,7 +538,7 @@ class ProductDetail extends Component {
 
     this.setState({
       selectedOptions: newOptions,
-    }, () => this.calculatePrice());
+    }, () => this.calculatePrice({ showLoader: true }));
   }
 
   renderDiscountLabel() {
@@ -636,7 +638,7 @@ class ProductDetail extends Component {
   }
 
   renderPrice() {
-    const { product } = this.state;
+    const { product, fetchingChangedOptions } = this.state;
     let discountPrice = null;
     let discountTitle = null;
     let showDiscount = false;
@@ -649,6 +651,16 @@ class ProductDetail extends Component {
       discountPrice = product.list_price_formatted.price;
       discountTitle = `${i18n.gettext('List price')}: `;
       showDiscount = true;
+    }
+
+    if (fetchingChangedOptions) {
+      return (
+        <Spinner visible mode="content" />
+      );
+    }
+
+    if (!product.price) {
+      return null;
     }
 
     const inStock = !Number(product.amount);
@@ -779,16 +791,20 @@ class ProductDetail extends Component {
   }
 
   renderOptions() {
-    const { productsActions } = this.props;
-    const { product } = this.state;
+    const { product, amount } = this.state;
 
     return (
       <Section>
         {product.options.map(o => this.renderOptionItem(o))}
         <QtyOption
-          value={product.selectedAmount}
-          step={product.qty_step}
-          onChange={(val) => productsActions.changeAmount(val)}
+          value={amount}
+          step={parseInt(product.qty_step, 10) || 1}
+          onChange={(val) => {
+            this.setState(
+              { amount: val },
+              () => { throttledPriceCalculating(this); }
+            );
+          }}
         />
       </Section>
     );

@@ -7,7 +7,7 @@ import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
+// import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.facebook.react.ReactPackage;
 
 import java.util.Arrays;
@@ -33,8 +33,8 @@ public class MainApplication extends NavigationApplication {
       new RNFirebasePackage(),
       new RNFirebaseMessagingPackage(),
       new RNFirebaseNotificationsPackage(),
-      new VectorIconsPackage(),
-      new RNDeviceInfo()
+      new VectorIconsPackage()
+      // new RNDeviceInfo()
     );
   }
 

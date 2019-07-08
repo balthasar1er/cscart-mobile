@@ -197,12 +197,3 @@ export function changeSort(params) {
     });
   };
 }
-
-export function changeAmount(params) {
-  return (dispatch) => {
-    dispatch({
-      type: CHANGE_PRODUCTS_AMOUNT,
-      payload: params,
-    });
-  };
-}

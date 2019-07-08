@@ -1,5 +1,4 @@
 import React from 'react';
-import DeviceInfo from 'react-native-device-info';
 import { Provider } from 'react-redux';
 import {
   Dimensions,
@@ -12,6 +11,7 @@ import { persistStore } from 'redux-persist';
 import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
+import { deviceLanguage } from './utils/i18n';
 import './config';
 import store from './store';
 import theme from './config/theme';
@@ -70,7 +70,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    const locale = DeviceInfo.getDeviceLocale().split('-')[0];
+    const locale = deviceLanguage;
 
     I18nManager.allowRTL(true);
     I18nManager.forceRTL(['ar', 'he'].includes(locale));

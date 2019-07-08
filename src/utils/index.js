@@ -1,4 +1,3 @@
-import DeviceInfo from 'react-native-device-info';
 import { Dimensions } from 'react-native';
 import has from 'lodash/has';
 import get from 'lodash/get';
@@ -25,9 +24,6 @@ export const PRODUCT_NUM_COLUMNS = Math.floor(WINDOW_WIDTH / PRODUCT_AVERAGE_SIZ
 export const PRODUCT_IMAGE_WIDTH = (
   Math.floor((WINDOW_WIDTH / PRODUCT_NUM_COLUMNS) * 10000) / 10000
 ) - IMAGE_PADDING;
-
-// Get device info
-export const lang = DeviceInfo.getDeviceLocale().split('-')[0];
 
 // Strip tags
 export const stripTags = (str) => {
