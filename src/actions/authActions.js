@@ -77,9 +77,14 @@ export function profileFields(data = {}) {
     ...data,
   };
 
+  let method = '/sra_profile';
+  if (params.location === 'profile' && params.action === 'add') {
+    method = '/sra_profile_fields'; // at Registration.js app has not access to /sra_profile
+  }
+
   return (dispatch) => {
     dispatch({ type: FETCH_PROFILE_FIELDS_REQUEST });
-    return Api.get('/sra_profile_fields', { params })
+    return Api.get(method, { params })
       .then((response) => {
         dispatch({
           type: FETCH_PROFILE_FIELDS_SUCCESS,
