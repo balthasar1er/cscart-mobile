@@ -79,7 +79,7 @@ export function profileFields(data = {}) {
 
   return (dispatch) => {
     dispatch({ type: FETCH_PROFILE_FIELDS_REQUEST });
-    return Api.get('/sra_profile_fields', { params })
+    return Api.get('/sra_profile', { params })
       .then((response) => {
         dispatch({
           type: FETCH_PROFILE_FIELDS_SUCCESS,
