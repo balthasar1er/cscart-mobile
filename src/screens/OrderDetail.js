@@ -117,17 +117,32 @@ class OrderDetail extends Component {
     this.state = {
       fetching: true,
       orderDetail: {},
+      fields: {}
     };
   }
 
   componentWillMount() {
     const { orderId, navigator, notificationsActions } = this.props;
+
     Api.get(`/sra_orders/${orderId}`)
       .then((response) => {
-        this.setState({
-          fetching: false,
-          orderDetail: response.data,
-        });
+        const params = {
+          location: 'checkout',
+          action: 'update'
+        };
+
+        Api.get('/sra_profile', { params })
+          .then(({ data }) => {
+            const { fields } = data;
+            // eslint-disable-next-line no-param-reassign
+            delete fields.E;
+
+            this.setState({
+              fetching: false,
+              orderDetail: response.data,
+              fields
+            });
+          });
       })
       .catch(() => {
         notificationsActions.show({
@@ -177,8 +192,8 @@ class OrderDetail extends Component {
     );
   }
 
-  renderBilling() {
-    const { orderDetail } = this.state;
+  renderFields() {
+    const { orderDetail, fields } = this.state;
     const foundCountry = {
       name: orderDetail.b_country,
       states: [],
@@ -196,123 +211,34 @@ class OrderDetail extends Component {
       };
     }
 
-    return (
+    return Object.entries(fields).map(([key, section]) => (
       <FormBlock
-        title={i18n.gettext('Billing address')}
-        buttonText={i18n.gettext('Show all').toUpperCase()}
-        noContainerStyle
-        simpleView={
-          (
-            <View>
-              <FormBlockField title={`${i18n.gettext('First name')}:`}>
-                {orderDetail.b_firstname}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Last name')}:`}>
-                {orderDetail.b_lastname}
-              </FormBlockField>
-            </View>
-          )
-        }
+        key={key}
+        title={section.description}
+        style={styles.formBlockWraper}
       >
         <View>
-          <FormBlockField title={`${i18n.gettext('First name')}:`}>
-            {orderDetail.b_firstname}
-          </FormBlockField>
-          <FormBlockField title={`${i18n.gettext('Last name')}:`}>
-            {orderDetail.b_lastname}
-          </FormBlockField>
-          <FormBlockField title={`${i18n.gettext('E-mail')}:`}>
-            {orderDetail.email}
-          </FormBlockField>
-          <FormBlockField title={`${i18n.gettext('Phone')}:`}>
-            {orderDetail.b_phone}
-          </FormBlockField>
-          <FormBlockField title={`${i18n.gettext('Address')}:`}>
-            {orderDetail.b_address} {orderDetail.b_address2}
-          </FormBlockField>
-          <FormBlockField title={`${i18n.gettext('City')}:`}>
-            {orderDetail.b_city}
-          </FormBlockField>
-          <FormBlockField title={`${i18n.gettext('Country')}:`}>
-            {foundCountry.name}
-          </FormBlockField>
-          <FormBlockField title={`${i18n.gettext('State')}:`}>
-            {foundState.name}
-          </FormBlockField>
+          {
+            section.fields.map((field) => {
+              if (orderDetail[field.field_id]) {
+                return (
+                  <FormBlockField title={`${field.description}:`} key={field.field_id}>
+                    {orderDetail[field.field_id]}
+                  </FormBlockField>
+                );
+              }
+
+              return null;
+            })
+          }
         </View>
       </FormBlock>
-    );
-  }
-
-  renderShipping() {
-    const { orderDetail } = this.state;
-    const foundCountry = {
-      name: orderDetail.s_country,
-      states: [],
-      ...getCountryByCode(orderDetail.s_country),
-    };
-    const state = foundCountry.states.filter(s => s.code === orderDetail.s_state);
-    let foundState = {
-      name: orderDetail.s_state,
-    };
-    if (state.length) {
-      foundState = {
-        ...foundState,
-        ...state[0],
-      };
-    }
-
-    return (
-      <FormBlock
-        title={i18n.gettext('Shipping address')}
-        buttonText={i18n.gettext('Show all').toUpperCase()}
-        noContainerStyle
-        simpleView={
-          (
-            <View>
-              <FormBlockField title={`${i18n.gettext('First name')}:`}>
-                {orderDetail.s_firstname}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Last name')}:`}>
-                {orderDetail.s_lastname}
-              </FormBlockField>
-            </View>
-          )
-        }
-      >
-        <View>
-          <FormBlockField title={`${i18n.gettext('First name')}:`}>
-            {orderDetail.s_firstname}
-          </FormBlockField>
-          <FormBlockField title={`${i18n.gettext('Last name')}:`}>
-            {orderDetail.s_lastname}
-          </FormBlockField>
-          <FormBlockField title={`${i18n.gettext('E-mail')}:`}>
-            {orderDetail.email}
-          </FormBlockField>
-          <FormBlockField title={`${i18n.gettext('Phone')}:`}>
-            {orderDetail.s_phone}
-          </FormBlockField>
-          <FormBlockField title={`${i18n.gettext('Address')}:`}>
-            {orderDetail.s_address} {orderDetail.s_address2}
-          </FormBlockField>
-          <FormBlockField title={`${i18n.gettext('City')}:`}>
-            {orderDetail.s_city}
-          </FormBlockField>
-          <FormBlockField title={`${i18n.gettext('Country')}:`}>
-            {foundCountry.name}
-          </FormBlockField>
-          <FormBlockField title={`${i18n.gettext('State')}:`}>
-            {foundState.name}
-          </FormBlockField>
-        </View>
-      </FormBlock>
-    );
+    ));
   }
 
   render() {
-    const { orderDetail } = this.state;
-    if (this.state.fetching) {
+    const { orderDetail, fetching } = this.state;
+    if (fetching) {
       return (
         <View style={styles.container}>
           <Spinner visible mode="content" />
@@ -371,17 +297,7 @@ class OrderDetail extends Component {
             </View>
           </FormBlock>
 
-          <FormBlock>
-            <Text style={styles.header}>
-              {i18n.gettext('Products information').toUpperCase()}
-            </Text>
-            <View style={styles.formBlockWraper}>
-              {this.renderBilling()}
-            </View>
-            <View style={styles.formBlockWraper}>
-              {this.renderShipping()}
-            </View>
-          </FormBlock>
+          {this.renderFields()}
         </ScrollView>
       </View>
     );
