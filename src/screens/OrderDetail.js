@@ -117,7 +117,7 @@ class OrderDetail extends Component {
     this.state = {
       fetching: true,
       orderDetail: {},
-      fields: {}
+      fields: {},
     };
   }
 
