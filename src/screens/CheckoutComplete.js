@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -195,46 +196,57 @@ class CheckoutComplete extends Component {
 
   renderFields() {
     const { orderDetail, fields } = this.state;
-    const foundCountry = {
-      name: orderDetail.b_country,
-      states: [],
-      ...getCountryByCode(orderDetail.b_country),
-    };
-    const state = foundCountry.states.filter(s => s.code === orderDetail.b_state);
-    let foundState = {
-      name: orderDetail.b_state,
-    };
 
-    if (state.length) {
-      foundState = {
-        ...foundState,
-        ...state[0],
-      };
-    }
+    return Object.entries(fields).map(([key, section]) => {
+      const country = { code: null, name: null };
+      const state = { name: null };
 
-    return Object.entries(fields).map(([key, section]) => (
-      <FormBlock
-        key={key}
-        title={section.description}
-        style={styles.formBlockWraper}
-      >
-        <View>
-          {
-            section.fields.map((field) => {
-              if (orderDetail[field.field_id]) {
-                return (
-                  <FormBlockField title={`${field.description}:`} key={field.field_id}>
-                    {orderDetail[field.field_id]}
-                  </FormBlockField>
-                );
-              }
+      // Search for country (if exist)
+      section.fields.forEach((field) => {
+        if (field.field_type === 'O') {
+          country.code = field.value;
+          country.name = field.values[orderDetail[field.field_id]];
+        }
+      });
 
-              return null;
-            })
+      // Search for state (if exist)
+      if (country.code) {
+        section.fields.forEach((field) => {
+          if (field.field_type === 'A' && field.values[country.code]) {
+            state.name = field.values[country.code][orderDetail[field.field_id]];
           }
-        </View>
-      </FormBlock>
-    ));
+        });
+      }
+
+      return (
+        <FormBlock
+          key={key}
+          title={section.description}
+          style={styles.formBlockWraper}
+        >
+          <View>
+            {
+              section.fields.map((field) => {
+                if (orderDetail[field.field_id]) {
+                  return (
+                    <FormBlockField title={`${field.description}:`} key={field.field_id}>
+                      {field.field_type === 'O' && country.name
+                        ? country.name
+                        : field.field_type === 'A' && state.name
+                          ? state.name
+                          : orderDetail[field.field_id]
+                      }
+                    </FormBlockField>
+                  );
+                }
+
+                return null;
+              })
+            }
+          </View>
+        </FormBlock>
+      );
+    });
   }
 
   render() {
