@@ -26,7 +26,10 @@ const styles = EStyleSheet.create({
     backgroundColor: '#FAFAFA',
   },
   contentContainer: {
-    padding: 14
+    paddingTop: 14,
+    paddingBottom: 0,
+    paddingLeft: 14,
+    paddingRight: 14
   },
 });
 

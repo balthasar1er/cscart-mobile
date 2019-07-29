@@ -13,6 +13,7 @@ import format from 'date-fns/format';
 // Components
 import i18n from '../utils/i18n';
 import CartFooter from './CartFooter';
+import FormBlock from './FormBlock';
 
 const FIELD_DATE = 'D';
 const FIELD_CHECKBOX = 'C';
@@ -360,20 +361,17 @@ export default class ProfileForm extends Component {
         <KeyboardAwareScrollView contentContainerStyle={styles.contentContainer}>
           {forms.map((form, index) => (
             <View key={form.type} style={styles.form}>
-              {( (isEdit || showTitles) && form.description !== '') && (
-                <View>
-                  <Text style={styles.header}>
-                    {form.description}
-                  </Text>
-                </View>
-              )}
-              <Form
-                ref={(ref) => { this.formsRef[form.type] = ref; }}
-                type={form.formFields}
-                options={form.formOptions}
-                value={form.formValues}
-                onChange={values => this.handleChange(values, index)}
-              />
+              <FormBlock
+                title={(isEdit || showTitles) ? form.description : null}
+              >
+                <Form
+                  ref={(ref) => { this.formsRef[form.type] = ref; }}
+                  type={form.formFields}
+                  options={form.formOptions}
+                  value={form.formValues}
+                  onChange={values => this.handleChange(values, index)}
+                />
+              </FormBlock>
             </View>
           ))}
         </KeyboardAwareScrollView>

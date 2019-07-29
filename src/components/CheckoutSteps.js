@@ -25,7 +25,7 @@ const styles = EStyleSheet.create({
     marginLeft: -14,
     marginRight: -14,
     marginTop: -14,
-    marginBottom: 14,
+    marginBottom: 0,
     overflow: 'hidden',
   },
   checkIcon: {
