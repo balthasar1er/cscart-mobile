@@ -126,6 +126,7 @@ class Checkout extends Component {
         <ProfileForm
           fields={fields}
           cartFooterEnabled={true}
+          showTitles={true}
           totalPrice={formatPrice(cart.subtotal_formatted.price)}
           btnText={i18n.gettext('Next').toUpperCase()}
           onBtnPress={(values, validateCb) => { validateCb(); }}

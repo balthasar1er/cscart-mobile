@@ -55,10 +55,12 @@ export default class ProfileForm extends Component {
     fields: PropTypes.shape().isRequired,
     onSubmit: PropTypes.func.isRequired,
     isEdit: PropTypes.bool,
+    showTitles: PropTypes.bool,
   };
 
   static defaultProps = {
     isEdit: false,
+    showTitles: false
   };
 
   constructor(props) {
@@ -351,14 +353,14 @@ export default class ProfileForm extends Component {
 
   render() {
     const { forms } = this.state;
-    const { isEdit } = this.props;
+    const { isEdit, showTitles } = this.props;
 
     return (
       <Fragment>
         <KeyboardAwareScrollView contentContainerStyle={styles.contentContainer}>
           {forms.map((form, index) => (
             <View key={form.type} style={styles.form}>
-              {(isEdit && form.description !== '') && (
+              {( (isEdit || showTitles) && form.description !== '') && (
                 <View>
                   <Text style={styles.header}>
                     {form.description}
