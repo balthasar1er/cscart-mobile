@@ -3,7 +3,7 @@
     <color name="primary">#989898</color>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+        Customize your theme here.
         <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorPrimary">@color/primary</item>
