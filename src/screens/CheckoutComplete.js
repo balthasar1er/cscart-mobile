@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -107,6 +108,7 @@ class CheckoutComplete extends Component {
     this.state = {
       fetching: true,
       orderDetail: {},
+      fields: {},
     };
 
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -130,10 +132,23 @@ class CheckoutComplete extends Component {
 
     Api.get(`/sra_orders/${orderId}`)
       .then((response) => {
-        this.setState({
-          fetching: false,
-          orderDetail: response.data,
-        });
+        const params = {
+          location: 'checkout',
+          action: 'update'
+        };
+
+        Api.get('/sra_profile', { params })
+          .then(({ data }) => {
+            const { fields } = data;
+            // eslint-disable-next-line no-param-reassign
+            delete fields.E;
+
+            this.setState({
+              fetching: false,
+              orderDetail: response.data,
+              fields
+            });
+          });
       })
       .catch(() => {
         this.setState({
@@ -177,6 +192,61 @@ class CheckoutComplete extends Component {
         </View>
       </View>
     );
+  }
+
+  renderFields() {
+    const { orderDetail, fields } = this.state;
+
+    return Object.entries(fields).map(([key, section]) => {
+      const country = { code: null, name: null };
+      const state = { name: null };
+
+      // Search for country (if exist)
+      section.fields.forEach((field) => {
+        if (field.field_type === 'O') {
+          country.code = field.value;
+          country.name = field.values[orderDetail[field.field_id]];
+        }
+      });
+
+      // Search for state (if exist)
+      if (country.code) {
+        section.fields.forEach((field) => {
+          if (field.field_type === 'A' && field.values[country.code]) {
+            state.name = field.values[country.code][orderDetail[field.field_id]];
+          }
+        });
+      }
+
+      return (
+        <FormBlock
+          key={key}
+          title={section.description}
+          style={styles.formBlockWraper}
+        >
+          <View>
+            {
+              section.fields.map((field) => {
+                if (orderDetail[field.field_id]) {
+                  return (
+                    <FormBlockField title={`${field.description}:`} key={field.field_id}>
+                      {field.field_type === 'O' && country.name
+                        ? country.name
+                        : field.field_type === 'A' && state.name
+                          ? state.name
+                          : orderDetail[field.field_id]
+                      }
+                    </FormBlockField>
+                  );
+                }
+
+                return null;
+              })
+            }
+          </View>
+        </FormBlock>
+      );
+    });
   }
 
   render() {
@@ -258,89 +328,8 @@ class CheckoutComplete extends Component {
             </View>
           </FormBlock>
 
-          <FormBlock
-            title={i18n.gettext('Billing address')}
-            buttonText={i18n.gettext('Show all').toUpperCase()}
-            simpleView={(
-              <View>
-                <FormBlockField title={`${i18n.gettext('First name')}:`}>
-                  {orderDetail.b_firstname}
-                </FormBlockField>
-                <FormBlockField title={`${i18n.gettext('Last name')}:`}>
-                  {orderDetail.b_lastname}
-                </FormBlockField>
-              </View>
-            )}
-          >
-            <View>
-              <FormBlockField title={`${i18n.gettext('First name')}:`}>
-                {orderDetail.b_firstname}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Last name')}:`}>
-                {orderDetail.b_lastname}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('E-mail')}:`}>
-                {orderDetail.email}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Phone')}:`}>
-                {orderDetail.b_phone}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Address')}:`}>
-                {orderDetail.b_address} {orderDetail.b_address2}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('City')}:`}>
-                {orderDetail.b_city}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Country')}:`}>
-                {foundCountry.name}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('State')}:`}>
-                {foundState.name}
-              </FormBlockField>
-            </View>
-          </FormBlock>
+          {this.renderFields()}
 
-          <FormBlock
-            title={i18n.gettext('Shipping address')}
-            buttonText={i18n.gettext('Show all').toUpperCase()}
-            simpleView={(
-              <View>
-                <FormBlockField title={`${i18n.gettext('First name')}:`}>
-                  {orderDetail.s_firstname}
-                </FormBlockField>
-                <FormBlockField title={`${i18n.gettext('Last name')}:`}>
-                  {orderDetail.s_lastname}
-                </FormBlockField>
-              </View>)
-            }
-          >
-            <View>
-              <FormBlockField title={`${i18n.gettext('First name')}:`}>
-                {orderDetail.s_firstname}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Last name')}:`}>
-                {orderDetail.s_lastname}
-              </FormBlockField>
-              <FormBlockField title={i18n.gettext('E-mail:')}>
-                {orderDetail.email}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Phone')}:`}>
-                {orderDetail.s_phone}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Address')}:`}>
-                {orderDetail.s_address} {orderDetail.s_address2}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('City')}:`}>
-                {orderDetail.s_city}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Country')}:`}>
-                {foundCountryShipping.name}
-              </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('State')}:`}>
-                {foundStateShipping.name}
-              </FormBlockField>
-            </View>
-          </FormBlock>
         </ScrollView>
       </View>
     );

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import {
   View,
@@ -12,6 +12,8 @@ import format from 'date-fns/format';
 
 // Components
 import i18n from '../utils/i18n';
+import CartFooter from './CartFooter';
+import FormBlock from './FormBlock';
 
 const FIELD_DATE = 'D';
 const FIELD_CHECKBOX = 'C';
@@ -24,7 +26,12 @@ const FIELD_STATE = 'A';
 
 const styles = EStyleSheet.create({
   contentContainer: {
+    padding: 0,
+    paddingBottom: 12,
+  },
+  form: {
     padding: 12,
+    marginBottom: -30,
   },
   btn: {
     backgroundColor: '#4fbe31',
@@ -51,10 +58,12 @@ export default class ProfileForm extends Component {
     fields: PropTypes.shape().isRequired,
     onSubmit: PropTypes.func.isRequired,
     isEdit: PropTypes.bool,
+    showTitles: PropTypes.bool,
   };
 
   static defaultProps = {
     isEdit: false,
+    showTitles: false
   };
 
   constructor(props) {
@@ -271,7 +280,7 @@ export default class ProfileForm extends Component {
     // Reset state.
     if (countryCache && stateCache) {
       if (stateCache.values[countryCache.value]) {
-        if(!stateCache.values[countryCache.value]) {
+        if (!stateCache.values[countryCache.value]) {
           formValues[stateCache.field_id] = '';
         }
       }
@@ -347,37 +356,48 @@ export default class ProfileForm extends Component {
 
   render() {
     const { forms } = this.state;
-    const { isEdit } = this.props;
+    const { isEdit, showTitles } = this.props;
 
     return (
-      <KeyboardAwareScrollView contentContainerStyle={styles.contentContainer}>
-        {forms.map((form, index) => (
-          <View key={form.type}>
-            {(isEdit && form.description !== '') && (
-              <View>
-                <Text style={styles.header}>
-                  {form.description}
+      <Fragment>
+        <KeyboardAwareScrollView contentContainerStyle={styles.contentContainer}>
+          {forms.map((form, index) => (
+            <View key={form.type} style={styles.form}>
+              <FormBlock
+                title={(isEdit || showTitles) ? form.description : null}
+              >
+                <Form
+                  ref={(ref) => { this.formsRef[form.type] = ref; }}
+                  type={form.formFields}
+                  options={form.formOptions}
+                  value={form.formValues}
+                  onChange={values => this.handleChange(values, index)}
+                />
+              </FormBlock>
+            </View>
+          ))}
+        </KeyboardAwareScrollView>
+        {
+          this.props.cartFooterEnabled
+            ? (
+              <CartFooter
+                totalPrice={this.props.totalPrice}
+                btnText={this.props.btnText}
+                onBtnPress={() => { this.props.onBtnPress(forms, this.handleValidate); }}
+              />
+            )
+            : (
+              <TouchableOpacity
+                style={styles.btn}
+                onPress={this.handleValidate}
+              >
+                <Text style={styles.btnText}>
+                  {isEdit ? i18n.gettext('Save') : i18n.gettext('Register')}
                 </Text>
-              </View>
-            )}
-            <Form
-              ref={(ref) => { this.formsRef[form.type] = ref; }}
-              type={form.formFields}
-              options={form.formOptions}
-              value={form.formValues}
-              onChange={values => this.handleChange(values, index)}
-            />
-          </View>
-        ))}
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={this.handleValidate}
-        >
-          <Text style={styles.btnText}>
-            {isEdit ? i18n.gettext('Save') : i18n.gettext('Register')}
-          </Text>
-        </TouchableOpacity>
-      </KeyboardAwareScrollView>
+              </TouchableOpacity>
+            )
+        }
+      </Fragment>
     );
   }
 }

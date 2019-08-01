@@ -142,7 +142,7 @@ const styles = EStyleSheet.create({
   },
   signOutBtnIcon: {
     fontSize: 28,
-    color: '$navBarButtonColor',
+    color: '$drawerHeaderButtonColor',
   },
   devider: {
     borderBottomWidth: 1,

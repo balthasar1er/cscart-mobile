@@ -3,7 +3,6 @@ import isDate from 'date-fns/is_date';
 import format from 'date-fns/format';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
-import DeviceInfo from 'react-native-device-info';
 
 import {
   AUTH_LOGIN_REQUEST,
@@ -36,7 +35,7 @@ import {
   AUTH_LOGOUT,
 } from '../constants';
 import Api from '../services/api';
-import i18n from '../utils/i18n';
+import i18n, { deviceLanguage } from '../utils/i18n';
 import config from '../config';
 import store from '../store';
 
@@ -45,9 +44,8 @@ import * as layoutsActions from './layoutsActions';
 import * as wishListActions from './wishListActions';
 
 export function fetchProfile() {
-  const sl = DeviceInfo.getDeviceLocale().split('-')[0];
   const params = {
-    lang_code: sl,
+    lang_code: deviceLanguage,
   };
 
   return (dispatch) => {
@@ -72,17 +70,21 @@ export function fetchProfile() {
 }
 
 export function profileFields(data = {}) {
-  const sl = DeviceInfo.getDeviceLocale().split('-')[0];
   const params = {
     location: 'profile',
     action: 'add',
-    lang_code: sl,
+    lang_code: deviceLanguage,
     ...data,
   };
 
+  let method = '/sra_profile';
+  if (params.location === 'profile' && params.action === 'add') {
+    method = '/sra_profile_fields'; // at Registration.js app has not access to /sra_profile
+  }
+
   return (dispatch) => {
     dispatch({ type: FETCH_PROFILE_FIELDS_REQUEST });
-    return Api.get('/sra_profile_fields', { params })
+    return Api.get(method, { params })
       .then((response) => {
         dispatch({
           type: FETCH_PROFILE_FIELDS_SUCCESS,
@@ -251,8 +253,8 @@ export function login(data) {
           deviceInfo({
             token: auth.deviceToken,
             platform: Platform.OS,
-            locale: DeviceInfo.getDeviceLocale(),
-            device_id: DeviceInfo.getUniqueID(),
+            locale: deviceLanguage,
+            device_id: '',
           })(dispatch);
         }, 1000);
       })

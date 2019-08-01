@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
 import firebase from 'react-native-firebase';
 import config from '../config';
+import { deviceLanguage } from '../utils/i18n';
 
 import store from '../store';
 import * as authActions from '../actions/authActions';
@@ -78,8 +78,8 @@ function Init(cb) {
           store.dispatch(authActions.deviceInfo({
             token,
             platform: Platform.OS,
-            locale: DeviceInfo.getDeviceLocale(),
-            device_id: DeviceInfo.getUniqueID(),
+            locale: deviceLanguage,
+            device_id: '',
           }));
         }
       });

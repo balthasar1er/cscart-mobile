@@ -1,19 +1,18 @@
-import DeviceInfo from 'react-native-device-info';
 import axios from 'axios';
 import base64 from 'base-64';
+import { deviceLanguage } from '../utils/i18n';
 
 import config from '../config';
 import store from '../store';
 
 import { AUTH_LOGOUT } from '../constants';
 
-const sl = DeviceInfo.getDeviceLocale().split('-')[0];
 // Config axios defaults.
 const AxiosInstance = axios.create({
   baseURL: config.baseUrl,
   timeout: 100000,
   params: {
-    sl,
+    sl: deviceLanguage,
     items_per_page: 20,
     s_layouts: config.layoutId,
   },

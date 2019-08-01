@@ -29,33 +29,17 @@ const styles = EStyleSheet.create({
 
 class Spinner extends Component {
   static propTypes = {
-    visible: PropTypes.bool.isRequired,
+    visible: PropTypes.bool,
     mode: PropTypes.string,
   };
 
   static defaultProps = {
     mode: 'modal',
+    visible: false,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      visible: true,
-    };
-  }
-
-  componentDidMount() {
-    const { visible } = this.props;
-    this.setState({ visible });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({ visible: nextProps.visible });
-  }
-
   renderAsModal = () => {
-    const { visible } = this.state;
+    const { visible } = this.props;
     return (
       <Modal
         animationType="fade"
@@ -75,7 +59,7 @@ class Spinner extends Component {
   }
 
   renderAsContent = () => {
-    const { visible } = this.state;
+    const { visible } = this.props;
     if (!visible) {
       return null;
     }

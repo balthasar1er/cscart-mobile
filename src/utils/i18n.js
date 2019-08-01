@@ -1,12 +1,15 @@
-import DeviceInfo from 'react-native-device-info';
+import { NativeModules, Platform } from 'react-native';
 import gettext from 'gettext.js';
+
+export const deviceLanguage = Platform.OS === 'ios'
+  ? NativeModules.SettingsManager.settings.AppleLocale
+  : NativeModules.I18nManager.localeIdentifier.split('-')[0];
 
 const langs = ['ar', 'ru', 'en', 'fr'];
 let jsonData;
-const locale = DeviceInfo.getDeviceLocale().split('-')[0];
 
-if (langs.includes(locale)) {
-  switch (locale) {
+if (langs.includes(deviceLanguage)) {
+  switch (deviceLanguage) {
     case 'ru':
       jsonData = require('../config/locales/ru.json');
       break;
@@ -20,7 +23,7 @@ if (langs.includes(locale)) {
       jsonData = require('../config/locales/en.json');
   }
 
-  gettext.setLocale(locale);
+  gettext.setLocale(deviceLanguage);
   gettext.loadJSON(jsonData);
 }
 
