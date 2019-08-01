@@ -26,7 +26,10 @@ const styles = EStyleSheet.create({
     backgroundColor: '#FAFAFA',
   },
   contentContainer: {
-    padding: 14
+    paddingTop: 14,
+    paddingBottom: 0,
+    paddingLeft: 14,
+    paddingRight: 14
   },
 });
 
@@ -126,6 +129,7 @@ class Checkout extends Component {
         <ProfileForm
           fields={fields}
           cartFooterEnabled={true}
+          showTitles={true}
           totalPrice={formatPrice(cart.subtotal_formatted.price)}
           btnText={i18n.gettext('Next').toUpperCase()}
           onBtnPress={(values, validateCb) => { validateCb(); }}
