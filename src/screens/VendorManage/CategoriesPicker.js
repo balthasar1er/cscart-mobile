@@ -54,7 +54,6 @@ const styles = EStyleSheet.create({
 
 class CategoriesPicker extends Component {
   static propTypes = {
-    onCategoryPress: PropTypes.func.isRequired,
     parent: PropTypes.number,
     categoriesActions: PropTypes.shape({
       toggleCategory: PropTypes.func,

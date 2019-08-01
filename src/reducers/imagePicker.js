@@ -7,8 +7,6 @@ const initialState = {
   selected: [],
 };
 
-let selected = [];
-
 export default function (state = initialState, action) {
   switch (action.type) {
     case IMAGE_PICKER_CLEAR:
@@ -18,20 +16,9 @@ export default function (state = initialState, action) {
       };
 
     case IMAGE_PICKER_TOGGLE:
-      selected = [
-        ...state.selected,
-      ];
-
-      if (state.selected.some(item => action.payload.item === item)) {
-        selected = selected.filter(item => action.payload.item !== item);
-      } else {
-        selected.push(
-          action.payload.item,
-        );
-      }
       return {
         ...state,
-        selected,
+        selected: action.payload,
       };
 
     default:

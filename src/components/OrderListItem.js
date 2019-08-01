@@ -58,7 +58,7 @@ const OrderListItem = (props) => {
             {status.text}
           </Text>
           <Text style={styles.orderItemTotal}>
-            {formatPrice(item.total_formatted.price)}
+            {item.total_formatted ? formatPrice(item.total_formatted.price) : item.total}
           </Text>
         </View>
       </View>

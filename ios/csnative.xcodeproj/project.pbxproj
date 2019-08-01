@@ -40,7 +40,7 @@
 		7D0A1A692076A1A900247B97 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D0A1A682076A1A800247B97 /* GoogleService-Info.plist */; };
 		7D30059A22EEF8CF00EB1576 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D30059922EEF8CF00EB1576 /* JavaScriptCore.framework */; };
 		7D89E7081FB386B10094E78D /* libReactNativeNavigation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2356711FB38689008E53DE /* libReactNativeNavigation.a */; };
-		7DFC9ED222B62757000B3A22 /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DFC9EAA22B62726000B3A22 /* libRCTCameraRoll.a */; };
+		7D9A0CCD22F2FBFC0096F07E /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9A0CCC22F2FBFC0096F07E /* libRCTCameraRoll.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8E7CBA0FA621C93EFA900882 /* libPods-csnative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EEB27D37F121E855B4712FCE /* libPods-csnative.a */; };
 		92103E3123714AA3B956A6D1 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 759C374D8B2A405AA74C4A5F /* MaterialCommunityIcons.ttf */; };
@@ -332,6 +332,13 @@
 			remoteGlobalIDString = 3D383D621EBD27B9005632C8;
 			remoteInfo = "double-conversion-tvOS";
 		};
+		7D9A0CCB22F2FBFC0096F07E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7DFC9EA222B62725000B3A22 /* RCTCameraRoll.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 58B5115D1A9E6B3D00147676;
+			remoteInfo = RCTCameraRoll;
+		};
 		7DBA1989223960CF006B43F3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5A72845A66804C82867021A8 /* RNVectorIcons.xcodeproj */;
@@ -447,6 +454,7 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+				7D9A0CCD22F2FBFC0096F07E /* libRCTCameraRoll.a in Frameworks */,
 				04B18726223441579E4BB826 /* libRNVectorIcons.a in Frameworks */,
 				8E7CBA0FA621C93EFA900882 /* libPods-csnative.a in Frameworks */,
 				98B29BAEB5274E3EA7A201AB /* libRNFirebase.a in Frameworks */,
@@ -695,7 +703,7 @@
 		7DFC9EA322B62725000B3A22 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7DFC9EAA22B62726000B3A22 /* libRCTCameraRoll.a */,
+				7D9A0CCC22F2FBFC0096F07E /* libRCTCameraRoll.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1251,6 +1259,13 @@
 			fileType = archive.ar;
 			path = "libdouble-conversion.a";
 			remoteRef = 7D8923041F2C5E5C00448146 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		7D9A0CCC22F2FBFC0096F07E /* libRCTCameraRoll.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTCameraRoll.a;
+			remoteRef = 7D9A0CCB22F2FBFC0096F07E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		7DBA198A223960CF006B43F3 /* libRNVectorIcons-tvOS.a */ = {

@@ -11,11 +11,11 @@ export function clear() {
   };
 }
 
-export function toggle(image) {
+export function toggle(images) {
   return async (dispatch) => {
     dispatch({
       type: IMAGE_PICKER_TOGGLE,
-      payload: image,
+      payload: images,
     });
   };
 }

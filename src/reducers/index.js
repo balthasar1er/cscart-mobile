@@ -18,6 +18,7 @@ import imagePicker from './imagePicker';
 
 import vendorManageProducts from './vendorManage/products';
 import vendorManageCategories from './vendorManage/categories';
+import vendorManageOrders from './vendorManage/orders';
 
 export default combineReducers({
   cart,
@@ -38,4 +39,5 @@ export default combineReducers({
 
   vendorManageProducts,
   vendorManageCategories,
+  vendorManageOrders,
 });

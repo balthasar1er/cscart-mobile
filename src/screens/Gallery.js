@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   TouchableOpacity,
   View,
+  SafeAreaView,
   Image,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -10,8 +11,6 @@ import Swiper from 'react-native-swiper';
 
 // Components
 import Icon from '../components/Icon';
-
-import theme from '../config/theme';
 
 const styles = EStyleSheet.create({
   container: {
@@ -31,7 +30,7 @@ const styles = EStyleSheet.create({
   },
   closeBtnContainer: {
     position: 'absolute',
-    top: 22,
+    top: 0,
     right: 14,
   },
   closeBtn: {
@@ -53,7 +52,7 @@ export default class Gallery extends Component {
   };
 
   render() {
-    const { images } = this.props;
+    const { images, navigator, activeIndex } = this.props;
     if (!images.length) {
       return null;
     }
@@ -69,23 +68,25 @@ export default class Gallery extends Component {
     });
 
     return (
-      <View style={styles.container}>
-        <Swiper
-          horizontal
-          index={this.props.activeIndex}
-        >
-          {items}
-        </Swiper>
-        <TouchableOpacity
-          style={styles.closeBtnContainer}
-          onPress={() => this.props.navigator.dismissModal({ animationType: 'fade' })}
-        >
-          <Icon
-            name="close"
-            style={styles.closeBtn}
-          />
-        </TouchableOpacity>
-      </View>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <Swiper
+            horizontal
+            index={activeIndex}
+          >
+            {items}
+          </Swiper>
+          <TouchableOpacity
+            style={styles.closeBtnContainer}
+            onPress={() => navigator.dismissModal({ animationType: 'fade' })}
+          >
+            <Icon
+              name="close"
+              style={styles.closeBtn}
+            />
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
     );
   }
 }

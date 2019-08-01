@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import {
   View,
@@ -24,10 +25,6 @@ import { steps } from '../../services/vendors';
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
 
-import {
-  iconsMap,
-  iconsLoaded,
-} from '../../utils/navIcons';
 
 const styles = EStyleSheet.create({
   container: {
@@ -48,7 +45,7 @@ const styles = EStyleSheet.create({
     position: 'relative',
   },
   containerStyle: {
-    marginTop: -12,
+    marginTop: 0,
     marginBottom: 22,
   },
   sectionText: {
@@ -61,7 +58,6 @@ const IMAGE_NUM_COLUMNS = 4;
 class AddProductStep1 extends Component {
   static propTypes = {
     images: PropTypes.arrayOf(PropTypes.string),
-    showBack: PropTypes.bool,
     navigator: PropTypes.shape({
       setTitle: PropTypes.func,
       setButtons: PropTypes.func,
@@ -159,14 +155,25 @@ class AddProductStep1 extends Component {
   );
 
   renderImage = (image) => {
+    const { navigator } = this.props;
     const IMAGE_WIDTH = Dimensions.get('window').width / IMAGE_NUM_COLUMNS;
 
     return (
       <TouchableOpacity
         style={styles.imageWrapper}
+        key={uniqueId('image-')}
+        onPress={() => {
+          navigator.showModal({
+            screen: 'Gallery',
+            animationType: 'fade',
+            passProps: {
+              images: [image.item],
+              activeIndex: 1,
+            },
+          });
+        }}
       >
         <Image
-          key={image}
           style={{
             width: IMAGE_WIDTH,
             height: IMAGE_WIDTH,

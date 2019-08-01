@@ -239,3 +239,49 @@ export const getCategoriesList = (parent = 0, page = 1) => {
 
   return gql(QUERY, { parent, page }).then(result => result.data);
 };
+
+
+export const getOrdersList = (page = 1) => {
+  const QUERY = `query getOrders($page: Int) {
+    orders(page: $page, items_per_page: 100) {
+      order_id
+      status
+      timestamp
+      total
+      subtotal
+      subtotal_discount
+      shipping_cost
+      notes
+      details
+      firstname
+      lastname
+      phone
+      email
+      b_firstname
+      b_lastname
+      b_address
+      b_address_2
+      b_city
+      b_state
+      b_state_descr
+      b_country
+      b_country_descr
+      b_zipcode
+      b_phone
+      s_firstname
+      s_lastname
+      s_address
+      s_address_2
+      s_city
+      s_state
+      s_state_descr
+      s_country
+      s_country_descr
+      s_zipcode
+      s_phone
+    }
+  }
+`;
+
+  return gql(QUERY, { page }).then(result => result.data);
+};

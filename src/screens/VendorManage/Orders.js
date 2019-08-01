@@ -16,7 +16,7 @@ import theme from '../../config/theme';
 
 // Import actions.
 import * as authActions from '../../actions/authActions';
-import * as ordersActions from '../../actions/ordersActions';
+import * as ordersActions from '../../actions/vendorManage/ordersActions';
 
 // Components
 import Spinner from '../../components/Spinner';
@@ -54,8 +54,10 @@ const CANCEL_INDEX = 7;
 class Orders extends Component {
   static propTypes = {
     ordersActions: PropTypes.shape({
-      login: PropTypes.func,
+      fetch: PropTypes.func,
     }),
+    hasMore: PropTypes.bool,
+    page: PropTypes.number,
     orders: PropTypes.shape({
       fetching: PropTypes.bool,
       items: PropTypes.arrayOf(PropTypes.object),
@@ -79,6 +81,10 @@ class Orders extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      refreshing: false,
+    };
+
     props.navigator.setTitle({
       title: i18n.gettext('Vendor Orders').toUpperCase(),
     });
@@ -101,6 +107,12 @@ class Orders extends Component {
     });
   }
 
+  componentWillReceiveProps() {
+    this.setState({
+      refreshing: false,
+    });
+  }
+
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
@@ -115,11 +127,31 @@ class Orders extends Component {
     this.ActionSheet.show();
   }
 
+  handleRefresh = () => {
+    const { ordersActions } = this.props;
+    this.setState({
+      refreshing: true,
+    });
+
+    ordersActions.fetch(0);
+  }
+
+  handleLoadMore = () => {
+    const { ordersActions, orders: { hasMore, page } } = this.props;
+
+    if (!hasMore) {
+      return;
+    }
+
+    ordersActions.fetch(page);
+  }
+
+
   renderItem = ({ item }) => {
     const { navigator } = this.props;
     const swipeoutBtns = [
       {
-        text: i18n.gettext('Delete'),
+        text: i18n.gettext('Status'),
         type: 'delete',
         onPress: this.showActionSheet,
       },
@@ -149,6 +181,7 @@ class Orders extends Component {
   }
 
   renderList = () => {
+    const { refreshing } = this.state;
     const { orders } = this.props;
 
     if (orders.fetching) {
@@ -161,12 +194,16 @@ class Orders extends Component {
         data={orders.items}
         ListEmptyComponent={<EmptyList />}
         renderItem={this.renderItem}
+        onEndReached={this.handleLoadMore}
+        refreshing={refreshing}
+        onRefresh={() => this.handleRefresh()}
       />
     );
   };
 
   render() {
     const { orders } = this.props;
+
     return (
       <View style={styles.container}>
         {this.renderList()}
@@ -184,10 +221,7 @@ class Orders extends Component {
 
 export default connect(
   state => ({
-    nav: state.nav,
-    auth: state.auth,
-    flash: state.flash,
-    orders: state.orders,
+    orders: state.vendorManageOrders,
   }),
   dispatch => ({
     authActions: bindActionCreators(authActions, dispatch),
