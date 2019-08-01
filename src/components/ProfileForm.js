@@ -27,9 +27,11 @@ const FIELD_STATE = 'A';
 const styles = EStyleSheet.create({
   contentContainer: {
     padding: 0,
+    paddingBottom: 12,
   },
   form: {
     padding: 12,
+    marginBottom: -30,
   },
   btn: {
     backgroundColor: '#4fbe31',
