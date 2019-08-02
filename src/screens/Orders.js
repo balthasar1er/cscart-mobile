@@ -65,10 +65,6 @@ class Orders extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      fetching: true,
-    };
-
     props.navigator.setTitle({
       title: i18n.gettext('Orders').toUpperCase(),
     });
@@ -159,11 +155,16 @@ class Orders extends Component {
   };
 
   render() {
-    const { fetching } = this.state;
+    const { orders } = this.props;
+    if (orders.fetching) {
+      return (
+        <Spinner visible mode="content" />
+      );
+    }
+
     return (
       <View style={styles.container}>
         {this.renderList()}
-        <Spinner visible={fetching} mode="content" />
       </View>
     );
   }

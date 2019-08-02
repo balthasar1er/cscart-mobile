@@ -36,6 +36,7 @@ import VendorManageEditProduct from './screens/VendorManage/EditProduct';
 import VendorManagePricingInventory from './screens/VendorManage/PricingInventory';
 import VendorManageShippingProperties from './screens/VendorManage/ShippingProperties';
 import VendorManageCategoriesPicker from './screens/VendorManage/CategoriesPicker';
+import VendorManageOrderDetail from './screens/VendorManage/OrderDetail';
 
 // register all screens of the app (including internal ones)
 export default function registerScreens(store, Provider) {
@@ -75,4 +76,5 @@ export default function registerScreens(store, Provider) {
   Navigation.registerComponent('VendorManagePricingInventory', () => VendorManagePricingInventory, store, Provider);
   Navigation.registerComponent('VendorManageShippingProperties', () => VendorManageShippingProperties, store, Provider);
   Navigation.registerComponent('VendorManageCategoriesPicker', () => VendorManageCategoriesPicker, store, Provider);
+  Navigation.registerComponent('VendorManageOrderDetail', () => VendorManageOrderDetail, store, Provider);
 }

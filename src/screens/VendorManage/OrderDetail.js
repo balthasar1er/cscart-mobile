@@ -13,16 +13,15 @@ import {
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // Import actions.
-import * as notificationsActions from '../actions/notificationsActions';
+import * as ordersActions from '../../actions/vendorManage/ordersActions';
 
 // Components
-import FormBlock from '../components/FormBlock';
-import FormBlockField from '../components/FormBlockField';
-import Spinner from '../components/Spinner';
+import FormBlock from '../../components/FormBlock';
+import FormBlockField from '../../components/FormBlockField';
+import Spinner from '../../components/Spinner';
 
-import i18n from '../utils/i18n';
-import { formatPrice, getImagePath } from '../utils';
-import Api from '../services/api';
+import i18n from '../../utils/i18n';
+import { formatPrice, getImagePath, getOrderStatus } from '../../utils';
 
 const styles = EStyleSheet.create({
   container: {
@@ -101,10 +100,12 @@ class OrderDetail extends Component {
   };
 
   static propTypes = {
-    notificationsActions: PropTypes.shape({
-      show: PropTypes.func,
+    orderId: PropTypes.number,
+    fetching: PropTypes.bool,
+    ordersActions: PropTypes.shape({
+      fetchOrder: PropTypes.func,
     }),
-    orderId: PropTypes.string,
+    order: PropTypes.shape({}),
     navigator: PropTypes.shape({
       push: PropTypes.func,
       setTitle: PropTypes.func,
@@ -112,55 +113,15 @@ class OrderDetail extends Component {
     }),
   };
 
-  constructor(props) {
-    super(props);
+  async componentWillMount() {
+    const { orderId, navigator, ordersActions } = this.props;
+    const data = await ordersActions.fetchOrder(orderId);
 
-    this.state = {
-      fetching: true,
-      orderDetail: {},
-      fields: {},
-    };
-  }
-
-  componentWillMount() {
-    const { orderId, navigator, notificationsActions } = this.props;
-
-    Api.get(`/sra_orders/${orderId}`)
-      .then((response) => {
-        const params = {
-          location: 'checkout',
-          action: 'update'
-        };
-
-        Api.get('/sra_profile', { params })
-          .then(({ data }) => {
-            const { fields } = data;
-
-            console.log(data);
-            // eslint-disable-next-line no-param-reassign
-            delete fields.E;
-
-            this.setState({
-              fetching: false,
-              orderDetail: response.data,
-              fields
-            });
-          });
-      })
-      .catch(() => {
-        notificationsActions.show({
-          type: 'info',
-          title: i18n.gettext('Information'),
-          text: i18n.gettext('Order not found.'),
-          closeLastModal: false,
-        });
-        setTimeout(() => {
-          navigator.resetTo({
-            screen: 'Layouts',
-            animated: false,
-          });
-        });
+    if (!data) {
+      setTimeout(() => {
+        navigator.pop();
       });
+    }
 
     navigator.setTitle({
       title: i18n.gettext('Order Detail').toUpperCase(),
@@ -170,6 +131,7 @@ class OrderDetail extends Component {
   renderProduct = (item, index) => {
     let productImage = null;
     const imageUri = getImagePath(item);
+
     if (imageUri) {
       productImage = (
         <Image
@@ -177,6 +139,7 @@ class OrderDetail extends Component {
           style={styles.productItemImage}
         />);
     }
+
     return (
       <View style={styles.productItem} key={index}>
         {productImage}
@@ -188,70 +151,86 @@ class OrderDetail extends Component {
             {item.product}
           </Text>
           <Text style={styles.productItemPrice}>
-            {`${item.amount} x ${formatPrice(item.price_formatted.price)}`}
+            {`${item.amount} x ${formatPrice(item.price)}`}
           </Text>
         </View>
       </View>
     );
   }
 
+  renderFieldRow = (title, text) => {
+    if (text === '') {
+      return null;
+    }
+    return (
+      <FormBlockField title={title}>
+        {text}
+      </FormBlockField>
+    );
+  }
+
   renderFields() {
-    const { orderDetail, fields } = this.state;
+    const { order } = this.props;
 
-    return Object.entries(fields).map(([key, section]) => {
-      const country = { code: null, name: null };
-      const state = { name: null };
-
-      // Search for country (if exist)
-      section.fields.forEach((field) => {
-        if (field.field_type === 'O') {
-          country.code = field.value;
-          country.name = field.values[orderDetail[field.field_id]];
-        }
-      });
-
-      // Search for state (if exist)
-      if (country.code) {
-        section.fields.forEach((field) => {
-          if (field.field_type === 'A' && field.values[country.code]) {
-            state.name = field.values[country.code][orderDetail[field.field_id]];
-          }
-        });
-      }
-
-      return (
+    return (
+      <React.Fragment>
         <FormBlock
-          key={key}
-          title={section.description}
+          title={i18n.gettext('Contact information')}
           style={styles.formBlockWraper}
         >
           <View>
-            {
-              section.fields.map((field) => {
-                if (orderDetail[field.field_id]) {
-                  return (
-                    <FormBlockField title={`${field.description}:`} key={field.field_id}>
-                      {field.field_type === 'O' && country.name
-                        ? country.name
-                        : field.field_type === 'A' && state.name
-                          ? state.name
-                          : orderDetail[field.field_id]
-                      }
-                    </FormBlockField>
-                  );
-                }
-
-                return null;
-              })
-            }
+            {this.renderFieldRow(i18n.gettext('Email:'), order.email)}
+            {this.renderFieldRow(i18n.gettext('Phone:'), order.phone)}
           </View>
         </FormBlock>
-      );
-    });
+        <FormBlock
+          title={i18n.gettext('Billing address')}
+          style={styles.formBlockWraper}
+        >
+          <View>
+            {this.renderFieldRow(i18n.gettext('First name:'), order.b_firstname)}
+            {this.renderFieldRow(i18n.gettext('Last name:'), order.b_lastname)}
+            {this.renderFieldRow(i18n.gettext('Address:'), order.b_address)}
+            {this.renderFieldRow(i18n.gettext('City:'), order.b_city)}
+            {this.renderFieldRow(i18n.gettext('State:'), order.b_state_descr)}
+            {this.renderFieldRow(i18n.gettext('Country:'), order.b_country_descr)}
+            {this.renderFieldRow(i18n.gettext('Zip code:'), order.b_zipcode)}
+          </View>
+        </FormBlock>
+        <FormBlock
+          title={i18n.gettext('Shipping address')}
+          style={styles.formBlockWraper}
+        >
+          <View>
+            {this.renderFieldRow(i18n.gettext('First name:'), order.s_firstname)}
+            {this.renderFieldRow(i18n.gettext('Last name:'), order.s_lastname)}
+            {this.renderFieldRow(i18n.gettext('Address:'), order.s_address)}
+            {this.renderFieldRow(i18n.gettext('City:'), order.s_city)}
+            {this.renderFieldRow(i18n.gettext('State:'), order.s_state_descr)}
+            {this.renderFieldRow(i18n.gettext('Country:'), order.sb_country_descr)}
+            {this.renderFieldRow(i18n.gettext('Zip code:'), order.s_zipcode)}
+          </View>
+        </FormBlock>
+      </React.Fragment>
+    );
+  }
+
+  renderStatus = () => {
+    const { order } = this.props;
+    const status = getOrderStatus(order.status);
+
+    return (
+      <FormBlock style={styles.formBlockWraper}>
+        <View>
+          {this.renderFieldRow(i18n.gettext('Status'), status.text)}
+        </View>
+      </FormBlock>
+    );
   }
 
   render() {
-    const { orderDetail, fetching } = this.state;
+    const { order, fetching } = this.props;
+
     if (fetching) {
       return (
         <View style={styles.container}>
@@ -260,20 +239,17 @@ class OrderDetail extends Component {
       );
     }
 
-    const productsList = orderDetail.product_groups.map((group) => {
-      const products = Object.keys(group.products).map(k => group.products[k]);
-      return products.map((p, i) => this.renderProduct(p, i));
-    });
+    const productsList = order.products.map((p, i) => this.renderProduct(p, i));
 
-    const shippingMethodsList = orderDetail.shipping
+    const shippingMethodsList = order.shipping
       .map((s, index) => <Text key={index}>{s.shipping}</Text>);
 
-    const date = new Date(orderDetail.timestamp * 1000);
+    const date = new Date(order.timestamp * 1000);
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           <Text style={styles.mainHeader}>
-            {i18n.gettext('Order')} #{orderDetail.order_id}
+            {i18n.gettext('Order')} #{order.order_id}
           </Text>
           <Text style={styles.subHeader}>
             {i18n.gettext('Placed on')} {format(date, 'MM/DD/YYYY')}
@@ -288,25 +264,27 @@ class OrderDetail extends Component {
             </View>
           </FormBlock>
 
+          {this.renderStatus()}
+
           <FormBlock>
             <Text style={styles.header}>
               {i18n.gettext('Summary').toUpperCase()}
             </Text>
             <View style={styles.formBlockWraper}>
               <FormBlockField title={`${i18n.gettext('Payment method')}:`}>
-                {orderDetail.payment_method.payment}
+                {order.payment_method.payment}
               </FormBlockField>
               <FormBlockField title={`${i18n.gettext('Shipping method')}:`}>
                 {shippingMethodsList}
               </FormBlockField>
               <FormBlockField title={`${i18n.gettext('Subtotal')}:`}>
-                {formatPrice(orderDetail.subtotal_formatted.price)}
+                {formatPrice(order.subtotal)}
               </FormBlockField>
               <FormBlockField title={`${i18n.gettext('Shipping cost')}:`}>
-                {formatPrice(orderDetail.shipping_cost_formatted.price)}
+                {formatPrice(order.shipping_cost)}
               </FormBlockField>
               <FormBlockField title={`${i18n.gettext('Total')}:`}>
-                {formatPrice(orderDetail.total_formatted.price)}
+                {formatPrice(order.total)}
               </FormBlockField>
             </View>
           </FormBlock>
@@ -320,9 +298,10 @@ class OrderDetail extends Component {
 
 export default connect(
   state => ({
-    auth: state.auth,
+    order: state.vendorManageOrders.current,
+    fetching: state.vendorManageOrders.loadingCurrent,
   }),
   dispatch => ({
-    notificationsActions: bindActionCreators(notificationsActions, dispatch),
+    ordersActions: bindActionCreators(ordersActions, dispatch),
   })
 )(OrderDetail);

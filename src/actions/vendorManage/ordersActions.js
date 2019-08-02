@@ -2,7 +2,14 @@ import {
   VENDOR_ORDERS_REQUEST,
   VENDOR_ORDERS_FAIL,
   VENDOR_ORDERS_SUCCESS,
+
+  VENDOR_ORDER_REQUEST,
+  VENDOR_ORDER_FAIL,
+  VENDOR_ORDER_SUCCESS,
+
+  NOTIFICATION_SHOW,
 } from '../../constants';
+import i18n from '../../utils/i18n';
 import * as vendorService from '../../services/vendors';
 
 export function fetch(page = 0) {
@@ -32,4 +39,48 @@ export function fetch(page = 0) {
   };
 }
 
-export function dummy(page = 0) {}
+export function fetchOrder(id) {
+  return async (dispatch) => {
+    dispatch({
+      type: VENDOR_ORDER_REQUEST,
+    });
+
+    try {
+      const result = await vendorService.getOrder(id);
+
+      if (!result.data.order.order_id) {
+        dispatch({
+          type: NOTIFICATION_SHOW,
+          payload: {
+            type: 'info',
+            title: i18n.gettext('Information'),
+            text: i18n.gettext('Order not found.'),
+            closeLastModal: false,
+          },
+        });
+        return null;
+      }
+
+      dispatch({
+        type: VENDOR_ORDER_SUCCESS,
+        payload: result.data.order,
+      });
+    } catch (error) {
+      dispatch({
+        type: NOTIFICATION_SHOW,
+        payload: {
+          type: 'info',
+          title: i18n.gettext('Error'),
+          text: i18n.gettext(error.errors.join('\n')),
+          closeLastModal: false,
+        },
+      });
+
+      dispatch({
+        type: VENDOR_ORDER_FAIL,
+        error,
+      });
+    }
+    return true;
+  };
+}

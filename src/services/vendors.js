@@ -285,3 +285,86 @@ export const getOrdersList = (page = 1) => {
 
   return gql(QUERY, { page }).then(result => result.data);
 };
+
+export const getOrder = (id) => {
+  const QUERY = `query getOrder($id: Int!){
+    order(id: $id) {
+      order_id
+      status
+      total
+      timestamp
+      subtotal
+      subtotal_discount
+      shipping_cost
+      notes
+      details
+      products {
+        product_id
+        product
+        company_id
+        company_name
+        product_code
+        product_type
+        status
+        list_price
+        main_pair {
+          icon {
+            image_path
+          }
+        }
+        amount
+        weight
+        length
+        width
+        height
+        shipping_freight
+        free_shipping
+        list_qty_count
+        price
+        main_category
+        full_description
+        short_description
+      }
+      product_groups {
+        group_id
+      }
+      shipping {
+        shipping_id
+        shipping
+      }
+      payment_method {
+        payment
+      }
+      user_id
+      firstname
+      lastname
+      phone
+      email
+      b_firstname
+      b_lastname
+      b_address
+      b_address_2
+      b_city
+      b_state
+      b_state_descr
+      b_country
+      b_country_descr
+      b_zipcode
+      b_phone
+      s_firstname
+      s_lastname
+      s_address
+      s_address_2
+      s_city
+      s_state
+      s_state_descr
+      s_country
+      s_country_descr
+      s_zipcode
+      s_phone
+    }
+  }
+`;
+
+  return gql(QUERY, { id }).then(result => result.data);
+};

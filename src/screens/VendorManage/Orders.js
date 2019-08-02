@@ -59,7 +59,7 @@ class Orders extends Component {
     hasMore: PropTypes.bool,
     page: PropTypes.number,
     orders: PropTypes.shape({
-      fetching: PropTypes.bool,
+      loading: PropTypes.bool,
       items: PropTypes.arrayOf(PropTypes.object),
     }),
     navigator: PropTypes.shape({
@@ -164,11 +164,11 @@ class Orders extends Component {
         backgroundColor={theme.$navBarBackgroundColor}
       >
         <OrderListItem
-          key={uniqueId('oreder-i')}
+          key={String(item.order_id)}
           item={item}
           onPress={() => {
             navigator.push({
-              screen: 'OrderDetail',
+              screen: 'VendorManageOrderDetail',
               backButtonTitle: '',
               passProps: {
                 orderId: item.order_id,
@@ -184,13 +184,13 @@ class Orders extends Component {
     const { refreshing } = this.state;
     const { orders } = this.props;
 
-    if (orders.fetching) {
+    if (orders.loading) {
       return null;
     }
 
     return (
       <FlatList
-        keyExtractor={(item, index) => `order_${index}`}
+        keyExtractor={item => String(item.order_id)}
         data={orders.items}
         ListEmptyComponent={<EmptyList />}
         renderItem={this.renderItem}
@@ -204,10 +204,15 @@ class Orders extends Component {
   render() {
     const { orders } = this.props;
 
+    if (orders.loading) {
+      return (
+        <Spinner visible mode="content" />
+      );
+    }
+
     return (
       <View style={styles.container}>
         {this.renderList()}
-        <Spinner visible={orders.fetching} mode="content" />
         <ActionSheet
           ref={(ref) => { this.ActionSheet = ref; }}
           options={itemsList}
