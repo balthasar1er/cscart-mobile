@@ -77,7 +77,7 @@ class App extends React.Component {
 
     // run app after store persist.
     persistStore(store, {
-      blacklist: ['products', 'discussion', 'orders', 'search', 'vendors', 'vendorManageProducts', 'vendorManageOrders'],
+      whitelist: ['auth', 'cart', 'profile'],
       storage: AsyncStorage
     }, () => this.startApp());
   }

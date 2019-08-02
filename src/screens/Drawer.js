@@ -172,6 +172,9 @@ class Drawer extends Component {
     pages: PropTypes.shape({
       items: PropTypes.arrayOf(PropTypes.object),
     }),
+    profile: PropTypes.shape({
+      user_type: PropTypes.string,
+    }),
     auth: PropTypes.shape({
       logged: PropTypes.bool,
     }),
@@ -347,7 +350,12 @@ class Drawer extends Component {
   }
 
   renderVendorMenu = () => {
-    const { navigator } = this.props;
+    const { navigator, profile } = this.props;
+
+    if (profile.user_type !== 'V') {
+      return null;
+    }
+
     return (
       <View>
         {/* {this.renderMenuItem('assessment', i18n.gettext('Dashboard'), () => {})} */}

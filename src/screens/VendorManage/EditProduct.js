@@ -9,6 +9,7 @@ import {
   Image,
   Text,
   ScrollView,
+  SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -289,86 +290,88 @@ class EditProduct extends Component {
     });
 
     return (
-      <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {this.renderImages()}
-          <Section>
-            <Form
-              ref={this.formRef}
-              type={formFields}
-              value={product}
-              options={formOptions}
-            />
-          </Section>
-          <Section wrapperStyle={{ padding: 0 }}>
-            {this.renderMenuItem(
-              i18n.gettext('Status'),
-              getProductStatus(product.status).text,
-              () => {
-                this.StatusActionSheet.show();
-              }
-            )}
-            {this.renderMenuItem(
-              i18n.gettext('Pricing / Inventory'),
-              i18n.gettext('%1, List price: %2, In stock: %3', product.product, product.list_price, product.amount),
-              () => {
-                navigator.push({
-                  screen: 'VendorManagePricingInventory',
-                  backButtonTitle: '',
-                });
-              }
-            )}
-            {this.renderMenuItem(
-              i18n.gettext('Categories'),
-              product.categories.map(item => item.category).join(', '),
-              () => {
-                navigator.showModal({
-                  screen: 'VendorManageCategoriesPicker',
-                  backButtonTitle: '',
-                  title: i18n.gettext('Categories').toUpperCase(),
-                  passProps: {
-                    selected: product.categories,
-                    parent: 0,
-                    onCategoryPress: (item) => {
-                      productsActions.changeProductCategory(item);
-                    }
-                  },
-                });
-              }
-            )}
-            {this.renderMenuItem(
-              i18n.gettext('Shipping properties'),
-              `${i18n.gettext('Weight: %1 ', product.weight)} ${product.free_shipping ? i18n.gettext('Free shipping') : ''}`,
-              () => {
-                navigator.push({
-                  screen: 'VendorManageShippingProperties',
-                  backButtonTitle: '',
-                  passProps: {
-                    values: {
-                      ...product
-                    }
-                  },
-                });
-              }
-            )}
-          </Section>
-        </ScrollView>
-        <BottomActions onBtnPress={this.handleSave} />
-        <ActionSheet
-          ref={(ref) => { this.ActionSheet = ref; }}
-          options={MORE_ACTIONS_LIST}
-          cancelButtonIndex={1}
-          destructiveButtonIndex={0}
-          onPress={this.handleMoreActionSheet}
-        />
-        <ActionSheet
-          ref={(ref) => { this.StatusActionSheet = ref; }}
-          options={STATUS_ACTIONS_LIST}
-          cancelButtonIndex={3}
-          destructiveButtonIndex={0}
-          onPress={this.handleStatusActionSheet}
-        />
-      </View>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            {this.renderImages()}
+            <Section>
+              <Form
+                ref={this.formRef}
+                type={formFields}
+                value={product}
+                options={formOptions}
+              />
+            </Section>
+            <Section wrapperStyle={{ padding: 0 }}>
+              {this.renderMenuItem(
+                i18n.gettext('Status'),
+                getProductStatus(product.status).text,
+                () => {
+                  this.StatusActionSheet.show();
+                }
+              )}
+              {this.renderMenuItem(
+                i18n.gettext('Pricing / Inventory'),
+                i18n.gettext('%1, List price: %2, In stock: %3', product.product, product.list_price, product.amount),
+                () => {
+                  navigator.push({
+                    screen: 'VendorManagePricingInventory',
+                    backButtonTitle: '',
+                  });
+                }
+              )}
+              {this.renderMenuItem(
+                i18n.gettext('Categories'),
+                product.categories.map(item => item.category).join(', '),
+                () => {
+                  navigator.showModal({
+                    screen: 'VendorManageCategoriesPicker',
+                    backButtonTitle: '',
+                    title: i18n.gettext('Categories').toUpperCase(),
+                    passProps: {
+                      selected: product.categories,
+                      parent: 0,
+                      onCategoryPress: (item) => {
+                        productsActions.changeProductCategory(item);
+                      }
+                    },
+                  });
+                }
+              )}
+              {this.renderMenuItem(
+                i18n.gettext('Shipping properties'),
+                `${i18n.gettext('Weight: %1 ', product.weight)} ${product.free_shipping ? i18n.gettext('Free shipping') : ''}`,
+                () => {
+                  navigator.push({
+                    screen: 'VendorManageShippingProperties',
+                    backButtonTitle: '',
+                    passProps: {
+                      values: {
+                        ...product
+                      }
+                    },
+                  });
+                }
+              )}
+            </Section>
+          </ScrollView>
+          <BottomActions onBtnPress={this.handleSave} />
+          <ActionSheet
+            ref={(ref) => { this.ActionSheet = ref; }}
+            options={MORE_ACTIONS_LIST}
+            cancelButtonIndex={1}
+            destructiveButtonIndex={0}
+            onPress={this.handleMoreActionSheet}
+          />
+          <ActionSheet
+            ref={(ref) => { this.StatusActionSheet = ref; }}
+            options={STATUS_ACTIONS_LIST}
+            cancelButtonIndex={3}
+            destructiveButtonIndex={0}
+            onPress={this.handleStatusActionSheet}
+          />
+        </View>
+      </SafeAreaView>
     );
   }
 }

@@ -246,7 +246,6 @@ export function login(data) {
           type: AUTH_LOGIN_SUCCESS,
           payload: response.data,
         });
-
         // Delay send refresh token.
         setTimeout(() => {
           const { auth } = store.getState();
@@ -258,6 +257,7 @@ export function login(data) {
           })(dispatch);
         }, 1000);
       })
+      .then(() => fetchProfile()(dispatch))
       .then(() => layoutsActions.fetch(config.layoutId, 'index.index')(dispatch))
       .catch((error) => {
         dispatch({
