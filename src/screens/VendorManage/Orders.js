@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -15,7 +14,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import theme from '../../config/theme';
 
 // Import actions.
-import * as authActions from '../../actions/authActions';
+import * as notificationsActions from '../../actions/notificationsActions';
 import * as ordersActions from '../../actions/vendorManage/ordersActions';
 
 // Components
@@ -24,6 +23,7 @@ import EmptyList from '../../components/EmptyList';
 import OrderListItem from '../../components/OrderListItem';
 
 import i18n from '../../utils/i18n';
+import { orderStatuses } from '../../utils';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
 
 import {
@@ -39,22 +39,22 @@ const styles = EStyleSheet.create({
 });
 
 const itemsList = [
-  i18n.gettext('Processed'),
-  i18n.gettext('On hold'),
-  i18n.gettext('Awaiting call'),
-  i18n.gettext('Canceled'),
-  i18n.gettext('Complete'),
-  i18n.gettext('Incomplete'),
-  i18n.gettext('View all statuses'),
+  ...orderStatuses.map(item => item.text),
   i18n.gettext('Cancel'),
 ];
 
-const CANCEL_INDEX = 7;
+const CANCEL_INDEX = itemsList.length - 1;
 
 class Orders extends Component {
   static propTypes = {
     ordersActions: PropTypes.shape({
       fetch: PropTypes.func,
+    }),
+    notifications: PropTypes.shape({
+      items: PropTypes.arrayOf(PropTypes.object),
+    }),
+    notificationsActions: PropTypes.shape({
+      hide: PropTypes.func,
     }),
     hasMore: PropTypes.bool,
     page: PropTypes.number,
@@ -85,6 +85,8 @@ class Orders extends Component {
       refreshing: false,
     };
 
+    this.orderID = 0;
+
     props.navigator.setTitle({
       title: i18n.gettext('Vendor Orders').toUpperCase(),
     });
@@ -107,7 +109,28 @@ class Orders extends Component {
     });
   }
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps(nextProps) {
+    const { notificationsActions } = this.props;
+    const { navigator } = nextProps;
+
+    if (nextProps.notifications.items.length) {
+      const notify = nextProps.notifications.items[nextProps.notifications.items.length - 1];
+      if (notify.closeLastModal) {
+        navigator.dismissModal();
+      }
+      navigator.showInAppNotification({
+        screen: 'Notification',
+        autoDismissTimerSec: 1,
+        passProps: {
+          dismissWithSwipe: true,
+          title: notify.title,
+          type: notify.type,
+          text: notify.text,
+        },
+      });
+      notificationsActions.hide(notify.id);
+    }
+
     this.setState({
       refreshing: false,
     });
@@ -123,7 +146,8 @@ class Orders extends Component {
     }
   }
 
-  showActionSheet = () => {
+  showActionSheet = (id) => {
+    this.orderID = id;
     this.ActionSheet.show();
   }
 
@@ -146,6 +170,13 @@ class Orders extends Component {
     ordersActions.fetch(page);
   }
 
+  handleChangeStatus = (index) => {
+    const { ordersActions } = this.props;
+
+    if (orderStatuses[index]) {
+      ordersActions.updateStatus(this.orderID, orderStatuses[index].code);
+    }
+  }
 
   renderItem = ({ item }) => {
     const { navigator } = this.props;
@@ -153,7 +184,7 @@ class Orders extends Component {
       {
         text: i18n.gettext('Status'),
         type: 'delete',
-        onPress: this.showActionSheet,
+        onPress: () => this.showActionSheet(item.order_id),
       },
     ];
 
@@ -217,7 +248,7 @@ class Orders extends Component {
           ref={(ref) => { this.ActionSheet = ref; }}
           options={itemsList}
           cancelButtonIndex={CANCEL_INDEX}
-          onPress={index => console.log(index)}
+          onPress={this.handleChangeStatus}
         />
       </View>
     );
@@ -227,9 +258,10 @@ class Orders extends Component {
 export default connect(
   state => ({
     orders: state.vendorManageOrders,
+    notifications: state.notifications,
   }),
   dispatch => ({
-    authActions: bindActionCreators(authActions, dispatch),
+    notificationsActions: bindActionCreators(notificationsActions, dispatch),
     ordersActions: bindActionCreators(ordersActions, dispatch),
   })
 )(Orders);

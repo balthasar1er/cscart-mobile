@@ -368,3 +368,21 @@ export const getOrder = (id) => {
 
   return gql(QUERY, { id }).then(result => result.data);
 };
+
+
+export const updateStatus = (id, status) => {
+  const QUERY = `
+    mutation updateStatus(
+      $id: Int!,
+      $status: String!,
+    ) {
+      update_order(
+        id: $id,
+        order: {
+          status: $status
+        }
+      )
+    }
+  `;
+  return gql(QUERY, { id, status }).then(result => result.data);
+};

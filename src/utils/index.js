@@ -166,60 +166,49 @@ export function getProductStatus(status) {
   }
 }
 
-export function getOrderStatus(status) {
-  switch (status) {
-    case 'P':
-      return {
-        text: i18n.gettext('Processed'),
-        style: { color: '#97cf4d' }
-      };
-
-    case 'C':
-      return {
-        text: i18n.gettext('Complete'),
-        style: { color: '#97cf4d' }
-      };
-
-    case 'O':
-      return {
-        text: i18n.gettext('Open'),
-        style: { color: '#ff9522' }
-      };
-
-    case 'F':
-      return {
-        text: i18n.gettext('Failed'),
-        style: { color: '#ff5215' }
-      };
-
-    case 'D':
-      return {
-        text: i18n.gettext('Declined'),
-        style: { color: '#ff5215' }
-      };
-
-    case 'B':
-      return {
-        text: i18n.gettext('Backordered'),
-        style: { color: '#28abf6' }
-      };
-
-    case 'I':
-      return {
-        text: i18n.gettext('Canceled'),
-        style: { color: '#c2c2c2' }
-      };
-
-    case 'Y':
-      return {
-        text: i18n.gettext('Awaiting call'),
-        style: { color: '#b63a21' }
-      };
-
-    default:
-      return {
-        text: i18n.gettext(''),
-        style: { color: '#000000' }
-      };
+export const orderStatuses = [
+  {
+    code: 'P',
+    text: i18n.gettext('Processed'),
+    style: { color: '#97cf4d' }
+  },
+  {
+    code: 'C',
+    text: i18n.gettext('Complete'),
+    style: { color: '#97cf4d' }
+  },
+  {
+    code: 'O',
+    text: i18n.gettext('Open'),
+    style: { color: '#ff9522' }
+  },
+  {
+    code: 'F',
+    text: i18n.gettext('Failed'),
+    style: { color: '#ff5215' }
+  },
+  {
+    code: 'D',
+    text: i18n.gettext('Declined'),
+    style: { color: '#ff5215' }
+  },
+  {
+    code: 'B',
+    text: i18n.gettext('Backordered'),
+    style: { color: '#28abf6' }
+  },
+  {
+    code: 'I',
+    text: i18n.gettext('Canceled'),
+    style: { color: '#c2c2c2' }
+  },
+  {
+    code: 'Y',
+    text: i18n.gettext('Awaiting call'),
+    style: { color: '#b63a21' }
   }
+];
+
+export function getOrderStatus(status) {
+  return orderStatuses.find(item => item.code === status);
 }

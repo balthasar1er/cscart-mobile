@@ -7,6 +7,7 @@ import {
   VENDOR_ORDER_FAIL,
   VENDOR_ORDER_SUCCESS,
 
+  VENDOR_ORDER_UPDATE_STATUS_SUCCESS,
 } from '../../constants';
 
 const initialState = {
@@ -18,11 +19,15 @@ const initialState = {
   current: {},
 };
 
+let items = [];
+let index = 0;
+
 export default function (state = initialState, action) {
   switch (action.type) {
     case VENDOR_ORDERS_REQUEST:
       return {
         ...state,
+        loading: state.page === 0,
         items: action.payload === 0 ? [] : state.items,
       };
 
@@ -59,6 +64,19 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loadingCurrent: false,
+      };
+
+    case VENDOR_ORDER_UPDATE_STATUS_SUCCESS:
+      items = [
+        ...state.items,
+      ];
+      index = items.findIndex(item => item.order_id === action.payload.id) || 0;
+      items[index].status = action.payload.status;
+
+      return {
+        ...state,
+        items,
+        current: action.payload.status,
       };
 
     default:
