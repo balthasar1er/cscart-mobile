@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { uniqueId } from 'lodash';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   View,
@@ -19,6 +20,8 @@ import theme from '../../config/theme';
 import CheckoutSteps from '../../components/CheckoutSteps';
 import Section from '../../components/Section';
 import BottomActions from '../../components/BottomActions';
+
+import * as imagePickerActions from '../../actions/imagePickerActions';
 
 import { steps } from '../../services/vendors';
 
@@ -64,6 +67,9 @@ class AddProductStep1 extends Component {
       push: PropTypes.func,
       setOnNavigatorEvent: PropTypes.func,
     }),
+    imagePickerActions: PropTypes.shape({
+      clear: PropTypes.func,
+    }),
   };
 
   static navigatorStyle = {
@@ -96,6 +102,11 @@ class AddProductStep1 extends Component {
     //     ],
     //   });
     // });
+  }
+
+  componentDidMount() {
+    const { imagePickerActions } = this.props;
+    imagePickerActions.clear();
   }
 
   onNavigatorEvent(event) {
@@ -209,5 +220,8 @@ class AddProductStep1 extends Component {
 export default connect(
   state => ({
     images: state.imagePicker.selected,
+  }),
+  dispatch => ({
+    imagePickerActions: bindActionCreators(imagePickerActions, dispatch),
   })
 )(AddProductStep1);

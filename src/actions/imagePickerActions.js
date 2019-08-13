@@ -4,7 +4,7 @@ import {
 } from '../constants';
 
 export function clear() {
-  return async (dispatch) => {
+  return (dispatch) => {
     dispatch({
       type: IMAGE_PICKER_CLEAR,
     });
