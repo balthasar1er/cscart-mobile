@@ -134,6 +134,16 @@ class AddProductStep1 extends Component {
     });
   }
 
+  handleRemoveImage = (imageIndex) => {
+    const { imagePickerActions, navigator, images } = this.props;
+    const newImages = [
+      ...images,
+    ];
+    newImages.splice(imageIndex, 1);
+    imagePickerActions.toggle(newImages);
+    navigator.dismissModal();
+  }
+
   renderHeader = () => {
     const { navigator } = this.props;
     return (
@@ -180,6 +190,7 @@ class AddProductStep1 extends Component {
             passProps: {
               images: [image.item],
               activeIndex: 1,
+              onRemove: () => this.handleRemoveImage(image.index),
             },
           });
         }}

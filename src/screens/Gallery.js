@@ -33,6 +33,17 @@ const styles = EStyleSheet.create({
     top: 0,
     right: 14,
   },
+  removeBtnContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 10,
+    right: 10,
+    flex: 1,
+    alignItems: 'center',
+  },
+  removeBtn: {
+    padding: 10,
+  },
   closeBtn: {
     color: 'black',
   }
@@ -43,6 +54,7 @@ export default class Gallery extends Component {
     navigator: PropTypes.shape({
       dismissModal: PropTypes.func,
     }),
+    onRemove: PropTypes.func,
     images: PropTypes.arrayOf(PropTypes.string),
     activeIndex: PropTypes.number,
   };
@@ -52,20 +64,23 @@ export default class Gallery extends Component {
   };
 
   render() {
-    const { images, navigator, activeIndex } = this.props;
+    const {
+      images,
+      navigator,
+      activeIndex,
+      onRemove,
+    } = this.props;
     if (!images.length) {
       return null;
     }
-    const items = images.map((href, index) => {
-      return (
-        <View style={styles.slide} key={index}>
-          <Image
-            style={styles.img}
-            source={{ uri: href }}
-          />
-        </View>
-      );
-    });
+    const items = images.map((href, index) => (
+      <View style={styles.slide} key={index}>
+        <Image
+          style={styles.img}
+          source={{ uri: href }}
+        />
+      </View>
+    ));
 
     return (
       <SafeAreaView style={{ flex: 1 }}>
@@ -85,6 +100,19 @@ export default class Gallery extends Component {
               style={styles.closeBtn}
             />
           </TouchableOpacity>
+          {onRemove && (
+            <View style={styles.removeBtnContainer}>
+              <TouchableOpacity
+                style={styles.removeBtn}
+                onPress={onRemove}
+              >
+                <Icon
+                  name="delete"
+                  style={styles.closeBtn}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </SafeAreaView>
     );
