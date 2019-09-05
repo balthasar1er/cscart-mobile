@@ -1,12 +1,16 @@
 import { NativeModules, Platform } from 'react-native';
 import gettext from 'gettext.js';
 
-export const deviceLanguage = Platform.OS === 'ios'
+const platformLanguage = Platform.OS === 'ios'
   ? NativeModules.SettingsManager.settings.AppleLocale
-  : NativeModules.I18nManager.localeIdentifier.split('-')[0];
+  : NativeModules.I18nManager.localeIdentifier;
+
+export const deviceLanguage = platformLanguage.split('_')[0];
 
 const langs = ['ar', 'ru', 'en', 'fr'];
 let jsonData;
+
+console.log(deviceLanguage);
 
 if (langs.includes(deviceLanguage)) {
   switch (deviceLanguage) {
