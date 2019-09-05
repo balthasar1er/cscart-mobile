@@ -8,12 +8,13 @@ import {
 
   REGISTER_DEVICE_SUCCESS,
 } from '../constants';
+import { uuidv4 } from '../utils/index';
 
 const initialState = {
   token: null,
   ttl: null,
   logged: false,
-  rehydrated: false,
+  uuid: null,
   fetching: false,
   error: null,
   errorStatus: null,
@@ -61,6 +62,12 @@ export default function (state = initialState, action) {
     case AUTH_RESET_STATE:
     case AUTH_LOGOUT:
       return initialState;
+
+    case 'persist/REHYDRATE':
+      return {
+        ...state,
+        uuid: action.payload.auth.uuid ? action.payload.auth.uuid : uuidv4(),
+      };
 
     default:
       return state;

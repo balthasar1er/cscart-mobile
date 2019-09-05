@@ -79,7 +79,7 @@ function Init(cb) {
             token,
             platform: Platform.OS,
             locale: deviceLanguage,
-            device_id: '',
+            device_id: auth.uuid,
           }));
         }
       });
