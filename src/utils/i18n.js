@@ -10,8 +10,6 @@ export const deviceLanguage = platformLanguage.split('_')[0];
 const langs = ['ar', 'ru', 'en', 'fr'];
 let jsonData;
 
-console.log(deviceLanguage);
-
 if (langs.includes(deviceLanguage)) {
   switch (deviceLanguage) {
     case 'ru':
