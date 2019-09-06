@@ -21,7 +21,7 @@ import FormBlockField from '../components/FormBlockField';
 import Spinner from '../components/Spinner';
 
 import i18n from '../utils/i18n';
-import { getCountryByCode, formatPrice, getImagePath } from '../utils';
+import { formatPrice, getImagePath } from '../utils';
 import Api from '../services/api';
 
 const styles = EStyleSheet.create({
@@ -129,11 +129,11 @@ class OrderDetail extends Component {
       .then((response) => {
         const params = {
           location: 'checkout',
-          action: 'update'
+          action: 'update',
         };
 
         Api.get('/sra_profile', { params })
-          .then(({ data }) => {
+          .then(({ data, }) => {
             const { fields } = data;
             // eslint-disable-next-line no-param-reassign
             delete fields.E;

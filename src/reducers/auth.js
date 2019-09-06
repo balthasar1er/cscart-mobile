@@ -66,6 +66,7 @@ export default function (state = initialState, action) {
     case 'persist/REHYDRATE':
       return {
         ...state,
+        ...action.payload.auth,
         uuid: action.payload.auth.uuid ? action.payload.auth.uuid : uuidv4(),
       };
 
