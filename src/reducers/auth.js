@@ -8,7 +8,6 @@ import {
 
   REGISTER_DEVICE_SUCCESS,
 } from '../constants';
-import { uuidv4 } from '../utils/index';
 
 const initialState = {
   token: null,
@@ -67,7 +66,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         ...action.payload.auth,
-        uuid: action.payload.auth.uuid ? action.payload.auth.uuid : uuidv4(),
+        uuid: action.payload.auth.uuid ? action.payload.auth.uuid : (+new Date()).toString(16),
       };
 
     default:
