@@ -1,3 +1,5 @@
+import has from 'lodash/has';
+
 import {
   AUTH_LOGIN_REQUEST,
   AUTH_LOGIN_SUCCESS,
@@ -66,7 +68,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         ...action.payload.auth,
-        uuid: action.payload.auth.uuid ? action.payload.auth.uuid : (+new Date()).toString(16),
+        uuid: has(action.payload, 'auth.uuid') ? action.payload.auth.uuid : (+new Date()).toString(16),
       };
 
     default:
