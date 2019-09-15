@@ -69,7 +69,8 @@ const styles = EStyleSheet.create({
     paddingLeft: 12,
     paddingRight: 12,
     borderRadius: 20,
-    marginRight: 8,
+    marginRight: 6,
+    marginBottom: 6,
   },
   labelText: {
     textAlign: 'center',

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { sortBy, uniqWith, isEqual } from 'lodash';
 import {
   Text,
   View,
   TouchableOpacity,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ActionSheet from 'react-native-actionsheet';
@@ -106,12 +108,13 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
+    flexWrap: 'wrap',
     marginTop: 10,
   },
   pickerOpenBtnText: {
     fontSize: 20,
     color: '#000'
-  }
+  },
 });
 
 const CANCEL_INDEX = 5;
@@ -175,11 +178,13 @@ class SortProducts extends Component {
     sortParams: PropTypes.shape({
       sort_by: PropTypes.string,
       sort_order: PropTypes.string,
-    })
+    }),
+    filters: PropTypes.arrayOf(PropTypes.shape({})),
   };
 
   state = {
     openIDs: [],
+    selectedFilters: [],
   };
 
   showActionSheet = () => {
@@ -198,25 +203,110 @@ class SortProducts extends Component {
     onChange(itemsList[foundIndex].params, foundIndex);
   };
 
-  renderPicker = () => (
-    <View style={styles.pickerWrapper}>
-      <TouchableOpacity style={styles.pickerOpenBtn}>
-        <Text style={styles.pickerOpenBtnText}>Size</Text>
-        <Icon name="arrow-drop-down" />
-      </TouchableOpacity>
-      <View style={styles.pickerContent}>
-        <Button type="label">
-          Red
-        </Button>
-        <Button type="labelActive">
-          Red
-        </Button>
-        <Button type="label">
-          Red
-        </Button>
+  togglePicker = (id) => {
+    const { openIDs } = this.state;
+
+    if (openIDs.some(item => item === id)) {
+      this.setState({
+        openIDs: openIDs.filter(item => item !== id),
+      });
+      return;
+    }
+    this.setState({
+      openIDs: [
+        ...openIDs,
+        id,
+      ],
+    });
+  }
+
+  toggleVariant = (filter, variant) => {
+    const { selectedFilters } = this.state;
+
+    this.setState({
+      selectedFilters: [
+        ...selectedFilters,
+        filter,
+      ],
+    });
+
+    console.log(uniqWith(selectedFilters, isEqual), selectedFilters);
+
+    // const result = [
+    //   ...selectedFilters,
+    // ];
+
+    // Item not exist
+    // if (selectedFilters.some(item => item.feature_id !== filter.feature_id)) {
+    //   const newItem = {
+    //     ...filter,
+    //   };
+
+    //   newItem.variants = filter.variants
+    //     .filter(item => item.variant_id === variant.variant_id);
+    //   result.push(newItem);
+    // } else {
+    //   const foundItemIndex = selectedFilters
+    //     .findIndex(item => item.feature_id === filter.feature_id);
+    //   if (selectedFilters[foundItemIndex].variants.some(item => item.variant_id === variant.variant_id)) {
+    //     selectedFilters[foundItemIndex].variants
+    //       .filter(item => item.variant_id !== variant.variant_id);
+    //   } else {
+    //     selectedFilters[foundItemIndex].variants.push(variant);
+    //   }
+    // }
+
+    // this.setState({
+    //   selectedFilters: result,
+    // });
+  }
+
+  renderPicker = (item) => {
+    const { feature_id, variants, filter } = item;
+    const { openIDs } = this.state;
+    const isOpen = openIDs.some(item => item === feature_id);
+
+    const pickerContainerStyles = {
+      ...styles.pickerContent,
+    };
+
+    if (!isOpen) {
+      pickerContainerStyles.height = 60;
+      pickerContainerStyles.overflow = 'hidden';
+    }
+
+    return (
+      <View
+        style={styles.pickerWrapper}
+        key={feature_id}
+      >
+        <TouchableOpacity
+          style={styles.pickerOpenBtn}
+          onPress={() => this.togglePicker(feature_id)}
+        >
+          <Text style={styles.pickerOpenBtnText}>
+            {`${filter} (${variants.length})`}
+          </Text>
+          <Icon name="arrow-drop-down" />
+        </TouchableOpacity>
+        <View
+          style={pickerContainerStyles}
+        >
+          {sortBy(variants, ['position']).map((variant) => {
+            return (
+              <Button
+                type="label"
+                key={variant.variant_id}
+                onPress={() => this.toggleVariant(item, variant)}
+              >
+                {variant.variant}
+              </Button>
+            );
+          })}
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
 
   renderHader = () => (
     <View style={styles.filterHeaderSection}>
@@ -242,15 +332,22 @@ class SortProducts extends Component {
     </View>
   );
 
-  renderFilters = () => (
-    <View>
-      {this.renderHader()}
-      <ScrollView contentContainerStyle={styles.scrollWrapperContent}>
-        {this.renderPicker()}
-      </ScrollView>
-      {this.renderFooter()}
-    </View>
-  );
+  renderFilters = () => {
+    const { filters } = this.props;
+    const activeItems = filters.filter(
+      item => item.feature_type === 'S'
+      && item.filter_style === 'checkbox'
+    );
+    return (
+      <React.Fragment>
+        {this.renderHader()}
+        <ScrollView contentContainerStyle={styles.scrollWrapperContent}>
+          {activeItems.map(item => this.renderPicker(item))}
+        </ScrollView>
+        {this.renderFooter()}
+      </React.Fragment>
+    );
+  }
 
   render() {
     const { sortParams } = this.props;
@@ -262,6 +359,7 @@ class SortProducts extends Component {
 
     const items = itemsList.map(item => item.name);
     const filteredItems = items.filter(item => item !== items[activeIndex]);
+    const RBSheetHeight = Math.round(Dimensions.get('window').height) - 140;
 
     return (
       <View style={styles.wrapper}>
@@ -299,8 +397,8 @@ class SortProducts extends Component {
         <RBSheet
           ref={ref => { this.RBSheet = ref; }}
           closeOnDragDown={false}
-          height={450}
-          duration={150}
+          height={RBSheetHeight}
+          duration={250}
         >
           {this.renderFilters()}
         </RBSheet>

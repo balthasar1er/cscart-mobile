@@ -168,6 +168,8 @@ export function fetchByCategory(categoryId, page = 1, companyId = false, sort = 
     subcats: 'Y',
     items_per_page: 10,
     company_id: companyId || '',
+    get_filters: true,
+    // features_hash: '8-53.82-70.13-USD',
     ...sort,
   };
 

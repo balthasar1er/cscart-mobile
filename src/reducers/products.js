@@ -15,6 +15,7 @@ const initialState = {
     page: 1,
   },
   items: {},
+  filters: [],
   fetching: true,
   hasMore: false,
 };
@@ -47,6 +48,7 @@ export default function (state = initialState, action) {
         ...state,
         params,
         items,
+        filters: action.payload.filters,
         hasMore: (params.items_per_page * params.page) < +params.total_items,
         fetching: false,
       };

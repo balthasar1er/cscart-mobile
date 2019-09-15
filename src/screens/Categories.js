@@ -238,6 +238,7 @@ class Categories extends Component {
     return (
       <SortProducts
         sortParams={products.sortParams}
+        filters={products.filters}
         onChange={(sort) => {
           productsActions.changeSort(sort);
           productsActions.fetchByCategory(
