@@ -248,6 +248,16 @@ class Categories extends Component {
             sort
           );
         }}
+        onChangeFilter={(features_hash) => {
+          productsActions.fetchByCategory(
+            this.activeCategoryId,
+            1,
+            companyId,
+            {
+              features_hash,
+            }
+          );
+        }}
       />
     );
   }

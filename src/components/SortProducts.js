@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { sortBy, uniqWith, isEqual } from 'lodash';
+import {
+  sortBy,
+  uniqBy,
+  groupBy,
+} from 'lodash';
 import {
   Text,
   View,
@@ -77,7 +81,7 @@ const styles = EStyleSheet.create({
     borderColor: '#f1f1f1',
     padding: 10,
     paddingTop: 16,
-    paddingBottom: 14,
+    paddingBottom: 10,
     flexDirection: 'row',
     width: '100%'
   },
@@ -175,6 +179,7 @@ const itemsList = [
 class SortProducts extends Component {
   static propTypes = {
     onChange: PropTypes.func,
+    onChangeFilter: PropTypes.func,
     sortParams: PropTypes.shape({
       sort_by: PropTypes.string,
       sort_order: PropTypes.string,
@@ -187,8 +192,29 @@ class SortProducts extends Component {
     selectedFilters: [],
   };
 
+  componentDidMount() {
+    const { filters } = this.props;
+    const selected = filters.filter(item => item.selected_variants !== undefined);
+    const selectedFilters = [];
+    selected.forEach((filter) => {
+      Object.keys(filter.selected_variants).forEach((key) => {
+        selectedFilters.push({
+          ...filter,
+          ...filter.selected_variants[key],
+        });
+      });
+    });
+
+    this.setState({ selectedFilters });
+  }
+
   showActionSheet = () => {
     this.ActionSheet.show();
+  }
+
+  getActiveFilterCount = () => {
+    const { filters } = this.props;
+    return filters.filter(item => item.selected_variants !== undefined).length;
   }
 
   handleChange = (itemText) => {
@@ -200,8 +226,27 @@ class SortProducts extends Component {
       return;
     }
 
-    onChange(itemsList[foundIndex].params, foundIndex);
+    onChange(
+      itemsList[foundIndex].params,
+      foundIndex,
+    );
   };
+
+  handleChangeFilter = () => {
+    const { onChangeFilter } = this.props;
+    const { selectedFilters } = this.state;
+    const groupedFilters = groupBy(selectedFilters, 'filter_id');
+    const filtersIds = [];
+
+    Object.keys(groupedFilters).forEach((key) => {
+      const filterItems = groupedFilters[key];
+      const id = filterItems[0].filter_id;
+      filtersIds.push(`${id}-${filterItems.map(item => item.variant_id).join('-')}`);
+    });
+
+
+    onChangeFilter(filtersIds.join('_'));
+  }
 
   togglePicker = (id) => {
     const { openIDs } = this.state;
@@ -220,52 +265,47 @@ class SortProducts extends Component {
     });
   }
 
-  toggleVariant = (filter, variant) => {
+  clearAllFilter = () => {
+    this.setState({ selectedFilters: [] });
+  }
+
+  removeByFilter(id) {
     const { selectedFilters } = this.state;
-
     this.setState({
-      selectedFilters: [
-        ...selectedFilters,
-        filter,
-      ],
+      selectedFilters: selectedFilters.filter(item => item.filter_id !== id),
     });
+  }
 
-    console.log(uniqWith(selectedFilters, isEqual), selectedFilters);
+  toggleVariant(filter, variant) {
+    const { selectedFilters } = this.state;
+    const selectedFilterItem = {
+      ...filter,
+      ...variant,
+    };
 
-    // const result = [
-    //   ...selectedFilters,
-    // ];
+    if (filter.filter_style === 'checkbox') {
+      if (selectedFilters.some(item => item.variant_id === selectedFilterItem.variant_id)) {
+        this.setState({
+          selectedFilters: selectedFilters
+            .filter(item => item.variant_id !== selectedFilterItem.variant_id),
+        });
+        return;
+      }
 
-    // Item not exist
-    // if (selectedFilters.some(item => item.feature_id !== filter.feature_id)) {
-    //   const newItem = {
-    //     ...filter,
-    //   };
-
-    //   newItem.variants = filter.variants
-    //     .filter(item => item.variant_id === variant.variant_id);
-    //   result.push(newItem);
-    // } else {
-    //   const foundItemIndex = selectedFilters
-    //     .findIndex(item => item.feature_id === filter.feature_id);
-    //   if (selectedFilters[foundItemIndex].variants.some(item => item.variant_id === variant.variant_id)) {
-    //     selectedFilters[foundItemIndex].variants
-    //       .filter(item => item.variant_id !== variant.variant_id);
-    //   } else {
-    //     selectedFilters[foundItemIndex].variants.push(variant);
-    //   }
-    // }
-
-    // this.setState({
-    //   selectedFilters: result,
-    // });
+      this.setState({
+        selectedFilters: [
+          ...selectedFilters,
+          selectedFilterItem,
+        ],
+      });
+    }
   }
 
   renderPicker = (item) => {
-    const { feature_id, variants, filter } = item;
-    const { openIDs } = this.state;
+    const { feature_id, filter, selected_variants } = item;
+    const { openIDs, selectedFilters } = this.state;
     const isOpen = openIDs.some(item => item === feature_id);
-
+    let variants = [...item.variants];
     const pickerContainerStyles = {
       ...styles.pickerContent,
     };
@@ -273,6 +313,13 @@ class SortProducts extends Component {
     if (!isOpen) {
       pickerContainerStyles.height = 60;
       pickerContainerStyles.overflow = 'hidden';
+    }
+
+    if (selected_variants) {
+      variants = [
+        ...Object.values(selected_variants),
+        ...variants,
+      ];
     }
 
     return (
@@ -293,9 +340,10 @@ class SortProducts extends Component {
           style={pickerContainerStyles}
         >
           {sortBy(variants, ['position']).map((variant) => {
+            const isSelected = selectedFilters.some(item => item.variant_id === variant.variant_id);
             return (
               <Button
-                type="label"
+                type={isSelected ? 'round' : 'label'}
                 key={variant.variant_id}
                 onPress={() => this.toggleVariant(item, variant)}
               >
@@ -308,25 +356,39 @@ class SortProducts extends Component {
     );
   }
 
-  renderHader = () => (
-    <View style={styles.filterHeaderSection}>
-      <TouchableOpacity onPress={() => this.RBSheet.close()}>
-        <Icon name="close" />
-      </TouchableOpacity>
-      <ScrollView horizontal contentContainerStyle={styles.scrollWrapper}>
-        <Button type="ghost">
-          {i18n.gettext('Clear all')}
-        </Button>
-        <Button type="round" clear>
-          Size
-        </Button>
-      </ScrollView>
-    </View>
-  );
+  renderHader = () => {
+    const { selectedFilters } = this.state;
+    const selectedItems = uniqBy(selectedFilters, 'filter_id');
+    return (
+      <View style={styles.filterHeaderSection}>
+        <TouchableOpacity onPress={() => this.RBSheet.close()}>
+          <Icon name="close" />
+        </TouchableOpacity>
+        <ScrollView horizontal contentContainerStyle={styles.scrollWrapper}>
+          <Button
+            type="ghost"
+            onPress={this.clearAllFilter}
+          >
+            {i18n.gettext('Clear all')}
+          </Button>
+          {selectedItems.map(item => (
+            <Button
+              clear
+              key={item.filter_id}
+              type="round"
+              onPress={() => this.removeByFilter(item.filter_id)}
+            >
+              {item.filter}
+            </Button>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
 
   renderFooter = () => (
     <View style={styles.filterFooterSection}>
-      <Button type="primary">
+      <Button type="primary" onPress={this.handleChangeFilter}>
         {i18n.gettext('Apply')}
       </Button>
     </View>
@@ -351,6 +413,7 @@ class SortProducts extends Component {
 
   render() {
     const { sortParams } = this.props;
+    const { selectedFilters } = this.state;
     const activeIndex = itemsList
       .findIndex(item => (
         item.params.sort_by === sortParams.sort_by
@@ -360,6 +423,7 @@ class SortProducts extends Component {
     const items = itemsList.map(item => item.name);
     const filteredItems = items.filter(item => item !== items[activeIndex]);
     const RBSheetHeight = Math.round(Dimensions.get('window').height) - 140;
+    const activeFiltersCount = selectedFilters.length;
 
     return (
       <View style={styles.wrapper}>
@@ -382,9 +446,13 @@ class SortProducts extends Component {
           <Text style={styles.text} numberOfLines={2}>
             {i18n.gettext('Filter')}
           </Text>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>2</Text>
-          </View>
+          {activeFiltersCount !== 0 && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>
+                {activeFiltersCount}
+              </Text>
+            </View>
+          )}
         </TouchableOpacity>
 
         <ActionSheet

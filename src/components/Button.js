@@ -39,7 +39,8 @@ const styles = EStyleSheet.create({
     paddingRight: 28,
     borderRadius: 20,
     alignItems: 'center',
-    marginRight: 8,
+    marginRight: 6,
+    marginBottom: 6,
   },
   roundText: {
     textAlign: 'center',
@@ -56,6 +57,7 @@ const styles = EStyleSheet.create({
     paddingRight: 12,
     borderRadius: 20,
     marginRight: 8,
+    marginBottom: 6,
   },
   ghostText: {
     textAlign: 'center',
@@ -110,7 +112,7 @@ export default class extends PureComponent {
   }
 
   getStyleByType() {
-    const { type } = this.props;
+    const { type, clear } = this.props;
     switch (type) {
       case 'labelActive':
         return {
@@ -137,7 +139,10 @@ export default class extends PureComponent {
 
       case 'round':
         return {
-          btn: styles.round,
+          btn: {
+            ...styles.round,
+            paddingRight: clear ? 28 : 12,
+          },
           btnText: styles.roundText,
         };
 
