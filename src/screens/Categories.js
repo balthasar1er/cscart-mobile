@@ -84,6 +84,7 @@ class Categories extends Component {
     this.isFirstLoad = true;
 
     this.state = {
+      filters: '',
       products: [{}],
       subCategories: [],
       refreshing: false,
@@ -114,7 +115,7 @@ class Categories extends Component {
 
   async componentDidMount() {
     const {
-      productsActions, products, navigator, categoryId, layouts, companyId,
+      products, navigator, categoryId, layouts,
     } = this.props;
 
     let { category } = this.props;
@@ -144,13 +145,7 @@ class Categories extends Component {
     this.setState(state => ({
       ...state,
       ...newState,
-    }), () => productsActions
-      .fetchByCategory(
-        this.activeCategoryId,
-        1,
-        companyId,
-        products.sortParams
-      ));
+    }), this.handleLoad);
 
     navigator.setTitle({
       title: category.category,
@@ -183,6 +178,21 @@ class Categories extends Component {
     }
   }
 
+  handleLoad = (page = 1) => {
+    const { products, productsActions, companyId } = this.props;
+    const { filters } = this.state;
+
+    return productsActions.fetchByCategory(
+      this.activeCategoryId,
+      page,
+      companyId,
+      {
+        ...products.sortParams,
+        features_hash: filters,
+      },
+    );
+  }
+
   findCategoryById(items) {
     const { categoryId } = this.props;
     const flatten = [];
@@ -199,38 +209,30 @@ class Categories extends Component {
   }
 
   handleLoadMore() {
-    const { products, productsActions, companyId } = this.props;
+    const { products } = this.props;
     const { isLoadMoreRequest } = this.state;
 
     if (products.hasMore && !isLoadMoreRequest) {
       this.setState({
         isLoadMoreRequest: true,
       });
-      productsActions.fetchByCategory(
-        this.activeCategoryId,
-        products.params.page + 1,
-        companyId,
-        products.sortParams,
-      ).then(() => {
-        this.setState({
-          isLoadMoreRequest: false,
+      this.handleLoad(products.params.page + 1)
+        .then(() => {
+          this.setState({
+            isLoadMoreRequest: false,
+          });
         });
-      });
     }
   }
 
   handleRefresh() {
-    const { productsActions, companyId, products } = this.props;
     this.setState({
       refreshing: true,
-    },
-    () => productsActions
-      .fetchByCategory(this.activeCategoryId, 1, companyId, products.sortParams));
+    }, this.handleLoad);
   }
 
   renderSorting() {
     const {
-      companyId,
       productsActions,
       products
     } = this.props;
@@ -241,22 +243,10 @@ class Categories extends Component {
         filters={products.filters}
         onChange={(sort) => {
           productsActions.changeSort(sort);
-          productsActions.fetchByCategory(
-            this.activeCategoryId,
-            1,
-            companyId,
-            sort
-          );
+          this.handleLoad();
         }}
-        onChangeFilter={(features_hash) => {
-          productsActions.fetchByCategory(
-            this.activeCategoryId,
-            1,
-            companyId,
-            {
-              features_hash,
-            }
-          );
+        onChangeFilter={(filters) => {
+          this.setState({ filters }, this.handleLoad);
         }}
       />
     );
