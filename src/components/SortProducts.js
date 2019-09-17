@@ -4,6 +4,8 @@ import {
   sortBy,
   uniqBy,
   groupBy,
+  throttle,
+  round,
 } from 'lodash';
 import {
   Text,
@@ -14,6 +16,7 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ActionSheet from 'react-native-actionsheet';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Button from './Button';
 import i18n from '../utils/i18n';
@@ -115,10 +118,30 @@ const styles = EStyleSheet.create({
     flexWrap: 'wrap',
     marginTop: 10,
   },
+  pickerSlider: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flexWrap: 'wrap',
+    marginTop: 20,
+    marginLeft: 14,
+  },
   pickerOpenBtnText: {
     fontSize: 20,
     color: '#000'
   },
+  priceRangeMarkerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    top: 54,
+    left: 24,
+    right: 24,
+    width: '100%',
+  },
+  priceRangeMarkerText: {
+    fontSize: '0.7rem'
+  }
 });
 
 const CANCEL_INDEX = 5;
@@ -192,17 +215,46 @@ class SortProducts extends Component {
     selectedFilters: [],
   };
 
+  handlePriceRangeChange = throttle((filter, [min, max]) => {
+    const { selectedFilters } = this.state;
+    const selected = selectedFilters.filter(item => item.filter_id !== filter.filter_id);
+
+    this.setState({
+      selectedFilters: [
+        ...selected,
+        {
+          ...filter,
+          min,
+          max,
+        }
+      ]
+    });
+  }, 100);
+
   componentDidMount() {
     const { filters } = this.props;
-    const selected = filters.filter(item => item.selected_variants !== undefined);
+    const selected = filters.filter(
+      item => item.selected_variants !== undefined || item.selected_range
+    );
     const selectedFilters = [];
     selected.forEach((filter) => {
-      Object.keys(filter.selected_variants).forEach((key) => {
+      if (filter.filter_style === 'checkbox') {
+        Object.keys(filter.selected_variants).forEach((key) => {
+          selectedFilters.push({
+            ...filter,
+            ...filter.selected_variants[key],
+          });
+        });
+      }
+
+      // Price
+      if (filter.filter_style === 'slider' && filter.field_type === 'P') {
         selectedFilters.push({
           ...filter,
-          ...filter.selected_variants[key],
+          min: filter.left,
+          max: filter.right,
         });
-      });
+      }
     });
 
     this.setState({ selectedFilters });
@@ -240,8 +292,17 @@ class SortProducts extends Component {
 
     Object.keys(groupedFilters).forEach((key) => {
       const filterItems = groupedFilters[key];
-      const id = filterItems[0].filter_id;
-      filtersIds.push(`${id}-${filterItems.map(item => item.variant_id).join('-')}`);
+      const { filter_id, filter_style, field_type } = filterItems[0];
+
+      if (filter_style === 'checkbox') {
+        filtersIds.push(`${filter_id}-${filterItems.map(item => item.variant_id).join('-')}`);
+      }
+
+      // Price
+      if (filter_style === 'slider' && field_type === 'P') {
+        const active = filterItems[0];
+        filtersIds.push(`${filter_id}-${round(active.min, 2)}-${round(active.max, 2)}-${active.extra}`);
+      }
     });
 
 
@@ -386,6 +447,53 @@ class SortProducts extends Component {
     );
   }
 
+  renderPriceRange = (item) => {
+    const {
+      feature_id,
+      filter,
+      min,
+      max,
+      suffix,
+      prefix
+    } = item;
+
+    const MultiSliderWidth = Math.round(Dimensions.get('window').width) - 68;
+    const { selectedFilters } = this.state;
+    const activeFilter = selectedFilters
+      .find(selectedItem => selectedItem.filter_id === item.filter_id);
+
+    const selectedMin = activeFilter ? activeFilter.min : min;
+    const selectedMax = activeFilter ? activeFilter.max : max;
+
+    return (
+      <View
+        style={styles.pickerWrapper}
+        key={feature_id}
+      >
+        <View
+          style={styles.pickerOpenBtn}
+        >
+          <Text style={styles.pickerOpenBtnText}>
+            {`${filter}: ${prefix || ''}${selectedMin}${suffix || ''} - ${prefix || ''}${selectedMax}${suffix || ''}`}
+          </Text>
+        </View>
+        <View style={styles.priceRangeMarkerContainer}>
+          <Text style={styles.priceRangeMarkerText}>{`${prefix || ''}${round(min, 2)}${suffix || ''}`}</Text>
+          <Text style={styles.priceRangeMarkerText}>{`${prefix || ''}${round(max, 2)}${suffix || ''}`}</Text>
+        </View>
+        <View style={styles.pickerSlider}>
+          <MultiSlider
+            values={[selectedMin, selectedMax]}
+            min={min}
+            max={max}
+            sliderLength={MultiSliderWidth}
+            onValuesChange={values => this.handlePriceRangeChange(item, values)}
+          />
+        </View>
+      </View>
+    );
+  }
+
   renderFooter = () => (
     <View style={styles.filterFooterSection}>
       <Button type="primary" onPress={this.handleChangeFilter}>
@@ -396,15 +504,23 @@ class SortProducts extends Component {
 
   renderFilters = () => {
     const { filters } = this.props;
-    const activeItems = filters.filter(
-      item => item.feature_type === 'S'
-      && item.filter_style === 'checkbox'
-    );
+    const activeItems = filters;
+
     return (
       <React.Fragment>
         {this.renderHader()}
         <ScrollView contentContainerStyle={styles.scrollWrapperContent}>
-          {activeItems.map(item => this.renderPicker(item))}
+          {activeItems.map((item) => {
+            if (item.filter_style === 'checkbox') {
+              return this.renderPicker(item);
+            }
+
+            if (item.filter_style === 'slider') {
+              return this.renderPriceRange(item);
+            }
+
+            return null;
+          })}
         </ScrollView>
         {this.renderFooter()}
       </React.Fragment>

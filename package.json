@@ -10,6 +10,7 @@
     "extractLangs": "react-gettext-parser --output messages.pot 'src/**/*.js'"
   },
   "dependencies": {
+    "@ptomasroos/react-native-multi-slider": "^1.0.0",
     "axios": "0.18.0",
     "base-64": "0.1.0",
     "date-fns": "1.29.0",
