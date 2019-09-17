@@ -224,8 +224,8 @@ class SortProducts extends Component {
         ...selected,
         {
           ...filter,
-          min,
-          max,
+          min: round(min, 2),
+          max: round(max, 2),
         }
       ]
     });
