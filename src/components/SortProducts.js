@@ -273,8 +273,8 @@ class SortProducts extends Component {
         });
       }
 
-      // Price
-      if (filter.filter_style === 'slider' && filter.field_type === 'P') {
+      // Slider
+      if (filter.filter_style === 'slider') {
         selectedFilters.push({
           ...filter,
           min: filter.left,
@@ -324,10 +324,14 @@ class SortProducts extends Component {
         filtersIds.push(`${filter_id}-${filterItems.map(item => item.variant_id).join('-')}`);
       }
 
-      // Price
-      if (filter_style === 'slider' && field_type === 'P') {
+      // Slider
+      if (filter_style === 'slider') {
         const active = filterItems[0];
-        filtersIds.push(`${filter_id}-${round(active.min, 2)}-${round(active.max, 2)}-${active.extra}`);
+        if (field_type === 'P') {
+          filtersIds.push(`${filter_id}-${round(active.min, 2)}-${round(active.max, 2)}-${active.extra}`);
+        } else {
+          filtersIds.push(`${filter_id}-${round(active.min, 2)}-${round(active.max, 2)}`);
+        }
       }
     });
 
@@ -473,7 +477,7 @@ class SortProducts extends Component {
     );
   }
 
-  renderPriceRange = (item) => {
+  renderRange = (item) => {
     const {
       feature_id,
       filter,
@@ -522,10 +526,6 @@ class SortProducts extends Component {
         </View>
       </View>
     );
-  }
-
-  renderRange = () => {
-
   }
 
   renderColorPicker = (item) => {
@@ -610,17 +610,13 @@ class SortProducts extends Component {
               return this.renderPicker(item);
             }
 
-            if (item.filter_style === 'slider' && item.field_type === 'P') {
-              return this.renderPriceRange(item);
+            if (item.filter_style === 'slider') {
+              return this.renderRange(item);
             }
 
             if (item.filter_style === 'color') {
               return this.renderColorPicker(item);
             }
-
-            // if (item.filter_style === 'slider') {
-            //   return this.renderRange(item);
-            // }
 
             return null;
           })}
