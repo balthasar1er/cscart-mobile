@@ -6,6 +6,7 @@ import {
   groupBy,
   throttle,
   round,
+  take,
 } from 'lodash';
 import {
   Text,
@@ -258,6 +259,19 @@ class SortProducts extends Component {
   }, 100);
 
   componentDidMount() {
+    this.handleCalculateActiveFilters();
+  }
+
+  showActionSheet = () => {
+    this.ActionSheet.show();
+  }
+
+  getActiveFilterCount = () => {
+    const { filters } = this.props;
+    return filters.filter(item => item.selected_variants !== undefined).length;
+  }
+
+  handleCalculateActiveFilters = () => {
     const { filters } = this.props;
     const selected = filters.filter(
       item => item.selected_variants !== undefined || item.selected_range
@@ -284,15 +298,6 @@ class SortProducts extends Component {
     });
 
     this.setState({ selectedFilters });
-  }
-
-  showActionSheet = () => {
-    this.ActionSheet.show();
-  }
-
-  getActiveFilterCount = () => {
-    const { filters } = this.props;
-    return filters.filter(item => item.selected_variants !== undefined).length;
   }
 
   handleChange = (itemText) => {
@@ -397,14 +402,8 @@ class SortProducts extends Component {
     const { openIDs, selectedFilters } = this.state;
     const isOpen = openIDs.some(item => item === filter_id);
     let variants = [...item.variants];
-    const pickerContainerStyles = {
-      ...styles.pickerContent,
-    };
-
-    if (!isOpen) {
-      pickerContainerStyles.height = 60;
-      pickerContainerStyles.overflow = 'hidden';
-    }
+    const totalCount = item.variants.length;
+    const VISIBLE_COUNT = 5;
 
     if (selected_variants) {
       variants = [
@@ -412,6 +411,14 @@ class SortProducts extends Component {
         ...variants,
       ];
     }
+
+    const isHiddable = variants.length > VISIBLE_COUNT;
+
+    if (!isOpen && isHiddable) {
+      variants = take(variants, VISIBLE_COUNT);
+    }
+
+    const IconToggle = isOpen ? <Icon name="arrow-drop-up" /> : <Icon name="arrow-drop-down" />;
 
     return (
       <View
@@ -421,14 +428,15 @@ class SortProducts extends Component {
         <TouchableOpacity
           style={styles.pickerOpenBtn}
           onPress={() => this.togglePicker(filter_id)}
+          disabled={!isHiddable}
         >
           <Text style={styles.pickerOpenBtnText}>
-            {`${filter} (${variants.length})`}
+            {`${filter} (${totalCount})`}
           </Text>
-          <Icon name="arrow-drop-down" />
+          {isHiddable && IconToggle}
         </TouchableOpacity>
         <View
-          style={pickerContainerStyles}
+          style={styles.pickerContent}
         >
           {sortBy(variants, ['position']).map((variant) => {
             const isSelected = selectedFilters.some(item => item.variant_id === variant.variant_id);
@@ -452,7 +460,12 @@ class SortProducts extends Component {
     const selectedItems = uniqBy(selectedFilters, 'filter_id');
     return (
       <View style={styles.filterHeaderSection}>
-        <TouchableOpacity onPress={() => this.RBSheet.close()}>
+        <TouchableOpacity
+          onPress={() => {
+            this.RBSheet.close();
+            this.setState({ selectedFilters: [] }, this.handleCalculateActiveFilters);
+          }}
+        >
           <Icon name="close" />
         </TouchableOpacity>
         <ScrollView horizontal contentContainerStyle={styles.scrollWrapper}>
