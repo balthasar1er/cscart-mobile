@@ -141,7 +141,33 @@ const styles = EStyleSheet.create({
   },
   priceRangeMarkerText: {
     fontSize: '0.7rem'
-  }
+  },
+  colorItemsContainer: {
+    flex: 1,
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    marginTop: 20,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  colorItem: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'red',
+    marginRight: 14,
+    marginBottom: 8,
+  },
+  colorItemActive: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  colorItemActiveIcon: {
+    color: '#fff',
+  },
 });
 
 const CANCEL_INDEX = 5;
@@ -238,7 +264,7 @@ class SortProducts extends Component {
     );
     const selectedFilters = [];
     selected.forEach((filter) => {
-      if (filter.filter_style === 'checkbox') {
+      if (filter.filter_style === 'checkbox' || filter.filter_style === 'color') {
         Object.keys(filter.selected_variants).forEach((key) => {
           selectedFilters.push({
             ...filter,
@@ -294,7 +320,7 @@ class SortProducts extends Component {
       const filterItems = groupedFilters[key];
       const { filter_id, filter_style, field_type } = filterItems[0];
 
-      if (filter_style === 'checkbox') {
+      if (filter_style === 'checkbox' || filter_style === 'color') {
         filtersIds.push(`${filter_id}-${filterItems.map(item => item.variant_id).join('-')}`);
       }
 
@@ -344,7 +370,7 @@ class SortProducts extends Component {
       ...variant,
     };
 
-    if (filter.filter_style === 'checkbox') {
+    if (filter.filter_style === 'checkbox' || filter.filter_style === 'color') {
       if (selectedFilters.some(item => item.variant_id === selectedFilterItem.variant_id)) {
         this.setState({
           selectedFilters: selectedFilters
@@ -363,9 +389,9 @@ class SortProducts extends Component {
   }
 
   renderPicker = (item) => {
-    const { feature_id, filter, selected_variants } = item;
+    const { filter_id, filter, selected_variants } = item;
     const { openIDs, selectedFilters } = this.state;
-    const isOpen = openIDs.some(item => item === feature_id);
+    const isOpen = openIDs.some(item => item === filter_id);
     let variants = [...item.variants];
     const pickerContainerStyles = {
       ...styles.pickerContent,
@@ -386,11 +412,11 @@ class SortProducts extends Component {
     return (
       <View
         style={styles.pickerWrapper}
-        key={feature_id}
+        key={filter_id}
       >
         <TouchableOpacity
           style={styles.pickerOpenBtn}
-          onPress={() => this.togglePicker(feature_id)}
+          onPress={() => this.togglePicker(filter_id)}
         >
           <Text style={styles.pickerOpenBtnText}>
             {`${filter} (${variants.length})`}
@@ -465,6 +491,10 @@ class SortProducts extends Component {
     const selectedMin = activeFilter ? activeFilter.min : min;
     const selectedMax = activeFilter ? activeFilter.max : max;
 
+    if (min === max) {
+      return null;
+    }
+
     return (
       <View
         style={styles.pickerWrapper}
@@ -494,6 +524,72 @@ class SortProducts extends Component {
     );
   }
 
+  renderRange = () => {
+
+  }
+
+  renderColorPicker = (item) => {
+    const {
+      feature_id,
+      filter,
+      selected_variants
+    } = item;
+    const { selectedFilters } = this.state;
+    let variants = [...item.variants];
+
+    if (selected_variants) {
+      variants = [
+        ...Object.values(selected_variants),
+        ...variants,
+      ];
+    }
+
+    return (
+      <View
+        style={styles.pickerWrapper}
+        key={feature_id}
+      >
+        <View style={styles.pickerOpenBtn}>
+          <Text style={styles.pickerOpenBtnText}>
+            {filter}
+          </Text>
+        </View>
+        <View style={styles.colorItemsContainer}>
+          {variants.map((variant) => {
+            const { color, variant_id } = variant;
+            const isSelected = selectedFilters.some(item => item.variant_id === variant.variant_id);
+            let itemStyles = {
+              backgroundColor: color,
+            };
+
+            if (isSelected) {
+              itemStyles = {
+                ...itemStyles,
+                ...styles.colorItemActive,
+              };
+            }
+
+            return (
+              <TouchableOpacity
+                key={variant_id}
+                onPress={() => this.toggleVariant(item, variant)}
+              >
+                <View
+                  style={[
+                    styles.colorItem,
+                    itemStyles,
+                  ]}
+                >
+                  {isSelected && (<Icon name="check" borderColor="#fff" />)}
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </View>
+    );
+  }
+
   renderFooter = () => (
     <View style={styles.filterFooterSection}>
       <Button type="primary" onPress={this.handleChangeFilter}>
@@ -504,20 +600,27 @@ class SortProducts extends Component {
 
   renderFilters = () => {
     const { filters } = this.props;
-    const activeItems = filters;
 
     return (
       <React.Fragment>
         {this.renderHader()}
         <ScrollView contentContainerStyle={styles.scrollWrapperContent}>
-          {activeItems.map((item) => {
+          {filters.map((item) => {
             if (item.filter_style === 'checkbox') {
               return this.renderPicker(item);
             }
 
-            if (item.filter_style === 'slider') {
+            if (item.filter_style === 'slider' && item.field_type === 'P') {
               return this.renderPriceRange(item);
             }
+
+            if (item.filter_style === 'color') {
+              return this.renderColorPicker(item);
+            }
+
+            // if (item.filter_style === 'slider') {
+            //   return this.renderRange(item);
+            // }
 
             return null;
           })}
