@@ -13,13 +13,13 @@ const MIN_TABLET_WIDTH = 480;
 const IMAGE_PADDING_PHONE = 16;
 const IMAGE_PADDING_TABLET = 32;
 
-const PRODUCT_AVERAGE_SIZE = (WINDOW_WIDTH > MIN_TABLET_WIDTH) ?
-  PRODUCT_AVERAGE_SIZE_TABLET :
-  PRODUCT_AVERAGE_SIZE_PHONE;
+const PRODUCT_AVERAGE_SIZE = (WINDOW_WIDTH > MIN_TABLET_WIDTH)
+  ? PRODUCT_AVERAGE_SIZE_TABLET
+  : PRODUCT_AVERAGE_SIZE_PHONE;
 
-const IMAGE_PADDING = (WINDOW_WIDTH > MIN_TABLET_WIDTH) ?
-  IMAGE_PADDING_PHONE :
-  IMAGE_PADDING_TABLET;
+const IMAGE_PADDING = (WINDOW_WIDTH > MIN_TABLET_WIDTH)
+  ? IMAGE_PADDING_PHONE
+  : IMAGE_PADDING_TABLET;
 
 export const PRODUCT_NUM_COLUMNS = Math.floor(WINDOW_WIDTH / PRODUCT_AVERAGE_SIZE);
 export const PRODUCT_IMAGE_WIDTH = (
@@ -114,13 +114,13 @@ export function getCountryByCode(code) {
 }
 
 export function objectToQuerystring(obj) {
-  var str = [];
-  for (var p in obj)
+  const str = [];
+  for (let p in obj)
     if (obj.hasOwnProperty(p)) {
       str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
     }
-  return str.join("&");
-};
+  return str.join('&');
+}
 
 export function parseQueryString(query) {
   const obj = {};

@@ -253,7 +253,7 @@ export function login(data) {
             token: auth.deviceToken,
             platform: Platform.OS,
             locale: deviceLanguage,
-            device_id: '',
+            device_id: auth.uuid,
           })(dispatch);
         }, 1000);
       })

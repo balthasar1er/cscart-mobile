@@ -129,11 +129,11 @@ class OrderDetail extends Component {
       .then((response) => {
         const params = {
           location: 'checkout',
-          action: 'update'
+          action: 'update',
         };
 
         Api.get('/sra_profile', { params })
-          .then(({ data }) => {
+          .then(({ data, }) => {
             const { fields } = data;
 
             console.log(data);
