@@ -24,7 +24,7 @@ import * as productsActions from '../../actions/vendorManage/productsActions';
 import Spinner from '../../components/Spinner';
 import EmptyList from '../../components/EmptyList';
 
-import { getImagePath } from '../../utils';
+import { getImagePath, getProductStatus } from '../../utils';
 
 import i18n from '../../utils/i18n';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
@@ -62,12 +62,20 @@ const styles = EStyleSheet.create({
     width: 50,
     height: 50,
   },
-  listItemHeader: {
-    fontWeight: 'bold'
+  listItemHeaderText: {
+    fontWeight: 'bold',
+    paddingRight: 50,
+    maxWidth: '90%',
   },
   listItemText: {
     color: '#8c8c8c',
   },
+  listItemStatus: {
+    fontSize: '0.7rem',
+    position: 'absolute',
+    right: 10,
+    top: 10,
+  }
 });
 
 class Products extends Component {
@@ -237,6 +245,7 @@ class Products extends Component {
       },
     ];
     const imageUri = getImagePath(item);
+    const status = getProductStatus(item.status);
 
     return (
       <Swipeout
@@ -255,6 +264,14 @@ class Products extends Component {
           })}
         >
           <View style={styles.listItem}>
+            <Text
+              style={{
+                ...styles.listItemStatus,
+                ...status.style
+              }}
+            >
+              {status.text}
+            </Text>
             <View style={styles.listItemImage}>
               {imageUri !== null && (
                 <Image
@@ -266,8 +283,8 @@ class Products extends Component {
               )}
             </View>
             <View style={styles.listItemContent}>
-              <View>
-                <Text style={styles.listItemHeader}>
+              <View style={styles.listItemHeader}>
+                <Text style={styles.listItemHeaderText} numberOfLines={1} ellipsizeMode="tail">
                   {item.product}
                 </Text>
               </View>
@@ -276,7 +293,7 @@ class Products extends Component {
                   {item.product_code}
                 </Text>
                 <Text style={styles.listItemText}>
-                  {item.price} * {item.amount !== 0 && `${i18n.gettext('In stock')}: ${item.amount}`}
+                  {`${i18n.gettext('Price')}: ${item.price} ${item.amount !== 0 && '|'} ${i18n.gettext('In stock')}: ${item.amount}`}
                 </Text>
               </View>
             </View>

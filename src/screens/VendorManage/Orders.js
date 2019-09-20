@@ -95,8 +95,7 @@ class Orders extends Component {
   }
 
   componentWillMount() {
-    const { navigator, ordersActions } = this.props;
-    ordersActions.fetch();
+    const { navigator } = this.props;
     iconsLoaded.then(() => {
       navigator.setButtons({
         leftButtons: [
@@ -107,6 +106,10 @@ class Orders extends Component {
         ],
       });
     });
+  }
+
+  componentDidMount() {
+    this.handleLoadMore();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -161,11 +164,9 @@ class Orders extends Component {
   }
 
   handleLoadMore = () => {
-    const { ordersActions, orders: { hasMore, page, loading } } = this.props;
+    const { ordersActions, orders: { hasMore, page } } = this.props;
 
-    console.log(this.props);
-
-    if (!hasMore && loading) {
+    if (!hasMore) {
       return;
     }
 
@@ -213,29 +214,9 @@ class Orders extends Component {
     );
   }
 
-  renderList = () => {
-    const { refreshing } = this.state;
-    const { orders } = this.props;
-
-    if (orders.loading) {
-      return null;
-    }
-
-    return (
-      <FlatList
-        keyExtractor={item => String(item.order_id)}
-        data={orders.items}
-        ListEmptyComponent={<EmptyList />}
-        renderItem={this.renderItem}
-        onEndReached={this.handleLoadMore}
-        refreshing={refreshing}
-        onRefresh={() => this.handleRefresh()}
-      />
-    );
-  };
-
   render() {
     const { orders } = this.props;
+    const { refreshing } = this.state;
 
     if (orders.loading) {
       return (
@@ -245,7 +226,15 @@ class Orders extends Component {
 
     return (
       <View style={styles.container}>
-        {this.renderList()}
+        <FlatList
+          keyExtractor={(item, index) => `order_${index}`}
+          data={orders.items}
+          ListEmptyComponent={<EmptyList />}
+          renderItem={this.renderItem}
+          onEndReached={this.handleLoadMore}
+          refreshing={refreshing}
+          onRefresh={() => this.handleRefresh()}
+        />
         <ActionSheet
           ref={(ref) => { this.ActionSheet = ref; }}
           options={itemsList}

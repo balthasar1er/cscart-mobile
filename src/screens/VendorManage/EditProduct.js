@@ -90,6 +90,9 @@ const formFields = t.struct({
 const formOptions = {
   disableOrder: true,
   fields: {
+    product: {
+      label: i18n.gettext('Name'),
+    },
     full_description: {
       label: i18n.gettext('Full description'),
       numberOfLines: 4,
@@ -115,9 +118,9 @@ const MORE_ACTIONS_LIST = [
 ];
 
 const STATUS_ACTIONS_LIST = [
-  i18n.gettext('Make Product Disabled'),
-  i18n.gettext('Make Product Hidden'),
   i18n.gettext('Make Product Active'),
+  i18n.gettext('Make Product Hidden'),
+  i18n.gettext('Make Product Disabled'),
   i18n.gettext('Cancel'),
 ];
 
@@ -196,9 +199,9 @@ class EditProduct extends Component {
   handleStatusActionSheet = (index) => {
     const { product, productsActions } = this.props;
     const statuses = [
-      'D',
+      'A',
       'H',
-      'A'
+      'D',
     ];
     const activeStatus = statuses[index];
 

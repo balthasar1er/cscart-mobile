@@ -99,7 +99,6 @@ export const deleteProduct = (id) => {
 
 export const createProduct = (product) => {
   const data = new FormData();
-  console.log(product);
   const renderImagePairs = () => {
     const images = [...product.images];
     const params = [];
@@ -211,9 +210,10 @@ export const createProduct = (product) => {
 
 export const getProductsList = (page = 1) => {
   const QUERY = `query getProducts($page: Int) {
-    products(page: $page, items_per_page: 50) {
+    products(page: $page, items_per_page: 100) {
       product
       price
+      status
       amount
       product_code
       product_id

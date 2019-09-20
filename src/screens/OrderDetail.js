@@ -135,8 +135,6 @@ class OrderDetail extends Component {
         Api.get('/sra_profile', { params })
           .then(({ data, }) => {
             const { fields } = data;
-
-            console.log(data);
             // eslint-disable-next-line no-param-reassign
             delete fields.E;
 

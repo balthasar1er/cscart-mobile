@@ -28,7 +28,7 @@ AxiosInstance.interceptors.request.use((conf) => {
   if (state.auth.token) {
     newConf.headers.common.Authorization = `Basic ${base64.encode(state.auth.token)}:`;
   }
-  console.log(newConf.headers);
+
   return newConf;
 });
 

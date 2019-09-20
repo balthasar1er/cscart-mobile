@@ -16,7 +16,7 @@ import {
 import i18n from '../../utils/i18n';
 import * as vendorService from '../../services/vendors';
 
-export function fetch(page = 1) {
+export function fetch(page = 0) {
   return async (dispatch) => {
     dispatch({
       type: VENDOR_ORDERS_REQUEST,

@@ -69,7 +69,7 @@ const OrderListItem = (props) => {
 OrderListItem.propTypes = {
   onPress: PropTypes.func.isRequired,
   item: PropTypes.shape({
-    order_id: PropTypes.string,
+    order_id: PropTypes.number,
     firstname: PropTypes.string,
     lastname: PropTypes.string,
     total_formatted: PropTypes.string,

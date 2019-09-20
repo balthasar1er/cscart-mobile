@@ -14,7 +14,7 @@ const initialState = {
   items: [],
   loading: true,
   hasMore: true,
-  page: 1,
+  page: 0,
   loadingCurrent: true,
   current: {},
 };
@@ -24,13 +24,6 @@ let index = 0;
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case VENDOR_ORDERS_REQUEST:
-      return {
-        ...state,
-        loading: state.page === 1,
-        items: action.payload === 0 ? [] : state.items,
-      };
-
     case VENDOR_ORDERS_FAIL:
       return {
         ...state,

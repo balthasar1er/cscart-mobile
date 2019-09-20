@@ -27,12 +27,6 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case VENDOR_FETCH_PRODUCTS_REQUEST:
-      return {
-        ...state,
-        items: action.payload === 0 ? [] : state.items,
-      };
-
     case VENDOR_FETCH_PRODUCTS_FAIL:
       return {
         ...state,
@@ -46,7 +40,9 @@ export default function (state = initialState, action) {
         loading: false,
         hasMore: action.payload.hasMore,
         page: action.payload.page,
-        items: [...state.items, ...action.payload.items],
+        items: action.payload.page === 1
+          ? action.payload.items
+          : [...state.items, ...action.payload.items],
       };
 
     case VENDOR_DELETE_PRODUCT_SUCCESS:
