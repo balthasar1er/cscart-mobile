@@ -226,6 +226,9 @@ const styles = EStyleSheet.create({
     flex: 2,
     marginRight: 10,
   },
+  zeroPrice: {
+    paddingTop: 10,
+  }
 });
 
 const throttledPriceCalculating = _.throttle(
@@ -675,9 +678,13 @@ class ProductDetail extends Component {
             </Text>
           </Text>
         )}
-        {product.price && (
+        {Math.ceil(product.price) !== 0 ? (
           <Text style={styles.priceText}>
             {formatPrice(product.price_formatted.price)}
+          </Text>
+        ) : (
+          <Text style={styles.zeroPrice}>
+            {i18n.gettext('Contact us for a price')}
           </Text>
         )}
         {inStock && (
