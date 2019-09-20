@@ -161,9 +161,11 @@ class Orders extends Component {
   }
 
   handleLoadMore = () => {
-    const { ordersActions, orders: { hasMore, page } } = this.props;
+    const { ordersActions, orders: { hasMore, page, loading } } = this.props;
 
-    if (!hasMore) {
+    console.log(this.props);
+
+    if (!hasMore && loading) {
       return;
     }
 

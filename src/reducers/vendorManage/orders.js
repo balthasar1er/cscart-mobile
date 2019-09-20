@@ -14,7 +14,7 @@ const initialState = {
   items: [],
   loading: true,
   hasMore: true,
-  page: 0,
+  page: 1,
   loadingCurrent: true,
   current: {},
 };
@@ -27,7 +27,7 @@ export default function (state = initialState, action) {
     case VENDOR_ORDERS_REQUEST:
       return {
         ...state,
-        loading: state.page === 0,
+        loading: state.page === 1,
         items: action.payload === 0 ? [] : state.items,
       };
 
@@ -44,7 +44,9 @@ export default function (state = initialState, action) {
         loading: false,
         hasMore: action.payload.hasMore,
         page: action.payload.page,
-        items: [...state.items, ...action.payload.items],
+        items: action.payload.page === 1
+          ? action.payload.items
+          : [...state.items, ...action.payload.items],
       };
 
     case VENDOR_ORDER_REQUEST:

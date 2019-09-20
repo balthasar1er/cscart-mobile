@@ -44,9 +44,11 @@ const styles = EStyleSheet.create({
     position: 'absolute',
     top: 5,
     right: 5,
+    backgroundColor: '#fff',
+    borderRadius: 15,
   },
   selectedIcon: {
-    color: '#fff',
+    color: '#0f70e2',
   }
 });
 

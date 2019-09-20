@@ -99,6 +99,7 @@ export const deleteProduct = (id) => {
 
 export const createProduct = (product) => {
   const data = new FormData();
+  console.log(product);
   const renderImagePairs = () => {
     const images = [...product.images];
     const params = [];
@@ -169,6 +170,7 @@ export const createProduct = (product) => {
       $product: String!,
       $category_ids: [Int]!,
       $price: Float!,
+      $list_price: Float!,
       $full_description: String,
       $amount: Int
       ${renderParams()}
@@ -177,6 +179,7 @@ export const createProduct = (product) => {
         product: $product
         category_ids: $category_ids
         price: $price
+        list_price: $list_price
         full_description: $full_description
         amount: $amount
         ${renderImagePairs()}

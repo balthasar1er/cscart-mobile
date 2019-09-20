@@ -92,6 +92,19 @@ const formOptions = {
   fields: {
     full_description: {
       label: i18n.gettext('Full description'),
+      numberOfLines: 4,
+      multiline: true,
+      stylesheet: {
+        ...Form.stylesheet,
+        textbox: {
+          ...Form.stylesheet.textbox,
+          normal: {
+            ...Form.stylesheet.textbox.normal,
+            height: 130,
+          }
+        }
+      },
+      clearButtonMode: 'while-editing',
     }
   },
 };
