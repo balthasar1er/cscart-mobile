@@ -291,8 +291,8 @@ class SortProducts extends Component {
       if (filter.filter_style === 'slider') {
         selectedFilters.push({
           ...filter,
-          min: filter.left,
-          max: filter.right,
+          min: Math.ceil(filter.left),
+          max: Math.ceil(filter.right),
         });
       }
     });
@@ -419,7 +419,6 @@ class SortProducts extends Component {
     }
 
     const IconToggle = isOpen ? <Icon name="arrow-drop-up" /> : <Icon name="arrow-drop-down" />;
-
     return (
       <View
         style={styles.pickerWrapper}
@@ -505,8 +504,8 @@ class SortProducts extends Component {
     const activeFilter = selectedFilters
       .find(selectedItem => selectedItem.filter_id === item.filter_id);
 
-    const selectedMin = activeFilter ? activeFilter.min : min;
-    const selectedMax = activeFilter ? activeFilter.max : max;
+    const selectedMin = activeFilter ? activeFilter.min : Math.ceil(min);
+    const selectedMax = activeFilter ? activeFilter.max : Math.ceil(max);
 
     if (min === max) {
       return null;
@@ -525,14 +524,14 @@ class SortProducts extends Component {
           </Text>
         </View>
         <View style={styles.priceRangeMarkerContainer}>
-          <Text style={styles.priceRangeMarkerText}>{`${prefix || ''}${round(min, 2)}${suffix || ''}`}</Text>
-          <Text style={styles.priceRangeMarkerText}>{`${prefix || ''}${round(max, 2)}${suffix || ''}`}</Text>
+          <Text style={styles.priceRangeMarkerText}>{`${prefix || ''}${Math.ceil(min)}${suffix || ''}`}</Text>
+          <Text style={styles.priceRangeMarkerText}>{`${prefix || ''}${Math.ceil(max)}${suffix || ''}`}</Text>
         </View>
         <View style={styles.pickerSlider}>
           <MultiSlider
             values={[selectedMin, selectedMax]}
-            min={min}
-            max={max}
+            min={Math.ceil(min)}
+            max={Math.ceil(max)}
             sliderLength={MultiSliderWidth}
             onValuesChange={values => this.handlePriceRangeChange(item, values)}
           />
