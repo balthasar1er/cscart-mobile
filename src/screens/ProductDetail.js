@@ -662,15 +662,12 @@ class ProductDetail extends Component {
       );
     }
 
-    if (!product.price) {
-      return null;
-    }
-
     const inStock = !Number(product.amount);
+    const isProductPriceZero = Math.ceil(product.price) !== 0;
 
     return (
       <View>
-        {showDiscount && (
+        {(showDiscount && isProductPriceZero) && (
           <Text style={styles.listPriceWrapperText}>
             {discountTitle}
             <Text style={styles.listPriceText}>
@@ -678,7 +675,7 @@ class ProductDetail extends Component {
             </Text>
           </Text>
         )}
-        {Math.ceil(product.price) !== 0 ? (
+        {isProductPriceZero ? (
           <Text style={styles.priceText}>
             {formatPrice(product.price_formatted.price)}
           </Text>
