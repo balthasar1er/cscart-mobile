@@ -7,6 +7,7 @@ import {
   throttle,
   round,
   take,
+  isEqual,
 } from 'lodash';
 import {
   Text,
@@ -380,10 +381,10 @@ class SortProducts extends Component {
     };
 
     if (filter.filter_style === 'checkbox' || filter.filter_style === 'color') {
-      if (selectedFilters.some(item => item.variant_id === selectedFilterItem.variant_id)) {
+      if (selectedFilters.some(item => item.variant_id === selectedFilterItem.variant_id && selectedFilterItem.filter_id === item.filter_id)) {
         this.setState({
           selectedFilters: selectedFilters
-            .filter(item => item.variant_id !== selectedFilterItem.variant_id),
+            .filter(item => !isEqual(item, selectedFilterItem)),
         });
         return;
       }
@@ -402,7 +403,6 @@ class SortProducts extends Component {
     const { openIDs, selectedFilters } = this.state;
     const isOpen = openIDs.some(item => item === filter_id);
     let variants = [...item.variants];
-    const totalCount = item.variants.length;
     const VISIBLE_COUNT = 5;
 
     if (selected_variants) {
@@ -412,6 +412,7 @@ class SortProducts extends Component {
       ];
     }
 
+    const totalCount = variants.length;
     const isHiddable = variants.length > VISIBLE_COUNT;
 
     if (!isOpen && isHiddable) {
@@ -438,7 +439,10 @@ class SortProducts extends Component {
           style={styles.pickerContent}
         >
           {sortBy(variants, ['position']).map((variant) => {
-            const isSelected = selectedFilters.some(item => item.variant_id === variant.variant_id);
+            const isSelected = selectedFilters.some(
+              selectedFilterItem => (selectedFilterItem.variant_id === variant.variant_id)
+              && (item.filter_id === selectedFilterItem.filter_id)
+            );
             return (
               <Button
                 type={isSelected ? 'round' : 'label'}
@@ -507,7 +511,7 @@ class SortProducts extends Component {
     const selectedMin = activeFilter ? activeFilter.min : Math.ceil(min);
     const selectedMax = activeFilter ? activeFilter.max : Math.ceil(max);
 
-    if (min === max) {
+    if (Math.ceil(min) === Math.ceil(max)) {
       return null;
     }
 
