@@ -328,7 +328,7 @@ class EditProduct extends Component {
               )}
               {this.renderMenuItem(
                 i18n.gettext('Pricing / Inventory'),
-                i18n.gettext('%1, List price: %2, In stock: %3', product.product, product.list_price, product.amount),
+                i18n.gettext('%1, List price: %2, In stock: %3', product.product_code, product.list_price, product.amount),
                 () => {
                   navigator.push({
                     screen: 'VendorManagePricingInventory',
@@ -383,7 +383,7 @@ class EditProduct extends Component {
             ref={(ref) => { this.StatusActionSheet = ref; }}
             options={STATUS_ACTIONS_LIST}
             cancelButtonIndex={3}
-            destructiveButtonIndex={0}
+            destructiveButtonIndex={2}
             onPress={this.handleStatusActionSheet}
           />
         </View>

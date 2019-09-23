@@ -149,13 +149,13 @@ export function getProductStatus(status) {
     case 'H':
       return {
         text: i18n.gettext('Hidden'),
-        style: { color: '#97cf4d' }
+        style: { color: '#000000' }
       };
 
     case 'D':
       return {
         text: i18n.gettext('Disabled'),
-        style: { color: '#ff9522' }
+        style: { color: '#ff0000' }
       };
 
     default:

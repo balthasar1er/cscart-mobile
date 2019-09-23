@@ -25,6 +25,9 @@ const initialState = {
   current: {},
 };
 
+let foundProduct;
+let newItems;
+
 export default function (state = initialState, action) {
   switch (action.type) {
     case VENDOR_FETCH_PRODUCTS_FAIL:
@@ -67,12 +70,20 @@ export default function (state = initialState, action) {
       };
 
     case VENDOR_UPDATE_PRODUCT_SUCCESS:
+      foundProduct = state.items.findIndex(item => item.product_id === action.payload.id);
+      newItems = [...state.items];
+      newItems[foundProduct] = {
+        ...newItems[foundProduct],
+        ...action.payload.product,
+      };
+
       return {
         ...state,
         current: {
           ...state.current,
           ...action.payload.product,
         },
+        items: newItems,
       };
 
     case VENDOR_FETCH_PRODUCT_REQUEST:

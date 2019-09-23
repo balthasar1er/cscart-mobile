@@ -35,9 +35,9 @@ import {
 } from '../../utils/navIcons';
 
 const STATUS_ACTIONS_LIST = [
-  i18n.gettext('Make Product Disabled'),
-  i18n.gettext('Make Product Hidden'),
   i18n.gettext('Make Product Active'),
+  i18n.gettext('Make Product Hidden'),
+  i18n.gettext('Make Product Disabled'),
   i18n.gettext('Cancel'),
 ];
 
@@ -213,9 +213,9 @@ class Products extends Component {
   handleStatusActionSheet = (index) => {
     const { productsActions } = this.props;
     const statuses = [
-      'D',
+      'A',
       'H',
-      'A'
+      'D',
     ];
     const activeStatus = statuses[index];
     productsActions.updateProduct(
@@ -328,7 +328,7 @@ class Products extends Component {
           ref={(ref) => { this.StatusActionSheet = ref; }}
           options={STATUS_ACTIONS_LIST}
           cancelButtonIndex={3}
-          destructiveButtonIndex={0}
+          destructiveButtonIndex={2}
           onPress={this.handleStatusActionSheet}
         />
       </View>
