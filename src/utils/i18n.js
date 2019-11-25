@@ -3,11 +3,12 @@ import gettext from 'gettext.js';
 
 const platformLanguage = Platform.OS === 'ios'
   ? NativeModules.SettingsManager.settings.AppleLocale
+    || NativeModules.SettingsManager.settings.AppleLanguages[0]
   : NativeModules.I18nManager.localeIdentifier;
 
 export const deviceLanguage = platformLanguage.split('_')[0];
 
-const langs = ['ar', 'ru', 'en', 'fr'];
+const langs = ['ar', 'ru', 'en', 'fr', 'it'];
 let jsonData;
 
 if (langs.includes(deviceLanguage)) {
@@ -20,6 +21,9 @@ if (langs.includes(deviceLanguage)) {
       break;
     case 'fr':
       jsonData = require('../config/locales/fr.json');
+      break;
+    case 'it':
+      jsonData = require('../config/locales/it.json');
       break;
     default:
       jsonData = require('../config/locales/en.json');
