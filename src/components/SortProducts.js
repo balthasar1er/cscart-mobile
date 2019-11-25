@@ -280,10 +280,10 @@ class SortProducts extends Component {
     const selectedFilters = [];
     selected.forEach((filter) => {
       if (filter.filter_style === 'checkbox' || filter.filter_style === 'color') {
-        Object.keys(filter.selected_variants).forEach((key) => {
+        filter.selected_variants((variantItem) => {
           selectedFilters.push({
             ...filter,
-            ...filter.selected_variants[key],
+            ...variantItem,
           });
         });
       }
@@ -643,7 +643,7 @@ class SortProducts extends Component {
   }
 
   render() {
-    const { sortParams } = this.props;
+    const { sortParams, filters } = this.props;
     const { selectedFilters } = this.state;
     const activeIndex = itemsList
       .findIndex(item => (
@@ -667,24 +667,26 @@ class SortProducts extends Component {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.btnFilter}
-          onPress={() => {
-            this.RBSheet.open();
-          }}
-        >
-          <Icon name="filter-list" style={styles.filterIcon} />
-          <Text style={styles.text} numberOfLines={2}>
-            {i18n.gettext('Filter')}
-          </Text>
-          {activeFiltersCount !== 0 && (
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>
-                {activeFiltersCount}
-              </Text>
-            </View>
-          )}
-        </TouchableOpacity>
+        {filters.length !== 0 && (
+          <TouchableOpacity
+            style={styles.btnFilter}
+            onPress={() => {
+              this.RBSheet.open();
+            }}
+          >
+            <Icon name="filter-list" style={styles.filterIcon} />
+            <Text style={styles.text} numberOfLines={2}>
+              {i18n.gettext('Filter')}
+            </Text>
+            {activeFiltersCount !== 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>
+                  {activeFiltersCount}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        )}
 
         <ActionSheet
           ref={(ref) => { this.ActionSheet = ref; }}
