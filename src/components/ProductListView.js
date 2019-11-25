@@ -113,22 +113,26 @@ class ProductListView extends PureComponent {
       discountPrice = item.list_price_formatted.price;
     }
 
+    const isProductPriceZero = Math.ceil(item.price) === 0;
+    const showDiscount = isProductPriceZero && (item.discount_prc || item.list_discount_prc);
+
     return (
       <View style={styles.priceWrapper}>
         {
-          (item.discount_prc || item.list_discount_prc) &&
-          (
+          showDiscount && (
             <Text style={styles.listPriceText}>
               {discountPrice}
             </Text>
           )
         }
-        <Text
-          numberOfLines={1}
-          style={styles.productPrice}
-        >
-          {formatPrice(price)}
-        </Text>
+        {isProductPriceZero ? <Text>{i18n.gettext('Contact us for a price')}</Text> : (
+          <Text
+            numberOfLines={1}
+            style={styles.productPrice}
+          >
+            {formatPrice(price)}
+          </Text>
+        )}
       </View>
     );
   }

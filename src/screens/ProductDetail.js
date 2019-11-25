@@ -226,6 +226,9 @@ const styles = EStyleSheet.create({
     flex: 2,
     marginRight: 10,
   },
+  zeroPrice: {
+    paddingTop: 10,
+  }
 });
 
 const throttledPriceCalculating = _.throttle(
@@ -659,15 +662,12 @@ class ProductDetail extends Component {
       );
     }
 
-    if (!product.price) {
-      return null;
-    }
-
     const inStock = !Number(product.amount);
+    const isProductPriceZero = Math.ceil(product.price) !== 0;
 
     return (
       <View>
-        {showDiscount && (
+        {(showDiscount && isProductPriceZero) && (
           <Text style={styles.listPriceWrapperText}>
             {discountTitle}
             <Text style={styles.listPriceText}>
@@ -675,9 +675,13 @@ class ProductDetail extends Component {
             </Text>
           </Text>
         )}
-        {product.price && (
+        {isProductPriceZero ? (
           <Text style={styles.priceText}>
             {formatPrice(product.price_formatted.price)}
+          </Text>
+        ) : (
+          <Text style={styles.zeroPrice}>
+            {i18n.gettext('Contact us for a price')}
           </Text>
         )}
         {inStock && (

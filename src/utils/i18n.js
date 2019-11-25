@@ -1,11 +1,14 @@
 import { NativeModules, Platform } from 'react-native';
 import gettext from 'gettext.js';
 
-export const deviceLanguage = Platform.OS === 'ios'
+const platformLanguage = Platform.OS === 'ios'
   ? NativeModules.SettingsManager.settings.AppleLocale
-  : NativeModules.I18nManager.localeIdentifier.split('-')[0];
+    || NativeModules.SettingsManager.settings.AppleLanguages[0]
+  : NativeModules.I18nManager.localeIdentifier;
 
-const langs = ['ar', 'ru', 'en', 'fr'];
+export const deviceLanguage = platformLanguage.split('_')[0];
+
+const langs = ['ar', 'ru', 'en', 'fr', 'it'];
 let jsonData;
 
 if (langs.includes(deviceLanguage)) {
@@ -18,6 +21,9 @@ if (langs.includes(deviceLanguage)) {
       break;
     case 'fr':
       jsonData = require('../config/locales/fr.json');
+      break;
+    case 'it':
+      jsonData = require('../config/locales/it.json');
       break;
     default:
       jsonData = require('../config/locales/en.json');

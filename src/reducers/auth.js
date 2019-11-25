@@ -1,3 +1,5 @@
+import has from 'lodash/has';
+
 import {
   AUTH_LOGIN_REQUEST,
   AUTH_LOGIN_SUCCESS,
@@ -13,7 +15,7 @@ const initialState = {
   token: null,
   ttl: null,
   logged: false,
-  rehydrated: false,
+  uuid: null,
   fetching: false,
   error: null,
   errorStatus: null,
@@ -61,6 +63,13 @@ export default function (state = initialState, action) {
     case AUTH_RESET_STATE:
     case AUTH_LOGOUT:
       return initialState;
+
+    case 'persist/REHYDRATE':
+      return {
+        ...state,
+        ...action.payload.auth,
+        uuid: has(action.payload, 'auth.uuid') ? action.payload.auth.uuid : (+new Date()).toString(16),
+      };
 
     default:
       return state;

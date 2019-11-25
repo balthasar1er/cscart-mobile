@@ -136,3 +136,4 @@ export function parseQueryString(query) {
   }
   return obj;
 }
+
