@@ -267,11 +267,6 @@ class SortProducts extends Component {
     this.ActionSheet.show();
   }
 
-  getActiveFilterCount = () => {
-    const { filters } = this.props;
-    return filters.filter(item => item.selected_variants !== undefined).length;
-  }
-
   handleCalculateActiveFilters = () => {
     const { filters } = this.props;
     const selected = filters.filter(
