@@ -275,7 +275,7 @@ class SortProducts extends Component {
     const selectedFilters = [];
     selected.forEach((filter) => {
       if (filter.filter_style === 'checkbox' || filter.filter_style === 'color') {
-        filter.selected_variants((variantItem) => {
+        filter.selected_variants.map((variantItem) => {
           selectedFilters.push({
             ...filter,
             ...variantItem,
