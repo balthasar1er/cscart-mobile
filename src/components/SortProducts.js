@@ -274,13 +274,15 @@ class SortProducts extends Component {
     );
     const selectedFilters = [];
     selected.forEach((filter) => {
-      if (filter.filter_style === 'checkbox' || filter.filter_style === 'color') {
-        filter.selected_variants.map((variantItem) => {
-          selectedFilters.push({
-            ...filter,
-            ...variantItem,
+      if (filter.selected_variants) {
+        if (filter.filter_style === 'checkbox' || filter.filter_style === 'color') {
+          filter.selected_variants.forEach((variantItem) => {
+            selectedFilters.push({
+              ...filter,
+              ...variantItem,
+            });
           });
-        });
+        }
       }
 
       // Slider
