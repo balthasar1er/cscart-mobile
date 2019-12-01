@@ -77,7 +77,7 @@ class App extends React.Component {
 
     // run app after store persist.
     persistStore(store, {
-      whitelist: ['auth', 'cart', 'profile'],
+      blacklist: ['products', 'discussion', 'orders', 'search', 'vendors'],
       storage: AsyncStorage
     }, () => this.startApp());
   }
@@ -107,7 +107,6 @@ class App extends React.Component {
           leftDrawerWidth: Platform.OS === 'ios' ? 84 : 100,
           contentOverlayColor: theme.$contentOverlayColor,
         },
-        disableOpenGesture: true
       },
     });
   }

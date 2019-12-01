@@ -24,6 +24,7 @@ import BottomActions from '../../components/BottomActions';
 import * as productsActions from '../../actions/vendorManage/productsActions';
 
 import i18n from '../../utils/i18n';
+import theme from '../../config/theme';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
 import { getProductStatus } from '../../utils';
 
@@ -141,6 +142,14 @@ class EditProduct extends Component {
     }),
   };
 
+  static navigatorStyle = {
+    navBarBackgroundColor: theme.$navBarBackgroundColor,
+    navBarButtonColor: theme.$navBarButtonColor,
+    navBarButtonFontSize: theme.$navBarButtonFontSize,
+    navBarTextColor: theme.$navBarTextColor,
+    screenBackgroundColor: theme.$screenBackgroundColor,
+  };
+
   constructor(props) {
     super(props);
 
@@ -158,20 +167,32 @@ class EditProduct extends Component {
     productsActions.fetchProduct(productID);
 
     iconsLoaded.then(() => {
-      navigator.setButtons({
+      const buttons = {
         rightButtons: [
           {
             id: 'more',
             icon: iconsMap['more-horiz'],
           },
         ],
-        leftButtons: [
-          showClose ? {
+      };
+
+      if (showClose) {
+        buttons.leftButtons = [
+          {
             id: 'close',
             icon: iconsMap.close,
-          } : {},
-        ],
-      });
+          }
+        ];
+      }
+
+      navigator.setButtons(buttons);
+    });
+  }
+
+  componentWillReceiveProps() {
+    const { navigator, product } = this.props;
+    navigator.setTitle({
+      title: i18n.gettext(product.product || '').toUpperCase(),
     });
   }
 
@@ -300,10 +321,6 @@ class EditProduct extends Component {
         <Spinner visible mode="content" />
       );
     }
-
-    navigator.setTitle({
-      title: i18n.gettext(product.product || '').toUpperCase(),
-    });
 
     return (
       <SafeAreaView style={{ flex: 1 }}>
