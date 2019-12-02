@@ -21,6 +21,7 @@ import FormBlockField from '../../components/FormBlockField';
 import Spinner from '../../components/Spinner';
 
 import i18n from '../../utils/i18n';
+import theme from '../../config/theme';
 import { formatPrice, getImagePath, getOrderStatus } from '../../utils';
 
 const styles = EStyleSheet.create({
@@ -111,6 +112,14 @@ class OrderDetail extends Component {
       setTitle: PropTypes.func,
       setButtons: PropTypes.func,
     }),
+  };
+
+  static navigatorStyle = {
+    navBarBackgroundColor: theme.$navBarBackgroundColor,
+    navBarButtonColor: theme.$navBarButtonColor,
+    navBarButtonFontSize: theme.$navBarButtonFontSize,
+    navBarTextColor: theme.$navBarTextColor,
+    screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
   async componentWillMount() {

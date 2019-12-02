@@ -8,6 +8,9 @@ import {
   CameraRoll,
   FlatList,
   Dimensions,
+  Alert,
+  Platform,
+  PermissionsAndroid,
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -120,7 +123,37 @@ class AddProductStep1 extends Component {
   }
 
   getImages = async () => {
+    const { navigator } = this.props;
     const { photos, hasMore, after } = this.state;
+
+    let granted = false;
+
+    if (Platform.OS === 'android') {
+      try {
+        granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          {
+            title: i18n.gettext('Allow to access photos, media on your device?'),
+            buttonNegative: i18n.gettext('Cancel'),
+            buttonPositive: i18n.gettext('OK'),
+          },
+        );
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          Alert.alert(i18n.gettext('Photo gallery permission denied'), [
+            {
+              text: i18n.gettext('OK'),
+              onPress: () => {},
+            },
+          ]);
+        }
+      } catch (err) {
+        Alert.alert(err);
+      }
+    }
+
+    if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+      navigator.dismissModal();
+    }
 
     if (!hasMore) {
       return;
@@ -129,9 +162,15 @@ class AddProductStep1 extends Component {
     try {
       const params = {
         first: 40,
+        imagesPerRow: 1,
+        batchSize: 5,
         assetType: 'Photos',
         groupTypes: 'All',
       };
+
+      if (Platform.OS === 'android') {
+        delete params.groupTypes;
+      }
 
       if (after) {
         params.after = after;

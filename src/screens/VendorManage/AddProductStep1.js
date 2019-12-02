@@ -90,20 +90,6 @@ class AddProductStep1 extends Component {
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  componentWillMount() {
-    // const { navigator, showBack } = this.props;
-    // iconsLoaded.then(() => {
-    //   navigator.setButtons({
-    //     leftButtons: [
-    //       showBack ? {} : {
-    //         id: 'sideMenu',
-    //         icon: iconsMap.menu,
-    //       },
-    //     ],
-    //   });
-    // });
-  }
-
   componentDidMount() {
     const { imagePickerActions } = this.props;
     imagePickerActions.clear();

@@ -21,6 +21,7 @@ import * as productsActions from '../../actions/vendorManage/productsActions';
 import * as imagePickerActions from '../../actions/imagePickerActions';
 
 import i18n from '../../utils/i18n';
+import theme from '../../config/theme';
 import { registerDrawerDeepLinks } from '../../utils/deepLinks';
 
 const styles = EStyleSheet.create({
@@ -60,6 +61,14 @@ class AddProductStep4 extends Component {
       push: PropTypes.func,
       setOnNavigatorEvent: PropTypes.func,
     }),
+  };
+
+  static navigatorStyle = {
+    navBarBackgroundColor: theme.$navBarBackgroundColor,
+    navBarButtonColor: theme.$navBarButtonColor,
+    navBarButtonFontSize: theme.$navBarButtonFontSize,
+    navBarTextColor: theme.$navBarTextColor,
+    screenBackgroundColor: theme.$screenBackgroundColor,
   };
 
   constructor(props) {
