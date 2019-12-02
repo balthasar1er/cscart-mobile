@@ -6,6 +6,7 @@ import {
   groupBy,
   throttle,
   round,
+  values,
   take,
   isEqual,
 } from 'lodash';
@@ -276,7 +277,7 @@ class SortProducts extends Component {
     selected.forEach((filter) => {
       if (filter.selected_variants) {
         if (filter.filter_style === 'checkbox' || filter.filter_style === 'color') {
-          filter.selected_variants.forEach((variantItem) => {
+          values(filter.selected_variants).forEach((variantItem) => {
             selectedFilters.push({
               ...filter,
               ...variantItem,
