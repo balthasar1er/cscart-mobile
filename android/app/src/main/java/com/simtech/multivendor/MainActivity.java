@@ -3,6 +3,9 @@ package com.simtech.multivendor;
 import android.view.Gravity;
 import android.graphics.Color;
 import android.widget.ImageView;
+
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.widget.LinearLayout;
 
 import com.reactnativenavigation.controllers.SplashActivity;
@@ -10,15 +13,10 @@ import com.reactnativenavigation.controllers.SplashActivity;
 public class MainActivity extends SplashActivity {
     @Override
     public LinearLayout createSplashLayout() {
-        LinearLayout view = new LinearLayout(this);
+        LinearLayout splash = new LinearLayout(this);
+        Drawable launch_screen_bitmap = ContextCompat.getDrawable(getApplicationContext(), R.drawable.splash);
+        splash.setBackground(launch_screen_bitmap);
 
-        view.setGravity(Gravity.CENTER);
-        view.setBackgroundColor(Color.parseColor("#ffffff"));
-
-        ImageView imageView = new ImageView(this);
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-        imageView.setImageResource(R.drawable.splash);
-        view.addView(imageView);
-        return view;
+        return splash;
     }
 }
