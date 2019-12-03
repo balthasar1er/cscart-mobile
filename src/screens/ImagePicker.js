@@ -149,10 +149,10 @@ class AddProductStep1 extends Component {
       } catch (err) {
         Alert.alert(err);
       }
-    }
 
-    if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-      navigator.dismissModal();
+      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+        navigator.dismissModal();
+      }
     }
 
     if (!hasMore) {
