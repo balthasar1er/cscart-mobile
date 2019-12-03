@@ -62,6 +62,7 @@ export function products(companyId, page = 1, sort = {}) {
   const params = {
     page,
     company_id: companyId,
+    get_filters: true,
     ...sort
   };
 
