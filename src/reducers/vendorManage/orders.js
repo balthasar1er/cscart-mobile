@@ -1,5 +1,4 @@
 import {
-  VENDOR_ORDERS_REQUEST,
   VENDOR_ORDERS_FAIL,
   VENDOR_ORDERS_SUCCESS,
 
@@ -14,7 +13,7 @@ const initialState = {
   items: [],
   loading: true,
   hasMore: true,
-  page: 0,
+  page: 1,
   loadingCurrent: true,
   current: {},
 };

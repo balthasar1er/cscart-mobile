@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import uniqueId from 'lodash/uniqueId';
 
 // Components
 import Section from '../../components/Section';
@@ -22,6 +23,7 @@ import BottomActions from '../../components/BottomActions';
 
 // Action
 import * as productsActions from '../../actions/vendorManage/productsActions';
+import * as imagePickerActions from '../../actions/imagePickerActions';
 
 import i18n from '../../utils/i18n';
 import theme from '../../config/theme';
@@ -75,11 +77,20 @@ const styles = EStyleSheet.create({
     borderColor: '#F0F0F0',
     padding: 4,
     marginRight: 10,
+    minWidth: 100,
+    minHeight: 100,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   img: {
     width: 100,
     height: 100,
-  }
+  },
+  addImageIcon: {
+    fontSize: '3rem',
+    color: '$categoryEmptyImage',
+  },
 });
 
 const Form = t.form.Form;
@@ -134,6 +145,10 @@ class EditProduct extends Component {
     categories: PropTypes.arrayOf(PropTypes.shape({})),
     loading: PropTypes.bool,
     showClose: PropTypes.bool,
+    selectedImages: PropTypes.arrayOf(PropTypes.string),
+    imagePickerActions: PropTypes.shape({
+      clear: PropTypes.func,
+    }),
     navigator: PropTypes.shape({
       setTitle: PropTypes.func,
       setButtons: PropTypes.func,
@@ -189,6 +204,11 @@ class EditProduct extends Component {
     });
   }
 
+  componentDidMount() {
+    const { imagePickerActions } = this.props;
+    imagePickerActions.clear();
+  }
+
   componentWillReceiveProps() {
     const { navigator, product } = this.props;
     navigator.setTitle({
@@ -237,12 +257,18 @@ class EditProduct extends Component {
   }
 
   handleSave = () => {
-    const { product, productsActions, categories } = this.props;
+    const {
+      product,
+      productsActions,
+      categories,
+      selectedImages,
+    } = this.props;
     const values = this.formRef.current.getValue();
 
     if (!values) { return; }
 
     const data = {
+      images: selectedImages,
       ...values,
     };
 
@@ -256,8 +282,18 @@ class EditProduct extends Component {
     );
   };
 
+  handleRemoveImage = (imageIndex) => {
+    const { imagePickerActions, navigator, selectedImages } = this.props;
+    const newImages = [
+      ...selectedImages,
+    ];
+    newImages.splice(imageIndex, 1);
+    imagePickerActions.toggle(newImages);
+    navigator.dismissModal();
+  }
+
   renderImages = () => {
-    const { product, navigator } = this.props;
+    const { product, navigator, selectedImages } = this.props;
     const images = [];
 
     if (product.main_pair) {
@@ -272,6 +308,40 @@ class EditProduct extends Component {
 
     return (
       <ScrollView contentContainerStyle={styles.horizontalScroll} horizontal>
+        <View style={styles.imgWrapper}>
+          <TouchableOpacity
+            onPress={() => {
+              navigator.showModal({
+                screen: 'ImagePicker',
+                passProps: {},
+              });
+            }}
+          >
+            <Icon name="add" style={styles.addImageIcon} />
+          </TouchableOpacity>
+        </View>
+        {selectedImages.map(image => (
+          <View style={styles.imgWrapper} key={uniqueId('image-')}>
+            <TouchableOpacity
+              onPress={() => {
+                navigator.showModal({
+                  screen: 'Gallery',
+                  animationType: 'fade',
+                  passProps: {
+                    images: [image],
+                    activeIndex: 1,
+                    onRemove: () => this.handleRemoveImage(image),
+                  },
+                });
+              }}
+            >
+              <Image
+                style={styles.img}
+                source={{ uri: image }}
+              />
+            </TouchableOpacity>
+          </View>
+        ))}
         {images.map((item, index) => (
           <View style={styles.imgWrapper} key={index}>
             <TouchableOpacity
@@ -414,8 +484,10 @@ export default connect(
     loading: state.vendorManageProducts.loadingCurrent,
     product: state.vendorManageProducts.current,
     categories: state.vendorManageCategories.selected,
+    selectedImages: state.imagePicker.selected,
   }),
   dispatch => ({
-    productsActions: bindActionCreators(productsActions, dispatch)
+    productsActions: bindActionCreators(productsActions, dispatch),
+    imagePickerActions: bindActionCreators(imagePickerActions, dispatch),
   })
 )(EditProduct);
