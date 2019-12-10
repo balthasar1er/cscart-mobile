@@ -1,5 +1,4 @@
 import {
-  VENDOR_FETCH_PRODUCTS_REQUEST,
   VENDOR_FETCH_PRODUCTS_FAIL,
   VENDOR_FETCH_PRODUCTS_SUCCESS,
 
@@ -57,12 +56,14 @@ export default function (state = initialState, action) {
     case VENDOR_UPDATE_PRODUCT_FAIL:
       return {
         ...state,
+        loading: false,
         loadingCurrent: false,
       };
 
     case VENDOR_UPDATE_PRODUCT_REQUEST:
       return {
         ...state,
+        loading: true,
         current: {
           ...state.current,
           ...action.payload.product,
@@ -79,6 +80,7 @@ export default function (state = initialState, action) {
 
       return {
         ...state,
+        loading: false,
         current: {
           ...state.current,
           ...action.payload.product,
@@ -89,7 +91,7 @@ export default function (state = initialState, action) {
     case VENDOR_FETCH_PRODUCT_REQUEST:
       return {
         ...state,
-        loadingCurrent: true,
+        loadingCurrent: action.payload,
       };
 
     case VENDOR_FETCH_PRODUCT_SUCCESS:

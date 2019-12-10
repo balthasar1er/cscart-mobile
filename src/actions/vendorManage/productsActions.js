@@ -53,9 +53,12 @@ export function fetchProducts(page = 0) {
   };
 }
 
-export function fetchProduct(id = 0) {
+export function fetchProduct(id = 0, loading = true) {
   return async (dispatch) => {
-    dispatch({ type: VENDOR_FETCH_PRODUCT_REQUEST });
+    dispatch({
+      type: VENDOR_FETCH_PRODUCT_REQUEST,
+      payload: loading
+    });
 
     try {
       const result = await vendorService.getProductDetail(id);

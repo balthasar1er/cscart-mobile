@@ -145,6 +145,7 @@ class EditProduct extends Component {
     categories: PropTypes.arrayOf(PropTypes.shape({})),
     loading: PropTypes.bool,
     showClose: PropTypes.bool,
+    isUpdating: PropTypes.bool,
     selectedImages: PropTypes.arrayOf(PropTypes.string),
     imagePickerActions: PropTypes.shape({
       clear: PropTypes.func,
@@ -260,8 +261,10 @@ class EditProduct extends Component {
     const {
       product,
       productsActions,
+      productID,
       categories,
       selectedImages,
+      imagePickerActions,
     } = this.props;
     const values = this.formRef.current.getValue();
 
@@ -276,10 +279,9 @@ class EditProduct extends Component {
       data.category_ids = categories[0].category_id;
     }
 
-    productsActions.updateProduct(
-      product.product_id,
-      data,
-    );
+    productsActions.updateProduct(product.product_id, data)
+      .then(() => productsActions.fetchProduct(productID, false))
+      .then(() => imagePickerActions.clear());
   };
 
   handleRemoveImage = (imageIndex) => {
@@ -384,6 +386,7 @@ class EditProduct extends Component {
       loading,
       product,
       productsActions,
+      isUpdating,
     } = this.props;
 
     if (loading) {
@@ -474,6 +477,7 @@ class EditProduct extends Component {
             onPress={this.handleStatusActionSheet}
           />
         </View>
+        {isUpdating && (<Spinner visible mode="modal" />)}
       </SafeAreaView>
     );
   }
@@ -482,6 +486,7 @@ class EditProduct extends Component {
 export default connect(
   state => ({
     loading: state.vendorManageProducts.loadingCurrent,
+    isUpdating: state.vendorManageProducts.loading,
     product: state.vendorManageProducts.current,
     categories: state.vendorManageCategories.selected,
     selectedImages: state.imagePicker.selected,
