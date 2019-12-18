@@ -13,7 +13,7 @@ const initialState = {
   items: [],
   loading: true,
   hasMore: true,
-  page: 1,
+  page: 0,
   loadingCurrent: true,
   current: {},
 };

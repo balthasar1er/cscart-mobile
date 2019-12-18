@@ -109,7 +109,8 @@ class Orders extends Component {
   }
 
   componentDidMount() {
-    this.handleLoadMore();
+    const { ordersActions, orders: { page } } = this.props;
+    ordersActions.fetch(page);
   }
 
   componentWillReceiveProps(nextProps) {
