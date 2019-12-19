@@ -17,7 +17,7 @@ import {
 
 const initialState = {
   items: [],
-  loading: true,
+  loading: false,
   hasMore: true,
   page: 0,
   loadingCurrent: true,
