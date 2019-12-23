@@ -73,6 +73,7 @@ class Vendor extends Component {
     this.isFirstLoad = true;
 
     this.state = {
+      filters: '',
       products: [],
       vendor: {
         logo_url: null,
@@ -91,14 +92,13 @@ class Vendor extends Component {
     const {
       navigator,
       vendors,
-      products,
       companyId,
       vendorActions,
       productsActions,
     } = this.props;
 
     vendorActions.categories(companyId);
-    vendorActions.products(companyId, 1, products.sortParams);
+    this.handleLoad();
 
     if (!vendors.items[companyId] && !vendors.fetching) {
       vendorActions.fetch(companyId);
@@ -179,14 +179,27 @@ class Vendor extends Component {
     }
   }
 
+  handleLoad = (page = 1) => {
+    const {
+      companyId,
+      vendorActions,
+      products,
+    } = this.props;
+    const { filters } = this.state;
+    return vendorActions.products(
+      companyId,
+      page,
+      {
+        ...products.sortParams,
+        features_hash: filters,
+      }
+    );
+  }
+
   handleLoadMore() {
-    const { products, vendorActions, companyId } = this.props;
+    const { products } = this.props;
     if (products.hasMore && !products.fetching && !this.isFirstLoad) {
-      vendorActions.products(
-        companyId,
-        products.params.page + 1,
-        products.sortParams
-      );
+      this.handleLoad(products.params.page + 1);
     }
   }
 
@@ -196,7 +209,6 @@ class Vendor extends Component {
       vendorCategories,
       companyId,
       products,
-      vendorActions,
       productsActions,
     } = this.props;
     const { vendor } = this.state;
@@ -208,13 +220,13 @@ class Vendor extends Component {
     const productHeader = (
       <SortProducts
         sortParams={products.sortParams}
+        filters={products.filters}
         onChange={(sort) => {
           productsActions.changeSort(sort);
-          vendorActions.products(
-            companyId,
-            1,
-            sort
-          );
+          this.handleLoad();
+        }}
+        onChangeFilter={(filters) => {
+          this.setState({ filters }, this.handleLoad);
         }}
       />
     );
@@ -253,6 +265,7 @@ class Vendor extends Component {
 
   render() {
     const { navigator, vendorCategories, vendors } = this.props;
+    const { products } = this.state;
 
     if (vendorCategories.fetching || vendors.fetching) {
       return (
@@ -263,22 +276,24 @@ class Vendor extends Component {
     return (
       <View style={styles.container}>
         <FlatList
-          data={this.state.products}
+          data={products}
           keyExtractor={item => +item.product_id}
           removeClippedSubviews
           initialNumToRender={20}
           ListHeaderComponent={() => this.renderHeader()}
           numColumns={PRODUCT_NUM_COLUMNS}
-          renderItem={item => (<ProductListView
-            product={item}
-            onPress={product => navigator.push({
-              screen: 'ProductDetail',
-              backButtonTitle: '',
-              passProps: {
-                pid: product.product_id,
-              }
-            })}
-          />)}
+          renderItem={item => (
+            <ProductListView
+              product={item}
+              onPress={product => navigator.push({
+                screen: 'ProductDetail',
+                backButtonTitle: '',
+                passProps: {
+                  pid: product.product_id,
+                }
+              })}
+            />
+          )}
           onEndReached={() => this.handleLoadMore()}
         />
       </View>

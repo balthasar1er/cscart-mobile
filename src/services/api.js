@@ -13,6 +13,7 @@ const AxiosInstance = axios.create({
   timeout: 100000,
   params: {
     sl: deviceLanguage,
+    lang_code: deviceLanguage,
     items_per_page: 20,
     s_layouts: config.layoutId,
   },
