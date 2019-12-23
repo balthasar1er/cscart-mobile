@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
+import uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   View,
-  Text,
   FlatList,
   InteractionManager,
-  TouchableOpacity,
-  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -22,9 +20,9 @@ import * as ordersActions from '../actions/ordersActions';
 // Components
 import Spinner from '../components/Spinner';
 import EmptyList from '../components/EmptyList';
+import OrderListItem from '../components/OrderListItem';
 
 import i18n from '../utils/i18n';
-import { formatPrice } from '../utils';
 import { registerDrawerDeepLinks } from '../utils/deepLinks';
 
 import {
@@ -37,31 +35,6 @@ const styles = EStyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  orderItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F1F1',
-    padding: 14,
-  },
-  orderItemEmail: {
-    fontSize: '0.7rem',
-    color: 'gray'
-  },
-  orderItemCustomer: {
-    marginRight: 20,
-  },
-  orderItemCustomerText: {
-    fontWeight: 'bold',
-  },
-  orderItemStatusText: {
-    textAlign: 'right',
-  },
-  orderItemTotal: {
-    fontWeight: 'bold',
-    fontSize: '0.7rem',
-    textAlign: 'right',
-  }
 });
 
 class Orders extends Component {
@@ -92,11 +65,6 @@ class Orders extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      orders: [],
-      fetching: true,
-    };
-
     props.navigator.setTitle({
       title: i18n.gettext('Orders').toUpperCase(),
     });
@@ -105,8 +73,9 @@ class Orders extends Component {
   }
 
   componentWillMount() {
+    const { navigator } = this.props;
     iconsLoaded.then(() => {
-      this.props.navigator.setButtons({
+      navigator.setButtons({
         leftButtons: [
           {
             id: 'sideMenu',
@@ -135,14 +104,6 @@ class Orders extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { orders } = nextProps;
-    this.setState({
-      orders: orders.items,
-      fetching: orders.fetching,
-    });
-  }
-
   onNavigatorEvent(event) {
     const { navigator } = this.props;
     registerDrawerDeepLinks(event, navigator);
@@ -162,119 +123,48 @@ class Orders extends Component {
     }
   }
 
-  getOrderStatus = (status) => {
-    switch (status) {
-      case 'P':
-        return {
-          text: i18n.gettext('Processed'),
-          style: { color: '#97cf4d' }
-        };
-
-      case 'C':
-        return {
-          text: i18n.gettext('Complete'),
-          style: { color: '#97cf4d' }
-        };
-
-      case 'O':
-        return {
-          text: i18n.gettext('Open'),
-          style: { color: '#ff9522' }
-        };
-
-      case 'F':
-        return {
-          text: i18n.gettext('Failed'),
-          style: { color: '#ff5215' }
-        };
-
-      case 'D':
-        return {
-          text: i18n.gettext('Declined'),
-          style: { color: '#ff5215' }
-        };
-
-      case 'B':
-        return {
-          text: i18n.gettext('Backordered'),
-          style: { color: '#28abf6' }
-        };
-
-      case 'I':
-        return {
-          text: i18n.gettext('Canceled'),
-          style: { color: '#c2c2c2' }
-        };
-
-      case 'Y':
-        return {
-          text: i18n.gettext('Awaiting call'),
-          style: { color: '#b63a21' }
-        };
-
-      default:
-        return {
-          text: i18n.gettext(''),
-          style: { color: '#000000' }
-        };
-    }
-  }
-
-  renderItem = (item) => {
-    const status = this.getOrderStatus(item.status);
-    return (
-      <TouchableOpacity
-        onPress={() => this.props.navigator.push({
-          screen: 'OrderDetail',
-          backButtonTitle: '',
-          passProps: {
-            orderId: item.order_id,
-          },
-        })}
-      >
-        <View style={styles.orderItem}>
-          <View style={styles.orderItemCustomer}>
-            <Text style={styles.orderItemCustomerText}>
-              #{item.order_id} {item.firstname} {item.lastname}
-            </Text>
-            <Text style={styles.orderItemEmail}>
-              {item.email}
-            </Text>
-          </View>
-          <View style={styles.orderItemStatus}>
-            <Text style={[styles.orderItemStatusText, status.style]}>
-              {status.text}
-            </Text>
-            <Text style={styles.orderItemTotal}>
-              {formatPrice(item.total_formatted.price)}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
   renderList = () => {
-    const { orders, fetching } = this.state;
-    if (fetching) {
+    const { navigator, orders } = this.props;
+
+    if (orders.fetching) {
       return null;
     }
+
     return (
       <FlatList
         keyExtractor={(item, index) => `order_${index}`}
-        data={orders}
+        data={orders.items}
         ListEmptyComponent={<EmptyList />}
-        renderItem={({ item }) => this.renderItem(item)}
+        renderItem={({ item }) => (
+          <OrderListItem
+            key={uniqueId('oreder-i')}
+            item={item}
+            onPress={() => {
+              navigator.push({
+                screen: 'OrderDetail',
+                backButtonTitle: '',
+                passProps: {
+                  orderId: item.order_id,
+                },
+              });
+            }}
+          />
+        )}
       />
     );
   };
 
   render() {
-    const { fetching } = this.state;
+    const { orders } = this.props;
+    if (orders.fetching) {
+      return (
+        <Spinner visible mode="content" />
+      );
+    }
+
     return (
       <View style={styles.container}>
         {this.renderList()}
-        <Spinner visible={fetching} mode="content" />
       </View>
     );
   }

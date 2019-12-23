@@ -3,6 +3,7 @@ import has from 'lodash/has';
 import get from 'lodash/get';
 import values from 'lodash/values';
 import countries from '../config/countries';
+import i18n from './i18n';
 
 // Calculate product image width and items count.
 const WINDOW_WIDTH = Dimensions.get('window').width;
@@ -12,13 +13,13 @@ const MIN_TABLET_WIDTH = 480;
 const IMAGE_PADDING_PHONE = 16;
 const IMAGE_PADDING_TABLET = 32;
 
-const PRODUCT_AVERAGE_SIZE = (WINDOW_WIDTH > MIN_TABLET_WIDTH) ?
-  PRODUCT_AVERAGE_SIZE_TABLET :
-  PRODUCT_AVERAGE_SIZE_PHONE;
+const PRODUCT_AVERAGE_SIZE = (WINDOW_WIDTH > MIN_TABLET_WIDTH)
+  ? PRODUCT_AVERAGE_SIZE_TABLET
+  : PRODUCT_AVERAGE_SIZE_PHONE;
 
-const IMAGE_PADDING = (WINDOW_WIDTH > MIN_TABLET_WIDTH) ?
-  IMAGE_PADDING_PHONE :
-  IMAGE_PADDING_TABLET;
+const IMAGE_PADDING = (WINDOW_WIDTH > MIN_TABLET_WIDTH)
+  ? IMAGE_PADDING_PHONE
+  : IMAGE_PADDING_TABLET;
 
 export const PRODUCT_NUM_COLUMNS = Math.floor(WINDOW_WIDTH / PRODUCT_AVERAGE_SIZE);
 export const PRODUCT_IMAGE_WIDTH = (
@@ -35,7 +36,7 @@ export const stripTags = (str) => {
 
 export const formatPrice = (str) => {
   if (str) {
-    return str.replace(/&nbsp;/, '');
+    return String(str).replace(/&nbsp;/, '');
   }
   return str;
 };
@@ -113,13 +114,13 @@ export function getCountryByCode(code) {
 }
 
 export function objectToQuerystring(obj) {
-  var str = [];
-  for (var p in obj)
+  const str = [];
+  for (let p in obj)
     if (obj.hasOwnProperty(p)) {
       str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
     }
-  return str.join("&");
-};
+  return str.join('&');
+}
 
 export function parseQueryString(query) {
   const obj = {};
@@ -137,3 +138,77 @@ export function parseQueryString(query) {
   return obj;
 }
 
+export function getProductStatus(status) {
+  switch (status) {
+    case 'A':
+      return {
+        text: i18n.gettext('Active'),
+        style: { color: '#97cf4d' }
+      };
+
+    case 'H':
+      return {
+        text: i18n.gettext('Hidden'),
+        style: { color: '#000000' }
+      };
+
+    case 'D':
+      return {
+        text: i18n.gettext('Disabled'),
+        style: { color: '#ff0000' }
+      };
+
+    default:
+      return {
+        text: i18n.gettext(''),
+        style: { color: '#000000' }
+      };
+  }
+}
+
+export const orderStatuses = [
+  {
+    code: 'P',
+    text: i18n.gettext('Processed'),
+    style: { color: '#97cf4d' }
+  },
+  {
+    code: 'C',
+    text: i18n.gettext('Complete'),
+    style: { color: '#97cf4d' }
+  },
+  {
+    code: 'O',
+    text: i18n.gettext('Open'),
+    style: { color: '#ff9522' }
+  },
+  {
+    code: 'F',
+    text: i18n.gettext('Failed'),
+    style: { color: '#ff5215' }
+  },
+  {
+    code: 'D',
+    text: i18n.gettext('Declined'),
+    style: { color: '#ff5215' }
+  },
+  {
+    code: 'B',
+    text: i18n.gettext('Backordered'),
+    style: { color: '#28abf6' }
+  },
+  {
+    code: 'I',
+    text: i18n.gettext('Canceled'),
+    style: { color: '#c2c2c2' }
+  },
+  {
+    code: 'Y',
+    text: i18n.gettext('Awaiting call'),
+    style: { color: '#b63a21' }
+  }
+];
+
+export function getOrderStatus(status) {
+  return orderStatuses.find(item => item.code === status);
+}

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   TouchableOpacity,
   View,
+  SafeAreaView,
   Image,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -10,8 +11,6 @@ import Swiper from 'react-native-swiper';
 
 // Components
 import Icon from '../components/Icon';
-
-import theme from '../config/theme';
 
 const styles = EStyleSheet.create({
   container: {
@@ -31,8 +30,19 @@ const styles = EStyleSheet.create({
   },
   closeBtnContainer: {
     position: 'absolute',
-    top: 22,
+    top: 0,
     right: 14,
+  },
+  removeBtnContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 10,
+    right: 10,
+    flex: 1,
+    alignItems: 'center',
+  },
+  removeBtn: {
+    padding: 10,
   },
   closeBtn: {
     color: 'black',
@@ -44,6 +54,7 @@ export default class Gallery extends Component {
     navigator: PropTypes.shape({
       dismissModal: PropTypes.func,
     }),
+    onRemove: PropTypes.func,
     images: PropTypes.arrayOf(PropTypes.string),
     activeIndex: PropTypes.number,
   };
@@ -53,39 +64,57 @@ export default class Gallery extends Component {
   };
 
   render() {
-    const { images } = this.props;
+    const {
+      images,
+      navigator,
+      activeIndex,
+      onRemove,
+    } = this.props;
     if (!images.length) {
       return null;
     }
-    const items = images.map((href, index) => {
-      return (
-        <View style={styles.slide} key={index}>
-          <Image
-            style={styles.img}
-            source={{ uri: href }}
-          />
-        </View>
-      );
-    });
+    const items = images.map((href, index) => (
+      <View style={styles.slide} key={index}>
+        <Image
+          style={styles.img}
+          source={{ uri: href }}
+        />
+      </View>
+    ));
 
     return (
-      <View style={styles.container}>
-        <Swiper
-          horizontal
-          index={this.props.activeIndex}
-        >
-          {items}
-        </Swiper>
-        <TouchableOpacity
-          style={styles.closeBtnContainer}
-          onPress={() => this.props.navigator.dismissModal({ animationType: 'fade' })}
-        >
-          <Icon
-            name="close"
-            style={styles.closeBtn}
-          />
-        </TouchableOpacity>
-      </View>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <Swiper
+            horizontal
+            index={activeIndex}
+          >
+            {items}
+          </Swiper>
+          <TouchableOpacity
+            style={styles.closeBtnContainer}
+            onPress={() => navigator.dismissModal({ animationType: 'fade' })}
+          >
+            <Icon
+              name="close"
+              style={styles.closeBtn}
+            />
+          </TouchableOpacity>
+          {onRemove && (
+            <View style={styles.removeBtnContainer}>
+              <TouchableOpacity
+                style={styles.removeBtn}
+                onPress={onRemove}
+              >
+                <Icon
+                  name="delete"
+                  style={styles.closeBtn}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      </SafeAreaView>
     );
   }
 }

@@ -318,7 +318,6 @@ class OrderDetail extends Component {
 
 export default connect(
   state => ({
-    cart: state.cart,
     auth: state.auth,
   }),
   dispatch => ({

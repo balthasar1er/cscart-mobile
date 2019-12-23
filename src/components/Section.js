@@ -39,7 +39,13 @@ const styles = EStyleSheet.create({
 
 
 const Section = ({
-  children, title = '', wrapperStyle, containerStyle, showRightButton, rightButtonText, onRightButtonPress
+  children,
+  title = '',
+  wrapperStyle,
+  containerStyle,
+  showRightButton,
+  rightButtonText,
+  onRightButtonPress,
 }) => (
   <View
     style={[styles.container, containerStyle]}
@@ -49,18 +55,18 @@ const Section = ({
       :
       null
     }
-    {showRightButton &&
-    <TouchableOpacity
-      onPress={() => onRightButtonPress()}
-      style={styles.rightButton}
-    >
-      <Text
-        style={styles.rightButtonText}
+    {showRightButton && (
+      <TouchableOpacity
+        onPress={() => onRightButtonPress()}
+        style={styles.rightButton}
       >
-        {rightButtonText}
-      </Text>
-    </TouchableOpacity>
-    }
+        <Text
+          style={styles.rightButtonText}
+        >
+          {rightButtonText}
+        </Text>
+      </TouchableOpacity>
+    )}
     <View style={[styles.wrapper, wrapperStyle]}>
       {children}
     </View>
@@ -70,7 +76,7 @@ const Section = ({
 Section.propTypes = {
   title: PropTypes.string,
   wrapperStyle: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.number]),
-  containerStyle: PropTypes.shape({}),
+  containerStyle: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.number]),
   showRightButton: PropTypes.bool,
   rightButtonText: PropTypes.string,
   onRightButtonPress: PropTypes.func,

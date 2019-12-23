@@ -16,6 +16,7 @@ import Discussion from './screens/Discussion';
 import Categories from './screens/Categories';
 import WriteReview from './screens/WriteReview';
 import OrderDetail from './screens/OrderDetail';
+import ImagePicker from './screens/ImagePicker';
 import VendorDetail from './screens/VendorDetail';
 import CheckoutAuth from './screens/CheckoutAuth';
 import Registration from './screens/Registration';
@@ -26,6 +27,16 @@ import CheckoutComplete from './screens/CheckoutComplete';
 import CheckoutShipping from './screens/CheckoutShipping';
 import CheckoutDelivery from './screens/CheckoutDelivery';
 import SettlementsCompleteWebView from './screens/SettlementsCompleteWebView';
+import VendorManageOrders from './screens/VendorManage/Orders';
+import VendorManageProducts from './screens/VendorManage/Products';
+import VendorManageAddProductStep1 from './screens/VendorManage/AddProductStep1';
+import VendorManageAddProductStep2 from './screens/VendorManage/AddProductStep2';
+import VendorManageAddProductStep3 from './screens/VendorManage/AddProductStep3';
+import VendorManageEditProduct from './screens/VendorManage/EditProduct';
+import VendorManagePricingInventory from './screens/VendorManage/PricingInventory';
+import VendorManageShippingProperties from './screens/VendorManage/ShippingProperties';
+import VendorManageCategoriesPicker from './screens/VendorManage/CategoriesPicker';
+import VendorManageOrderDetail from './screens/VendorManage/OrderDetail';
 
 // register all screens of the app (including internal ones)
 export default function registerScreens(store, Provider) {
@@ -46,6 +57,7 @@ export default function registerScreens(store, Provider) {
   Navigation.registerComponent('WriteReview', () => WriteReview, store, Provider);
   Navigation.registerComponent('OrderDetail', () => OrderDetail, store, Provider);
   Navigation.registerComponent('VendorDetail', () => VendorDetail, store, Provider);
+  Navigation.registerComponent('ImagePicker', () => ImagePicker, store, Provider);
   Navigation.registerComponent('Registration', () => Registration, store, Provider);
   Navigation.registerComponent('CheckoutAuth', () => CheckoutAuth, store, Provider);
   Navigation.registerComponent('Notification', () => Notification, store, Provider);
@@ -55,4 +67,14 @@ export default function registerScreens(store, Provider) {
   Navigation.registerComponent('CheckoutShipping', () => CheckoutShipping, store, Provider);
   Navigation.registerComponent('CheckoutComplete', () => CheckoutComplete, store, Provider);
   Navigation.registerComponent('SettlementsCompleteWebView', () => SettlementsCompleteWebView, store, Provider);
+  Navigation.registerComponent('VendorManageOrders', () => VendorManageOrders, store, Provider);
+  Navigation.registerComponent('VendorManageProducts', () => VendorManageProducts, store, Provider);
+  Navigation.registerComponent('VendorManageAddProductStep1', () => VendorManageAddProductStep1, store, Provider);
+  Navigation.registerComponent('VendorManageAddProductStep2', () => VendorManageAddProductStep2, store, Provider);
+  Navigation.registerComponent('VendorManageAddProductStep3', () => VendorManageAddProductStep3, store, Provider);
+  Navigation.registerComponent('VendorManageEditProduct', () => VendorManageEditProduct, store, Provider);
+  Navigation.registerComponent('VendorManagePricingInventory', () => VendorManagePricingInventory, store, Provider);
+  Navigation.registerComponent('VendorManageShippingProperties', () => VendorManageShippingProperties, store, Provider);
+  Navigation.registerComponent('VendorManageCategoriesPicker', () => VendorManageCategoriesPicker, store, Provider);
+  Navigation.registerComponent('VendorManageOrderDetail', () => VendorManageOrderDetail, store, Provider);
 }
