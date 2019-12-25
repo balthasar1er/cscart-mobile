@@ -89,7 +89,7 @@ class PricingInventory extends Component {
   }
 
   handleSave = () => {
-    const { product, productsActions, navigator } = this.props;
+    const { product, productsActions } = this.props;
     const values = this.formRef.current.getValue();
 
     if (!values) { return; }
@@ -98,7 +98,6 @@ class PricingInventory extends Component {
       product.product_id,
       { ...values }
     );
-    navigator.pop();
   };
 
   render() {

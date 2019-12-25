@@ -82,7 +82,7 @@ export const getProductDetail = (id) => {
 export const updateProduct = (id, product) => {
   const data = new FormData();
   const renderImagePairs = () => {
-    const images = [...product.images];
+    const images = product.images ? [...product.images] : [];
     const params = [];
     const pairs = [];
     const variables = {};
@@ -127,7 +127,7 @@ export const updateProduct = (id, product) => {
   };
 
   const renderParams = () => {
-    const images = [...product.images];
+    const images = product.images ? [...product.images] : [];
     const params = [];
 
     if (!images.length) {
@@ -154,7 +154,11 @@ export const updateProduct = (id, product) => {
       $price: Float,
       $list_price: Float,
       $full_description: String,
-      $amount: Int
+      $status: String,
+      $product_code: String,
+      $amount: Int,
+      $free_shipping: BooleanInput,
+      $weight: Float
       ${renderParams()}
     ) {
       update_product(
@@ -166,6 +170,10 @@ export const updateProduct = (id, product) => {
           list_price: $list_price
           full_description: $full_description
           amount: $amount
+          product_code: $product_code
+          status: $status
+          weight: $weight
+          free_shipping: $free_shipping
           ${renderImagePairs()}
         }
       )
@@ -184,14 +192,16 @@ export const updateProduct = (id, product) => {
 
   data.append('operations', serializedData);
 
-  product.images.forEach((image, index) => {
-    const photo = {
-      uri: image,
-      type: 'image/jpeg',
-      name: `${index}.jpg`,
-    };
-    data.append(index, photo);
-  });
+  if (product.images && product.images.length) {
+    product.images.forEach((image, index) => {
+      const photo = {
+        uri: image,
+        type: 'image/jpeg',
+        name: `${index}.jpg`,
+      };
+      data.append(index, photo);
+    });
+  }
 
   return AxiosInstance.post('', data).then(result => result.data);
 };
