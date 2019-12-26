@@ -18,8 +18,8 @@ export default {
   pushNotificationsColor: '#26323e',
   // Demo app features
   demo: true,
-  demoUsername: 'customer@example.com',
-  demoPassword: 'customer',
+  demoUsername: 'acmecorp@example.com',
+  demoPassword: 'vendor',
 
   // Apple pay payments
   applePay: true,
