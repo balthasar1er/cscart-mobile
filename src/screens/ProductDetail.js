@@ -17,7 +17,8 @@ import {
 import format from 'date-fns/format';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
-import _ from 'lodash';
+import throttle from 'lodash/throttle';
+import get from 'lodash/get';
 import { stripTags, formatPrice, getProductImagesPaths } from '../utils';
 
 // Import actions.
@@ -231,7 +232,7 @@ const styles = EStyleSheet.create({
   }
 });
 
-const throttledPriceCalculating = _.throttle(
+const throttledPriceCalculating = throttle(
   (context) => {
     context.calculatePrice({ showLoader: false });
   },
@@ -664,6 +665,8 @@ class ProductDetail extends Component {
 
     const inStock = !Number(product.amount);
     const isProductPriceZero = Math.ceil(product.price) !== 0;
+    const productTaxedPrice = get(product, 'taxed_price_formatted.price', '');
+    const productPrice = productTaxedPrice || get(product, 'price_formatted.price', '');
 
     return (
       <View>
@@ -677,7 +680,7 @@ class ProductDetail extends Component {
         )}
         {isProductPriceZero ? (
           <Text style={styles.priceText}>
-            {formatPrice(product.price_formatted.price)}
+            {formatPrice(productPrice)}
           </Text>
         ) : (
           <Text style={styles.zeroPrice}>
