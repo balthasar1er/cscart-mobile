@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import has from 'lodash/has';
+import get from 'lodash/get';
 
 // Constants
 import {
@@ -172,7 +172,7 @@ class Layouts extends Component {
   renderBlock = (block, index) => {
     const { navigator } = this.props;
 
-    if (!has(block, 'content.items')) {
+    if (!get(block, 'content.items')) {
       return null;
     }
 
