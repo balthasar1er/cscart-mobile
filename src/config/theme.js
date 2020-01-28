@@ -80,6 +80,6 @@ export default {
   // Цвет текста комментарий.
   $discussionMessageColor: '#808080',
 
-  // Лого магазина
+  // Лого магазина размер 610x210
   $logoUrl: 'http://82.202.226.53/images/logos/1/cart.png',
 };

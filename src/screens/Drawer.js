@@ -53,11 +53,12 @@ const styles = EStyleSheet.create({
     color: '$drawerHeaderTextColor',
   },
   logo: {
-    height: 40,
-    width: 200,
-    marginLeft: 20,
-    marginTop: 14,
     resizeMode: 'contain',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
   },
   logoLogin: {
     marginTop: 20,
@@ -72,7 +73,7 @@ const styles = EStyleSheet.create({
   signInWrapper: {
     position: 'absolute',
     padding: 12,
-    bottom: 14,
+    bottom: 2,
     left: 14,
     flex: 1,
     flexDirection: 'row',
