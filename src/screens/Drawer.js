@@ -30,18 +30,16 @@ const styles = EStyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingTop: 30,
     backgroundColor: '$drawerHeaderBackgroundColor',
-    height: '7rem',
+    minHeight: '7rem',
     position: 'relative',
     borderBottomWidth: 1,
     borderColor: '$drawerHeaderBorderColor'
   },
   headerUserName: {
-    position: 'absolute',
-    left: 20,
-    bottom: 20,
-    width: '78%',
+    paddingTop: 10,
+    paddingLeft: 22,
+    paddingBottom: 14,
   },
   headerUserNameText: {
     color: '$drawerHeaderTextColor',
@@ -54,13 +52,8 @@ const styles = EStyleSheet.create({
   },
   logo: {
     resizeMode: 'contain',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-  },
-  logoLogin: {
+    width: '100%',
+    height: 100,
     marginTop: 20,
   },
   signInBtn: {
@@ -71,12 +64,10 @@ const styles = EStyleSheet.create({
     paddingRight: 6,
   },
   signInWrapper: {
-    position: 'absolute',
-    padding: 12,
-    bottom: 2,
-    left: 14,
-    flex: 1,
     flexDirection: 'row',
+    paddingTop: 10,
+    paddingLeft: 22,
+    paddingBottom: 14,
   },
   signInBtnText: {
     textAlign: 'left',
@@ -137,7 +128,7 @@ const styles = EStyleSheet.create({
   signOutBtn: {
     position: 'absolute',
     right: 5,
-    top: 36,
+    top: 0,
     backgroundColor: 'transparent',
     padding: 14,
   },
@@ -224,19 +215,6 @@ class Drawer extends Component {
             source={{ uri: theme.$logoUrl }}
             style={styles.logo}
           />
-          <TouchableOpacity
-            style={styles.signOutBtn}
-            onPress={() => {
-              authActions.logout();
-              navigator.handleDeepLink({
-                link: 'home/',
-                payload: {},
-              });
-              this.closeDrawer();
-            }}
-          >
-            <Icon name="exit-to-app" style={styles.signOutBtnIcon} />
-          </TouchableOpacity>
           <View style={styles.headerUserName}>
             <Text style={styles.headerUserNameText} numberOfLines={2}>
               {cart.user_data.b_firstname} {cart.user_data.b_lastname}
@@ -244,6 +222,19 @@ class Drawer extends Component {
             <Text style={styles.headerUserMailText}>
               {cart.user_data.email}
             </Text>
+            <TouchableOpacity
+              style={styles.signOutBtn}
+              onPress={() => {
+                authActions.logout();
+                navigator.handleDeepLink({
+                  link: 'home/',
+                  payload: {},
+                });
+                this.closeDrawer();
+              }}
+            >
+              <Icon name="exit-to-app" style={styles.signOutBtnIcon} />
+            </TouchableOpacity>
           </View>
         </View>
       );
@@ -253,7 +244,7 @@ class Drawer extends Component {
       <View style={styles.header}>
         <Image
           source={{ uri: theme.$logoUrl }}
-          style={[styles.logo, styles.logoLogin]}
+          style={styles.logo}
         />
         <View style={styles.signInWrapper}>
           <TouchableOpacity
