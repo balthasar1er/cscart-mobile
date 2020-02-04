@@ -55,7 +55,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         selectedAmount: action.payload,
-      }
+      };
 
     default:
       return state;

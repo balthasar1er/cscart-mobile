@@ -798,14 +798,20 @@ class ProductDetail extends Component {
   }
 
   renderOptions() {
-    const { product, amount } = this.state;
+    const { product } = this.state;
+
+    const step = parseInt(product.qty_step, 10) || 1;
+    const max = parseInt(product.max_qty, 10) || parseInt(product.amount, 10);
+    const min = parseInt(product.min_qty, 10) || step;
 
     return (
       <Section>
         {product.options.map(o => this.renderOptionItem(o))}
         <QtyOption
-          value={amount}
-          step={parseInt(product.qty_step, 10) || 1}
+          max={max}
+          min={min}
+          initialValue={min}
+          step={step}
           onChange={(val) => {
             this.setState(
               { amount: val },

@@ -266,6 +266,11 @@ class Cart extends Component {
       },
     ];
 
+    const step = parseInt(item.qty_step, 10) || 1;
+    const max = parseInt(item.max_qty, 10) || parseInt(item.in_stock, 10);
+    const min = parseInt(item.min_qty, 10) || step;
+    const initialValue = parseInt(item.amount, 10);
+
     return (
       <View style={styles.productItemWrapper}>
         <Swipeout
@@ -289,8 +294,10 @@ class Cart extends Component {
             <View style={styles.qtyContainer}>
               <QtyOption
                 noTitle
-                value={item.amount}
-                step={parseInt(item.qty_step, 10) || 1}
+                max={max}
+                min={min}
+                initialValue={initialValue}
+                step={step}
                 onChange={(val) => {
                   if (val <= parseInt(item.in_stock, 10)) {
                     cartActions.changeAmount(item.cartId, val);
