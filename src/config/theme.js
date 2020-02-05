@@ -81,5 +81,5 @@ export default {
   $discussionMessageColor: '#808080',
 
   // Лого магазина размер 760x240
-  $logoUrl: 'https://mobile.mve.demo.cs-cart.com/images/logos/8/mve-logo.png',
+  $logoUrl: 'https://mobile.mve.demo.cs-cart.com/images/logos/logo-transparent.png',
 };

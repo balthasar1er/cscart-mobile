@@ -31,7 +31,6 @@ const styles = EStyleSheet.create({
   },
   header: {
     backgroundColor: '$drawerHeaderBackgroundColor',
-    minHeight: '7rem',
     position: 'relative',
     borderBottomWidth: 1,
     borderColor: '$drawerHeaderBorderColor'
@@ -211,10 +210,12 @@ class Drawer extends Component {
     if (auth.logged) {
       return (
         <View style={styles.header}>
-          <Image
-            source={{ uri: theme.$logoUrl }}
-            style={styles.logo}
-          />
+          {theme.$logoUrl !== '' ? (
+            <Image
+              source={{ uri: theme.$logoUrl }}
+              style={styles.logo}
+            />
+          ) : <View style={{ height: 30 }} />}
           <View style={styles.headerUserName}>
             <Text style={styles.headerUserNameText} numberOfLines={2}>
               {cart.user_data.b_firstname} {cart.user_data.b_lastname}
@@ -242,10 +243,12 @@ class Drawer extends Component {
 
     return (
       <View style={styles.header}>
-        <Image
-          source={{ uri: theme.$logoUrl }}
-          style={styles.logo}
-        />
+        {theme.$logoUrl !== '' ? (
+          <Image
+            source={{ uri: theme.$logoUrl }}
+            style={styles.logo}
+          />
+        ) : <View style={{ height: 30 }} />}
         <View style={styles.signInWrapper}>
           <TouchableOpacity
             style={styles.signInBtn}
