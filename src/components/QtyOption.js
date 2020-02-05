@@ -115,7 +115,7 @@ export default class extends Component {
 
     return (
       <View style={styles.container}>
-        {noTitle && (
+        {!noTitle && (
           <Text style={styles.title}>
             {i18n.gettext('Quantity')}
           </Text>)

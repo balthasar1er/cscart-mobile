@@ -446,14 +446,16 @@ class ProductDetail extends Component {
     }
 
     const { product, amount } = this.state;
-
     this.setState({ fetchingChangedOptions: showLoader }, () => {
       Api.get(
         `sra_products/${product.product_id}/?${formatOptionsToUrl(this.state)}&amount=${amount}`
       ).then(
         (res) => {
           this.setState({
-            product: { ...product, ...res.data },
+            product: {
+              ...product,
+              ...res.data,
+            },
             fetchingChangedOptions: false
           });
         }
