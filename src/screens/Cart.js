@@ -293,7 +293,6 @@ class Cart extends Component {
             </View>
             <View style={styles.qtyContainer}>
               <QtyOption
-                noTitle
                 max={max}
                 min={min}
                 initialValue={initialValue}

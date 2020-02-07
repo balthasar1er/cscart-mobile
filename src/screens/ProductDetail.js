@@ -310,7 +310,6 @@ class ProductDetail extends Component {
   }
 
   componentWillMount() {
-    const { navigator } = this.props;
     const buttons = {
       rightButtons: [
         {
@@ -337,7 +336,19 @@ class ProductDetail extends Component {
   componentDidMount() {
     const { productsActions, pid, } = this.props;
     InteractionManager.runAfterInteractions(() => {
-      productsActions.fetch(pid);
+      productsActions
+        .fetch(pid)
+        .then((product) => {
+          const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
+          this.setState({
+            amount: minQty,
+            fetching: false,
+          }, () => {
+            if (minQty !== 0) {
+              this.calculatePrice({ showLoader: false });
+            }
+          });
+        });
     });
   }
 
@@ -405,7 +416,6 @@ class ProductDetail extends Component {
       product,
       discussion: activeDiscussion,
       selectedOptions: defaultOptions,
-      fetching: productDetail.fetching,
       vendor: vendors.items[product.company_id] || null,
       canWriteComments: (!activeDiscussion.disable_adding
         && productDetail.discussion_type !== DISCUSSION_DISABLED) && auth.logged,

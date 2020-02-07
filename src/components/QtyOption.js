@@ -7,8 +7,6 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-import i18n from '../utils/i18n';
-
 const styles = EStyleSheet.create({
   container: {
     width: '100%',
@@ -54,7 +52,6 @@ export default class extends Component {
     initialValue: PropTypes.number,
     max: PropTypes.number,
     onChange: PropTypes.func,
-    noTitle: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -62,7 +59,6 @@ export default class extends Component {
     min: 1,
     max: 1,
     initialValue: 1,
-    noTitle: false,
     onChange() {},
   };
 
@@ -109,17 +105,9 @@ export default class extends Component {
 
   render() {
     const { total } = this.state;
-    const {
-      noTitle,
-    } = this.props;
 
     return (
       <View style={styles.container}>
-        {!noTitle && (
-          <Text style={styles.title}>
-            {i18n.gettext('Quantity')}
-          </Text>)
-        }
         <View style={styles.btnGroup}>
           <TouchableOpacity
             style={styles.btn}
