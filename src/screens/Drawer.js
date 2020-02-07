@@ -215,7 +215,7 @@ class Drawer extends Component {
               source={{ uri: theme.$logoUrl }}
               style={styles.logo}
             />
-          ) : <View style={{ height: 90 }} />}
+          ) : <View style={{ height: 30 }} />}
           <View style={styles.headerUserName}>
             <Text style={styles.headerUserNameText} numberOfLines={2}>
               {cart.user_data.b_firstname} {cart.user_data.b_lastname}
@@ -248,7 +248,7 @@ class Drawer extends Component {
             source={{ uri: theme.$logoUrl }}
             style={styles.logo}
           />
-        ) : <View style={{ height: 90 }} />}
+        ) : <View style={{ height: 30 }} />}
         <View style={styles.signInWrapper}>
           <TouchableOpacity
             style={styles.signInBtn}
