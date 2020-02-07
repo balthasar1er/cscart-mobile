@@ -60,7 +60,7 @@ export default class CategoriesBlocks extends Component {
       return null;
     }
 
-    const itemsList = orderBy(items, ['position'], ['asc'])
+    const itemsList = orderBy(items, (i => parseInt(i.position, 10)), ['asc'])
       .map((item, index) => this.renderCategory(item, index));
 
     return (
