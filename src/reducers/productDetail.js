@@ -16,6 +16,9 @@ const initialState = {
   list_price_formatted: {
     price: '',
   },
+  taxed_price_formatted: {
+    price: '',
+  }
 };
 
 export default function (state = initialState, action) {
@@ -35,7 +38,7 @@ export default function (state = initialState, action) {
 
     case FETCH_ONE_PRODUCT_SUCCESS:
       return {
-        ...state,
+        ...initialState,
         ...action.payload.product,
         options: Object.keys(action.payload.product.product_options)
           .map(k => action.payload.product.product_options[k]),
@@ -55,7 +58,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         selectedAmount: action.payload,
-      }
+      };
 
     default:
       return state;

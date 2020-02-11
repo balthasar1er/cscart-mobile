@@ -7,8 +7,6 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-import i18n from '../utils/i18n';
-
 const styles = EStyleSheet.create({
   container: {
     width: '100%',
@@ -49,72 +47,80 @@ const styles = EStyleSheet.create({
 
 export default class extends Component {
   static propTypes = {
-    value: PropTypes.number,
     step: PropTypes.number,
+    min: PropTypes.number,
+    initialValue: PropTypes.number,
+    max: PropTypes.number,
     onChange: PropTypes.func,
-    noTitle: PropTypes.bool,
   };
 
   static defaultProps = {
-    value: 1,
     step: 1,
-    noTitle: false,
+    min: 1,
+    max: 1,
+    initialValue: 1,
     onChange() {},
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      value: 0,
-    };
-  }
+  state = {
+    total: 1,
+  };
 
   componentDidMount() {
-    const { value, step } = this.props;
+    const { initialValue } = this.props;
     this.setState({
-      value: value || step,
+      total: initialValue,
     });
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { value, step } = nextProps;
+  increment = () => {
+    const { total } = this.state;
+    const { step, onChange, max } = this.props;
+    const newTotal = total + step;
+
+    if (max !== 1 && newTotal > max) {
+      return;
+    }
+
     this.setState({
-      value: value || step,
+      total: newTotal,
     });
+    onChange(newTotal);
   }
 
-  handleChange(value) {
-    this.props.onChange(value);
+  dicrement = () => {
+    const { total } = this.state;
+    const { step, onChange, min } = this.props;
+    const newTotal = total - step;
+
+    if (min !== 0 && newTotal < min) {
+      return;
+    }
+
+    this.setState({
+      total: newTotal,
+    });
+    onChange(newTotal);
   }
 
   render() {
-    const { value, noTitle } = this.state;
-    const { step } = this.props;
+    const { total } = this.state;
+
     return (
       <View style={styles.container}>
-        {noTitle && (
-          <Text style={styles.title}>
-            {i18n.gettext('Quantity')}
-          </Text>)
-        }
         <View style={styles.btnGroup}>
           <TouchableOpacity
             style={styles.btn}
-            onPress={() => {
-              if ((value - step) >= 0) {
-                this.handleChange(value - step);
-              }
-            }}
+            onPress={this.dicrement}
           >
             <Text style={styles.btnText}>-</Text>
           </TouchableOpacity>
           <Text style={styles.valueText}>
-            {value}
+            {total}
           </Text>
           <TouchableOpacity
             style={styles.btn}
-            onPress={() => this.handleChange(value + step)}
+            onPress={this.increment}
           >
             <Text style={styles.btnText}>+</Text>
           </TouchableOpacity>

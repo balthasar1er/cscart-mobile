@@ -127,6 +127,7 @@ export function fetch(pid) {
         if (response.data.discussion_type !== DISCUSSION_DISABLED) {
           setTimeout(() => fetchDiscussion(pid)(dispatch), 100);
         }
+        return response;
       })
       .catch((error) => {
         dispatch({

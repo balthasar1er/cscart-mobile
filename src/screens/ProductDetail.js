@@ -310,7 +310,6 @@ class ProductDetail extends Component {
   }
 
   componentWillMount() {
-    const { navigator } = this.props;
     const buttons = {
       rightButtons: [
         {
@@ -337,7 +336,19 @@ class ProductDetail extends Component {
   componentDidMount() {
     const { productsActions, pid, } = this.props;
     InteractionManager.runAfterInteractions(() => {
-      productsActions.fetch(pid);
+      productsActions
+        .fetch(pid)
+        .then((product) => {
+          const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
+          this.setState({
+            amount: minQty,
+            fetching: false,
+          }, () => {
+            if (minQty !== 0) {
+              this.calculatePrice({ showLoader: false });
+            }
+          });
+        });
     });
   }
 
@@ -405,7 +416,6 @@ class ProductDetail extends Component {
       product,
       discussion: activeDiscussion,
       selectedOptions: defaultOptions,
-      fetching: productDetail.fetching,
       vendor: vendors.items[product.company_id] || null,
       canWriteComments: (!activeDiscussion.disable_adding
         && productDetail.discussion_type !== DISCUSSION_DISABLED) && auth.logged,
@@ -446,14 +456,16 @@ class ProductDetail extends Component {
     }
 
     const { product, amount } = this.state;
-
     this.setState({ fetchingChangedOptions: showLoader }, () => {
       Api.get(
         `sra_products/${product.product_id}/?${formatOptionsToUrl(this.state)}&amount=${amount}`
       ).then(
         (res) => {
           this.setState({
-            product: { ...product, ...res.data },
+            product: {
+              ...product,
+              ...res.data,
+            },
             fetchingChangedOptions: false
           });
         }
@@ -798,14 +810,20 @@ class ProductDetail extends Component {
   }
 
   renderOptions() {
-    const { product, amount } = this.state;
+    const { product } = this.state;
+
+    const step = parseInt(product.qty_step, 10) || 1;
+    const max = parseInt(product.max_qty, 10) || parseInt(product.amount, 10);
+    const min = parseInt(product.min_qty, 10) || step;
 
     return (
       <Section>
         {product.options.map(o => this.renderOptionItem(o))}
         <QtyOption
-          value={amount}
-          step={parseInt(product.qty_step, 10) || 1}
+          max={max}
+          min={min}
+          initialValue={min}
+          step={step}
           onChange={(val) => {
             this.setState(
               { amount: val },
