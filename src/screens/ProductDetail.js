@@ -100,6 +100,11 @@ const styles = EStyleSheet.create({
     color: '$darkColor',
     textAlign: 'left'
   },
+  smallText: {
+    fontSize: '0.8rem',
+    fontWeight: 'normal',
+    color: '$darkColor',
+  },
   outOfStockText: {
     color: '$dangerColor',
     marginTop: 10,
@@ -691,9 +696,16 @@ class ProductDetail extends Component {
           </Text>
         )}
         {isProductPriceZero ? (
-          <Text style={styles.priceText}>
-            {formatPrice(productPrice)}
-          </Text>
+          <>
+            <Text style={styles.priceText}>
+              {formatPrice(productPrice)}
+              {productTaxedPrice !== '' && (
+                <Text style={styles.smallText}>
+                  {` (${i18n.gettext('Including tax')})`}
+                </Text>
+              )}
+            </Text>
+          </>
         ) : (
           <Text style={styles.zeroPrice}>
             {i18n.gettext('Contact us for a price')}
