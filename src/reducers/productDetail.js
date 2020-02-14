@@ -3,6 +3,8 @@ import {
   FETCH_ONE_PRODUCT_FAIL,
   FETCH_ONE_PRODUCT_SUCCESS,
 
+  RECALCULATE_PRODUCT_PRICE_SUCCESS,
+
   CHANGE_PRODUCTS_AMOUNT,
 } from '../constants';
 
@@ -37,6 +39,7 @@ export default function (state = initialState, action) {
       };
 
     case FETCH_ONE_PRODUCT_SUCCESS:
+    case RECALCULATE_PRODUCT_PRICE_SUCCESS:
       return {
         ...initialState,
         ...action.payload.product,
