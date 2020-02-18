@@ -332,7 +332,7 @@ class ProductDetail extends Component {
         .then((product) => {
           const minQty = parseInt(get(product.data, 'min_qty', 0), 10);
           this.setState({
-            amount: minQty,
+            amount: minQty || 1,
             fetching: minQty !== 0,
           }, () => {
             if (minQty !== 0) {
