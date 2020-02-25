@@ -36,6 +36,7 @@ class Page extends Component {
     return (
       <View style={styles.container}>
         <WebView
+          useWebKit={true}
           automaticallyAdjustContentInsets={false}
           javaScriptEnabled
           scalesPageToFit
