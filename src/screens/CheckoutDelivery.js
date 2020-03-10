@@ -130,7 +130,7 @@ class Checkout extends Component {
           fields={fields}
           cartFooterEnabled={true}
           showTitles={true}
-          totalPrice={formatPrice(cart.subtotal_formatted.price)}
+          totalPrice={formatPrice(cart.total_formatted.price)}
           btnText={i18n.gettext('Next').toUpperCase()}
           onBtnPress={(values, validateCb) => { validateCb(); }}
           onSubmit={(values) => { this.handleNextPress(values); }}
