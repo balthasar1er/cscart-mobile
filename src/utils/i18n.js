@@ -8,7 +8,7 @@ const platformLanguage = Platform.OS === 'ios'
 
 export const deviceLanguage = platformLanguage.split('_')[0];
 
-const langs = ['ar', 'ru', 'en', 'fr', 'it', 'es'];
+const langs = ['ar', 'ru', 'en', 'fr', 'it', 'es', 'br'];
 let jsonData;
 
 if (langs.includes(deviceLanguage)) {
@@ -27,6 +27,9 @@ if (langs.includes(deviceLanguage)) {
       break;
     case 'es':
       jsonData = require('../config/locales/es.json');
+      break;
+    case 'br':
+      jsonData = require('../config/locales/br.json');
       break;
     default:
       jsonData = require('../config/locales/en.json');
