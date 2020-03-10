@@ -80,6 +80,7 @@ class SettlementsCompleteWebView extends Component {
     return (
       <View style={styles.container}>
         <WebView
+          useWebKit
           automaticallyAdjustContentInsets={false}
           javaScriptEnabled
           scalesPageToFit

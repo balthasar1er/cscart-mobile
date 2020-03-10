@@ -11,9 +11,9 @@ import {
   FETCH_ONE_PRODUCT_FAIL,
   FETCH_ONE_PRODUCT_SUCCESS,
 
-  FETCH_PRODUCT_OPTIONS_REQUEST,
-  FETCH_PRODUCT_OPTIONS_FAIL,
-  FETCH_PRODUCT_OPTIONS_SUCCESS,
+  RECALCULATE_PRODUCT_PRICE_REQUEST,
+  RECALCULATE_PRODUCT_PRICE_FAIL,
+  RECALCULATE_PRODUCT_PRICE_SUCCESS,
 
   FETCH_DISCUSSION_REQUEST,
   FETCH_DISCUSSION_SUCCESS,
@@ -27,7 +27,6 @@ import {
   DISCUSSION_DISABLED,
 
   CHANGE_PRODUCTS_SORT,
-  CHANGE_PRODUCTS_AMOUNT,
 } from '../constants';
 import Api from '../services/api';
 import i18n from '../utils/i18n';
@@ -43,11 +42,12 @@ export function fetchDiscussion(id, params = { page: 1 }, type = 'P') {
         dispatch({
           type: FETCH_DISCUSSION_SUCCESS,
           payload: {
-            page: params.page,
             id: `${type.toLowerCase()}_${id}`,
+            page: params.page,
             discussion: response.data,
           },
         });
+        return response;
       })
       .catch((error) => {
         dispatch({
@@ -91,21 +91,32 @@ export function postDiscussion(data) {
   };
 }
 
-export function fetchOptions(pid) {
+export function recalculatePrice(pid, amount, options) {
+  function formatOptionsToUrl(selectedOptions) {
+    const options = [];
+    Object.keys(selectedOptions).forEach(
+      (optionId) => {
+        options.push(`${encodeURIComponent(`selected_options[${optionId}]`)}=${selectedOptions[optionId].variant_id}`);
+      }
+    );
+    return options.join('&');
+  }
+
   return (dispatch) => {
-    dispatch({ type: FETCH_PRODUCT_OPTIONS_REQUEST });
-    return Api.get(`/options/?product_id=${pid}`)
+    dispatch({ type: RECALCULATE_PRODUCT_PRICE_REQUEST });
+
+    return Api.get(`sra_products/${pid}/?${formatOptionsToUrl(options)}&amount=${amount}`)
       .then((response) => {
         dispatch({
-          type: FETCH_PRODUCT_OPTIONS_SUCCESS,
+          type: RECALCULATE_PRODUCT_PRICE_SUCCESS,
           payload: {
-            options: response.data,
+            product: response.data,
           },
         });
       })
       .catch((error) => {
         dispatch({
-          type: FETCH_PRODUCT_OPTIONS_FAIL,
+          type: RECALCULATE_PRODUCT_PRICE_FAIL,
           error
         });
       });
@@ -115,6 +126,7 @@ export function fetchOptions(pid) {
 export function fetch(pid) {
   return (dispatch) => {
     dispatch({ type: FETCH_ONE_PRODUCT_REQUEST });
+
     return Api.get(`/sra_products/${pid}`)
       .then((response) => {
         dispatch({
