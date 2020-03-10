@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { get } from 'lodash';
 import {
   View,
   Text,
@@ -56,7 +57,7 @@ const styles = EStyleSheet.create({
     borderWidth: 1,
     borderColor: '#F1F1F1',
     flexDirection: 'row',
-    paddingBottom: 10,
+    paddingBottom: 8,
     padding: 14,
     width: '100%',
     overflow: 'hidden',
@@ -118,6 +119,16 @@ const styles = EStyleSheet.create({
     right: 14,
     bottom: 0,
   },
+  totalWrapper: {
+    marginTop: 6,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  totalText: {
+    textAlign: 'right',
+    marginTop: 4,
+    color: '#979797',
+  }
 });
 
 class Cart extends Component {
@@ -271,6 +282,9 @@ class Cart extends Component {
     const min = parseInt(item.min_qty, 10) || step;
     const initialValue = parseInt(item.amount, 10);
 
+    const productTaxedPrice = get(item, 'taxed_price_formatted.price', '');
+    const productPrice = productTaxedPrice || get(item, 'price_formatted.price', '');
+
     return (
       <View style={styles.productItemWrapper}>
         <Swipeout
@@ -288,7 +302,12 @@ class Cart extends Component {
                 {item.product}
               </Text>
               <Text style={styles.productItemPrice}>
-                {item.amount} x {item.price_formatted.price}
+                {`${item.amount} x ${productPrice}`}
+                {productTaxedPrice !== '' && (
+                  <Text style={styles.smallText}>
+                    {` (${i18n.gettext('Including tax')})`}
+                  </Text>
+                )}
               </Text>
             </View>
             <View style={styles.qtyContainer}>
@@ -355,7 +374,7 @@ class Cart extends Component {
     }
     return (
       <CartFooter
-        totalPrice={formatPrice(cart.subtotal_formatted.price)}
+        totalPrice={formatPrice(cart.total_formatted.price)}
         btnText={i18n.gettext('Checkout').toUpperCase()}
         onBtnPress={() => this.handlePlaceOrder()}
       />
@@ -382,6 +401,23 @@ class Cart extends Component {
     );
   };
 
+  renderOrderDetail = () => {
+    const { cart } = this.props;
+    return (
+      <View style={styles.totalWrapper}>
+        <Text style={styles.totalText}>
+          {`${i18n.gettext('Subtotal')}: ${get(cart, 'subtotal_formatted.price', '')}`}
+        </Text>
+        <Text style={styles.totalText}>
+          {`${i18n.gettext('Shipping')}: ${get(cart, 'shipping_cost_formatted.price', '')}`}
+        </Text>
+        <Text style={styles.totalText}>
+          {`${i18n.gettext('Taxes')}: ${get(cart, 'tax_subtotal_formatted.price', '')}`}
+        </Text>
+      </View>
+    );
+  }
+
   renderList() {
     const { products, fetching, refreshing } = this.state;
 
@@ -398,6 +434,7 @@ class Cart extends Component {
           onRefresh={() => this.handleRefresh()}
           refreshing={refreshing}
           ListEmptyComponent={() => this.renderEmptyList()}
+          ListFooterComponent={this.renderOrderDetail}
         />
         {this.renderPlaceOrder()}
       </View>

@@ -38,6 +38,12 @@ export default class extends PureComponent {
   };
 
   render() {
+    const {
+      onBtnPress,
+      totalPrice,
+      isBtnDisabled,
+      btnText,
+    } = this.props;
     return (
       <View style={styles.container}>
         <View>
@@ -45,16 +51,16 @@ export default class extends PureComponent {
             {i18n.gettext('Total').toUpperCase()}
           </Text>
           <Text style={styles.cartInfoTotal}>
-            {formatPrice(this.props.totalPrice)}
+            {formatPrice(totalPrice)}
           </Text>
         </View>
         <Button
           type="primary"
-          onPress={() => this.props.onBtnPress()}
-          disabled={this.props.isBtnDisabled}
+          onPress={() => onBtnPress()}
+          disabled={isBtnDisabled}
         >
           <Text style={styles.placeOrderBtnText}>
-            {this.props.btnText}
+            {btnText}
           </Text>
         </Button>
       </View>
