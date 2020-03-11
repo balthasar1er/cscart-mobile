@@ -1,8 +1,4 @@
 import {
-  BILLING_REQUEST,
-  BILLING_SUCCESS,
-  BILLING_FAIL,
-
   SETTLEMENTS_REQUEST,
   SETTLEMENTS_SUCCESS,
   SETTLEMENTS_FAIL,
@@ -13,25 +9,7 @@ import {
 import Api from '../services/api';
 import i18n from '../utils/i18n';
 
-export function fetchAll() {
-  return (dispatch) => {
-    dispatch({ type: BILLING_REQUEST });
-    return Api.get('/payments')
-      .then((response) => {
-        dispatch({
-          type: BILLING_SUCCESS,
-          payload: response.data,
-        });
-      })
-      .catch((error) => {
-        dispatch({
-          type: BILLING_FAIL,
-          error,
-        });
-      });
-  };
-}
-
+// eslint-disable-next-line import/prefer-default-export
 export function settlements(data) {
   return (dispatch) => {
     dispatch({ type: SETTLEMENTS_REQUEST });

@@ -1,5 +1,3 @@
-import has from 'lodash/has';
-
 import {
   AUTH_LOGIN_REQUEST,
   AUTH_LOGIN_SUCCESS,
@@ -9,6 +7,8 @@ import {
   AUTH_REGESTRATION_SUCCESS,
 
   REGISTER_DEVICE_SUCCESS,
+
+  RESTORE_STATE,
 } from '../constants';
 
 const initialState = {
@@ -64,11 +64,10 @@ export default function (state = initialState, action) {
     case AUTH_LOGOUT:
       return initialState;
 
-    case 'persist/REHYDRATE':
+    case RESTORE_STATE:
       return {
         ...state,
         ...action.payload.auth,
-        uuid: has(action.payload, 'auth.uuid') ? action.payload.auth.uuid : (+new Date()).toString(16),
       };
 
     default:

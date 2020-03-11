@@ -1,23 +1,17 @@
-import React from 'react';
-import { Provider } from 'react-redux';
 import {
   Dimensions,
-  AsyncStorage,
   Platform,
   I18nManager,
 } from 'react-native';
 import * as t from 'tcomb-form-native';
-import { persistStore } from 'redux-persist';
 import { Navigation } from 'react-native-navigation';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-import { deviceLanguage } from './utils/i18n';
 import './config';
 import store from './store';
 import theme from './config/theme';
+import * as appActions from './actions/appActions';
 import registerScreens from './screens';
-
-registerScreens(store, Provider);
 
 // Calcuate styles
 const { width } = Dimensions.get('window');
@@ -66,7 +60,11 @@ t.form.Form.defaultProps.stylesheet = {
   },
 };
 
-const setRoot = () => {
+async function Start() {
+  await appActions.initApp();
+
+  registerScreens(store);
+
   Navigation.startSingleScreenApp({
     screen: {
       screen: 'Layouts',
@@ -93,19 +91,6 @@ const setRoot = () => {
       },
     },
   });
-};
-
-function Start() {
-  const locale = deviceLanguage;
-
-  I18nManager.allowRTL(true);
-  I18nManager.forceRTL(['ar', 'he'].includes(locale));
-
-  // run app after store persist.
-  persistStore(store, {
-    blacklist: ['products', 'discussion', 'orders', 'search', 'vendors', 'vendorManageOrders', 'vendorManageProducts', 'vendorManageOrders'],
-    storage: AsyncStorage
-  }, () => setRoot());
 }
 
 export default Start;

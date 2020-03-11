@@ -23,6 +23,8 @@ import {
 
   CHANGE_AMOUNT,
   AUTH_LOGOUT,
+
+  RESTORE_STATE,
 } from '../constants';
 
 const initialState = {
@@ -39,6 +41,12 @@ let newState = null;
 
 export default function (state = initialState, action) {
   switch (action.type) {
+    case RESTORE_STATE:
+      return {
+        ...state,
+        ...action.payload.cart,
+      };
+
     case ADD_TO_CART_REQUEST:
       return {
         ...state,
