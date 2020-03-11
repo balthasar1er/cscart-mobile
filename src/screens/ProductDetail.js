@@ -974,8 +974,6 @@ class ProductDetail extends Component {
       return (<Spinner visible mode="content" />);
     }
 
-    console.log(i18n);
-
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView
