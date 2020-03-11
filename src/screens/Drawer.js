@@ -260,12 +260,12 @@ class Drawer extends Component {
             }}
           >
             <Text style={styles.signInBtnText}>
-              {i18n.gettext('Login')}
+              {i18n.t('Login')}
             </Text>
           </TouchableOpacity>
 
           <Text style={[styles.signInBtnText, styles.signInDelim]}>
-            {i18n.gettext('|')}
+            {i18n.t('|')}
           </Text>
 
           <TouchableOpacity
@@ -274,7 +274,7 @@ class Drawer extends Component {
               this.closeDrawer();
               navigator.showModal({
                 screen: 'Registration',
-                title: i18n.gettext('Registration'),
+                title: i18n.t('Registration'),
                 passProps: {
                   showClose: true,
                 },
@@ -282,7 +282,7 @@ class Drawer extends Component {
             }}
           >
             <Text style={styles.signInBtnText}>
-              {i18n.gettext('Registration')}
+              {i18n.t('Registration')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -353,16 +353,16 @@ class Drawer extends Component {
 
     return (
       <View>
-        {/* {this.renderMenuItem('assessment', i18n.gettext('Dashboard'), () => {})} */}
-        {this.renderMenuItem('archive', i18n.gettext('Vendor Orders'), () => {
+        {/* {this.renderMenuItem('assessment', i18n.t('Dashboard'), () => {})} */}
+        {this.renderMenuItem('archive', i18n.t('Vendor Orders'), () => {
           this.closeDrawer();
           navigator.handleDeepLink({
             link: 'vendor/orders/',
             payload: {},
           });
         })}
-        {/* {this.renderMenuItem('forum', i18n.gettext('Vendor Message Center'), () => {})} */}
-        {this.renderMenuItem('pages', i18n.gettext('Vendor Products'), () => {
+        {/* {this.renderMenuItem('forum', i18n.t('Vendor Message Center'), () => {})} */}
+        {this.renderMenuItem('pages', i18n.t('Vendor Products'), () => {
           this.closeDrawer();
           navigator.handleDeepLink({
             link: 'vendor/products/',
@@ -371,7 +371,7 @@ class Drawer extends Component {
         })}
         {this.renderMenuItem(
           'add-circle',
-          i18n.gettext('Add product'),
+          i18n.t('Add product'),
           () => {
             this.closeDrawer();
             navigator.handleDeepLink({
@@ -421,7 +421,7 @@ class Drawer extends Component {
 
             {auth.logged && this.renderVendorMenu()}
 
-            {this.renderMenuItem('home', i18n.gettext('Home'), () => {
+            {this.renderMenuItem('home', i18n.t('Home'), () => {
               navigator.handleDeepLink({
                 link: 'home/',
                 payload: {},
@@ -441,7 +441,7 @@ class Drawer extends Component {
               <View style={styles.itemBtnWrapper}>
                 <Icon name="shopping-cart" style={styles.itemBtnIcon} />
                 <Text style={styles.itemBtnText}>
-                  {i18n.gettext('Cart')}
+                  {i18n.t('Cart')}
                 </Text>
                 {this.renderBadge(cart.amount)}
               </View>
@@ -460,7 +460,7 @@ class Drawer extends Component {
                 <View style={styles.itemBtnWrapper}>
                   <Icon name="favorite" style={styles.itemBtnIcon} />
                   <Text style={styles.itemBtnText}>
-                    {i18n.gettext('Wish List')}
+                    {i18n.t('Wish List')}
                   </Text>
                   {this.renderBadge(wishList.items.length)}
                 </View>
@@ -468,10 +468,10 @@ class Drawer extends Component {
             )}
 
             {auth.logged && (
-              this.renderMenuItem('person', i18n.gettext('My Profile'), () => {
+              this.renderMenuItem('person', i18n.t('My Profile'), () => {
                 navigator.showModal({
                   screen: 'Profile',
-                  title: i18n.gettext('Profile'),
+                  title: i18n.t('Profile'),
                   passProps: {},
                 });
                 this.closeDrawer();
@@ -479,7 +479,7 @@ class Drawer extends Component {
             )}
 
             {auth.logged && (
-              this.renderMenuItem('receipt', i18n.gettext('Orders'), () => {
+              this.renderMenuItem('receipt', i18n.t('Orders'), () => {
                 navigator.handleDeepLink({
                   link: 'dispatch=orders.search',
                   payload: {},

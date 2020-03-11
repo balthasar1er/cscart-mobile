@@ -180,7 +180,7 @@ class Cart extends Component {
     });
 
     navigator.setTitle({
-      title: i18n.gettext('Cart').toUpperCase(),
+      title: i18n.t('Cart').toUpperCase(),
     });
   }
 
@@ -217,16 +217,16 @@ class Cart extends Component {
         navigator.dismissModal();
       } else if (event.id === 'clearCart') {
         Alert.alert(
-          i18n.gettext('Clear all cart ?'),
+          i18n.t('Clear all cart ?'),
           '',
           [
             {
-              text: i18n.gettext('Cancel'),
+              text: i18n.t('Cancel'),
               onPress: () => {},
               style: 'cancel'
             },
             {
-              text: i18n.gettext('Ok'),
+              text: i18n.t('Ok'),
               onPress: () => cartActions.clear(),
             },
           ],
@@ -260,7 +260,7 @@ class Cart extends Component {
 
     const swipeoutBtns = [
       {
-        text: i18n.gettext('Delete'),
+        text: i18n.t('Delete'),
         type: 'delete',
         onPress: () => this.handleRemoveProduct(item),
       },
@@ -356,7 +356,7 @@ class Cart extends Component {
     return (
       <CartFooter
         totalPrice={formatPrice(cart.subtotal_formatted.price)}
-        btnText={i18n.gettext('Checkout').toUpperCase()}
+        btnText={i18n.t('Checkout').toUpperCase()}
         onBtnPress={() => this.handlePlaceOrder()}
       />
     );
@@ -373,10 +373,10 @@ class Cart extends Component {
           <Icon name="add-shopping-cart" style={styles.emptyListIcon} />
         </View>
         <Text style={styles.emptyListHeader}>
-          {i18n.gettext('Your shopping cart is empty.')}
+          {i18n.t('Your shopping cart is empty.')}
         </Text>
         <Text style={styles.emptyListDesc}>
-          {i18n.gettext('Looking for ideas?')}
+          {i18n.t('Looking for ideas?')}
         </Text>
       </View>
     );

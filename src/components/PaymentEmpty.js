@@ -26,12 +26,12 @@ const formOptions = {
   disableOrder: true,
   fields: {
     notes: {
-      label: i18n.gettext('Comment'),
+      label: i18n.t('Comment'),
       i18n: {
         optional: '',
         required: '',
       },
-      help: `${i18n.gettext('(Optional)')}`,
+      help: `${i18n.t('(Optional)')}`,
       clearButtonMode: 'while-editing',
       multiline: true,
       returnKeyType: 'done',

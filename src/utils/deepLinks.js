@@ -68,7 +68,7 @@ export const registerDrawerDeepLinks = (event, navigator) => {
     navigator.showModal({
       screen: 'VendorManageCategoriesPicker',
       backButtonTitle: '',
-      title: i18n.gettext('Categories').toUpperCase(),
+      title: i18n.t('Categories').toUpperCase(),
       passProps: {
         parent: 0,
       },
@@ -83,7 +83,7 @@ export const registerDrawerDeepLinks = (event, navigator) => {
     Linking.canOpenURL(link).then((supported) => {
       if (!supported) {
         return Alert.alert(
-          i18n.gettext('Can\'t handle url'),
+          i18n.t('Can\'t handle url'),
           ''
         );
       }

@@ -105,7 +105,7 @@ function selectRatingTemplate(rating) {
       </View>
       {rating.hasError &&
         <Text style={errorTextStyle}>
-          {i18n.gettext('The rating field is mandatory.')}
+          {i18n.t('The rating field is mandatory.')}
         </Text>
       }
     </View>
@@ -167,7 +167,7 @@ class WriteReview extends Component {
     }
 
     navigator.setTitle({
-      title: i18n.gettext('Write a Review').toUpperCase(),
+      title: i18n.t('Write a Review').toUpperCase(),
     });
   }
 
@@ -254,7 +254,7 @@ class WriteReview extends Component {
       disableOrder: true,
       fields: {
         name: {
-          label: i18n.gettext('Your name'),
+          label: i18n.t('Your name'),
           clearButtonMode: 'while-editing',
         },
         rating: {
@@ -264,7 +264,7 @@ class WriteReview extends Component {
           numberOfLines: 4,
           multiline: true,
           stylesheet: inputStyle,
-          label: i18n.gettext('Your message'),
+          label: i18n.t('Your message'),
           clearButtonMode: 'while-editing',
         },
       }
@@ -278,7 +278,7 @@ class WriteReview extends Component {
           options={options}
         />
         <Button type="primary" onPress={() => this.handleSend()}>
-          {i18n.gettext('Send review').toUpperCase()}
+          {i18n.t('Send review').toUpperCase()}
         </Button>
         <Spinner visible={discussion.fetching} />
       </ScrollView>

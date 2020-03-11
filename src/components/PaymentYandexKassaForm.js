@@ -34,7 +34,7 @@ export default class PaymentYandexKassaForm extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>{i18n.gettext('Yandex Kassa')}</Text>
+        <Text>{i18n.t('Yandex Kassa')}</Text>
         <Form
           ref={'formRef'}
           type={formFields}

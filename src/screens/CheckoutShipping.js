@@ -215,7 +215,7 @@ class CheckoutShipping extends Component {
     const { navigator } = this.props;
     navigator.push({
       screen: 'CheckoutPayment',
-      title: i18n.gettext('Checkout').toUpperCase(),
+      title: i18n.t('Checkout').toUpperCase(),
       backButtonTitle: '',
       passProps: {
         shipping_id: this.state.shipping_id,
@@ -325,7 +325,7 @@ class CheckoutShipping extends Component {
         </ScrollView>
         <CartFooter
           totalPrice={`${formatPrice(total)}`}
-          btnText={i18n.gettext('Next').toUpperCase()}
+          btnText={i18n.t('Next').toUpperCase()}
           isBtnDisabled={isNextDisabled}
           onBtnPress={() => this.handleNextPress()}
         />

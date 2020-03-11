@@ -26,27 +26,27 @@ const formOptions = {
   disableOrder: true,
   fields: {
     customerSignature: {
-      label: i18n.gettext('Customer\'s signature'),
+      label: i18n.t('Customer\'s signature'),
       clearButtonMode: 'while-editing',
       returnKeyType: 'done',
     },
     checkingAccountNumber: {
-      label: i18n.gettext('Checking account number'),
+      label: i18n.t('Checking account number'),
       clearButtonMode: 'while-editing',
       returnKeyType: 'done',
     },
     bankRoutingNumber: {
-      label: i18n.gettext('Bank routing number'),
+      label: i18n.t('Bank routing number'),
       clearButtonMode: 'while-editing',
       returnKeyType: 'done',
     },
     notes: {
-      label: i18n.gettext('Comment'),
+      label: i18n.t('Comment'),
       i18n: {
         optional: '',
         required: '',
       },
-      help: `${i18n.gettext('(Optional)')}`,
+      help: `${i18n.t('(Optional)')}`,
       clearButtonMode: 'while-editing',
       multiline: true,
       returnKeyType: 'done',

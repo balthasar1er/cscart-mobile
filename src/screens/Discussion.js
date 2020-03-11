@@ -105,7 +105,7 @@ class Discussion extends Component {
     });
 
     navigator.setTitle({
-      title: i18n.gettext('Comments & Reviews').toUpperCase(),
+      title: i18n.t('Comments & Reviews').toUpperCase(),
     });
   }
 

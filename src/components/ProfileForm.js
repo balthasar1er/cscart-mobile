@@ -99,7 +99,7 @@ export default class ProfileForm extends Component {
 
   getFieldType = (field, allFields) => {
     const label = field.description || '';
-    const help = !field.required ? `${i18n.gettext('(Optional)')}` : '';
+    const help = !field.required ? `${i18n.t('(Optional)')}` : '';
     const optionI18n = {
       i18n: {
         optional: '',
@@ -115,7 +115,7 @@ export default class ProfileForm extends Component {
           ...optionI18n,
           label,
           help,
-          defaultValueText: i18n.gettext('Select date'),
+          defaultValueText: i18n.t('Select date'),
           mode: 'date',
           config: {
             format: date => format(date, 'MM/DD/YYYY'),
@@ -185,10 +185,10 @@ export default class ProfileForm extends Component {
           ...optionI18n,
           label,
           help,
-          defaultValueText: i18n.gettext('Select country'),
+          defaultValueText: i18n.t('Select country'),
           nullOption: {
             value: '',
-            text: i18n.gettext('Select country')
+            text: i18n.t('Select country')
           },
         },
       };
@@ -226,10 +226,10 @@ export default class ProfileForm extends Component {
           ...optionI18n,
           label,
           help,
-          defaultValueText: i18n.gettext('Select state'),
+          defaultValueText: i18n.t('Select state'),
           nullOption: {
             value: '',
-            text: i18n.gettext('Select state')
+            text: i18n.t('Select state')
           },
         },
       };
@@ -392,7 +392,7 @@ export default class ProfileForm extends Component {
                 onPress={this.handleValidate}
               >
                 <Text style={styles.btnText}>
-                  {isEdit ? i18n.gettext('Save') : i18n.gettext('Register')}
+                  {isEdit ? i18n.t('Save') : i18n.t('Register')}
                 </Text>
               </TouchableOpacity>
             )

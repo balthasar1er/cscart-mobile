@@ -145,8 +145,8 @@ export function add(data, notify = true) {
             type: NOTIFICATION_SHOW,
             payload: {
               type: 'success',
-              title: i18n.gettext('Success'),
-              text: i18n.gettext('The product was added to your cart.'),
+              title: i18n.t('Success'),
+              text: i18n.t('The product was added to your cart.'),
               closeLastModal: false,
             },
           });
@@ -160,8 +160,8 @@ export function add(data, notify = true) {
             type: NOTIFICATION_SHOW,
             payload: {
               type: 'warning',
-              title: i18n.gettext('Notice'),
-              text: i18n.gettext('Product has zero inventory and cannot be added to the cart.'),
+              title: i18n.t('Notice'),
+              text: i18n.t('Product has zero inventory and cannot be added to the cart.'),
               closeLastModal: false,
             },
           });

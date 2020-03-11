@@ -134,8 +134,8 @@ export function updateProfile(id, params) {
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'success',
-            title: i18n.gettext('Profile'),
-            text: i18n.gettext('The profile data has been updated successfully'),
+            title: i18n.t('Profile'),
+            text: i18n.t('The profile data has been updated successfully'),
             closeLastModal: true,
           },
         });
@@ -150,7 +150,7 @@ export function updateProfile(id, params) {
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'warning',
-            title: i18n.gettext('Profile update fail'),
+            title: i18n.t('Profile update fail'),
             text: error.response.data.message,
             closeLastModal: false,
           },
@@ -187,8 +187,8 @@ export function createProfile(params) {
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'success',
-            title: i18n.gettext('Registration'),
-            text: i18n.gettext('Registration complete.'),
+            title: i18n.t('Registration'),
+            text: i18n.t('Registration complete.'),
             closeLastModal: true,
           },
         });
@@ -203,7 +203,7 @@ export function createProfile(params) {
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'warning',
-            title: i18n.gettext('Registration fail'),
+            title: i18n.t('Registration fail'),
             text: error.response.data.message,
             closeLastModal: false,
           },
@@ -282,8 +282,8 @@ export function registration(token) {
       type: NOTIFICATION_SHOW,
       payload: {
         type: 'success',
-        title: i18n.gettext('Registration'),
-        text: i18n.gettext('Registration complete.'),
+        title: i18n.t('Registration'),
+        text: i18n.t('Registration complete.'),
         closeLastModal: true,
       },
     });

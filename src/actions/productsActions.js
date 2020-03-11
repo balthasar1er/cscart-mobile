@@ -74,8 +74,8 @@ export function postDiscussion(data) {
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'success',
-            title: i18n.gettext('Thank you for your post.'),
-            text: i18n.gettext('Your post will be checked before it gets published.'),
+            title: i18n.t('Thank you for your post.'),
+            text: i18n.t('Your post will be checked before it gets published.'),
             closeLastModal: false,
           },
         });

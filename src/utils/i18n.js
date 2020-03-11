@@ -1,5 +1,6 @@
 import { NativeModules, Platform } from 'react-native';
-import gettext from 'gettext.js';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
 
 const platformLanguage = Platform.OS === 'ios'
   ? NativeModules.SettingsManager.settings.AppleLocale
@@ -8,32 +9,19 @@ const platformLanguage = Platform.OS === 'ios'
 
 export const deviceLanguage = platformLanguage.split('_')[0];
 
-const langs = ['ar', 'ru', 'en', 'fr', 'it', 'es'];
-let jsonData;
+i18n
+  .use(initReactI18next)
+  .init({
+    lng: 'en',
+    fallbackLng: 'en',
+    resources: {
+      en: {
+        translation: {
+          'Test val': 'Тестовое свойство',
+          dd: 'Тестовое свойство',
+        }
+      }
+    }
+  });
 
-if (langs.includes(deviceLanguage)) {
-  switch (deviceLanguage) {
-    case 'ru':
-      jsonData = require('../config/locales/ru.json');
-      break;
-    case 'ar':
-      jsonData = require('../config/locales/ar.json');
-      break;
-    case 'fr':
-      jsonData = require('../config/locales/fr.json');
-      break;
-    case 'it':
-      jsonData = require('../config/locales/it.json');
-      break;
-    case 'es':
-      jsonData = require('../config/locales/es.json');
-      break;
-    default:
-      jsonData = require('../config/locales/en.json');
-  }
-
-  gettext.setLocale(deviceLanguage);
-  gettext.loadJSON(jsonData);
-}
-
-export default gettext;
+export default i18n;

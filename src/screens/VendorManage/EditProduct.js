@@ -103,10 +103,10 @@ const formOptions = {
   disableOrder: true,
   fields: {
     product: {
-      label: i18n.gettext('Name'),
+      label: i18n.t('Name'),
     },
     full_description: {
-      label: i18n.gettext('Full description'),
+      label: i18n.t('Full description'),
       numberOfLines: 4,
       multiline: true,
       stylesheet: {
@@ -125,15 +125,15 @@ const formOptions = {
 };
 
 const MORE_ACTIONS_LIST = [
-  i18n.gettext('Delete This Product'),
-  i18n.gettext('Cancel'),
+  i18n.t('Delete This Product'),
+  i18n.t('Cancel'),
 ];
 
 const STATUS_ACTIONS_LIST = [
-  i18n.gettext('Make Product Active'),
-  i18n.gettext('Make Product Hidden'),
-  i18n.gettext('Make Product Disabled'),
-  i18n.gettext('Cancel'),
+  i18n.t('Make Product Active'),
+  i18n.t('Make Product Hidden'),
+  i18n.t('Make Product Disabled'),
+  i18n.t('Cancel'),
 ];
 
 class EditProduct extends Component {
@@ -213,7 +213,7 @@ class EditProduct extends Component {
   componentWillReceiveProps() {
     const { navigator, product } = this.props;
     navigator.setTitle({
-      title: i18n.gettext(product.product || '').toUpperCase(),
+      title: i18n.t(product.product || '').toUpperCase(),
     });
   }
 
@@ -410,15 +410,15 @@ class EditProduct extends Component {
             </Section>
             <Section wrapperStyle={{ padding: 0 }}>
               {this.renderMenuItem(
-                i18n.gettext('Status'),
+                i18n.t('Status'),
                 getProductStatus(product.status).text,
                 () => {
                   this.StatusActionSheet.show();
                 }
               )}
               {this.renderMenuItem(
-                i18n.gettext('Pricing / Inventory'),
-                i18n.gettext('%1, List price: %2, In stock: %3', product.product_code, product.list_price, product.amount),
+                i18n.t('Pricing / Inventory'),
+                i18n.t('%1, List price: %2, In stock: %3', product.product_code, product.list_price, product.amount),
                 () => {
                   navigator.push({
                     screen: 'VendorManagePricingInventory',
@@ -427,13 +427,13 @@ class EditProduct extends Component {
                 }
               )}
               {this.renderMenuItem(
-                i18n.gettext('Categories'),
+                i18n.t('Categories'),
                 product.categories.map(item => item.category).join(', '),
                 () => {
                   navigator.showModal({
                     screen: 'VendorManageCategoriesPicker',
                     backButtonTitle: '',
-                    title: i18n.gettext('Categories').toUpperCase(),
+                    title: i18n.t('Categories').toUpperCase(),
                     passProps: {
                       selected: product.categories,
                       parent: 0,
@@ -445,8 +445,8 @@ class EditProduct extends Component {
                 }
               )}
               {this.renderMenuItem(
-                i18n.gettext('Shipping properties'),
-                `${i18n.gettext('Weight: %1 ', product.weight)} ${product.free_shipping ? i18n.gettext('Free shipping') : ''}`,
+                i18n.t('Shipping properties'),
+                `${i18n.t('Weight: %1 ', product.weight)} ${product.free_shipping ? i18n.t('Free shipping') : ''}`,
                 () => {
                   navigator.push({
                     screen: 'VendorManageShippingProperties',

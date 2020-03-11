@@ -163,7 +163,7 @@ class Layouts extends Component {
       } else if (event.id === 'search') {
         navigator.showModal({
           screen: 'Search',
-          title: i18n.gettext('Search'),
+          title: i18n.t('Search'),
         });
       }
     }

@@ -67,7 +67,7 @@ export default class CategoriesBlocks extends Component {
       <View style={styles.container}>
         {wrapper !== '' && (
           <Text style={styles.header}>
-            {i18n.gettext('Categories')}
+            {i18n.t('Categories')}
           </Text>
         )}
         <View style={styles.wrapper}>

@@ -49,7 +49,7 @@ const Rating = ({ value, count, containerStyle }) => {
       {stars}
       {count &&
         <Text style={styles.countText}>
-          {count ? i18n.gettext('%1 reviews', count) : ''}
+          {count ? i18n.t('%1 reviews', count) : ''}
         </Text>
       }
     </View>

@@ -133,7 +133,7 @@ class OrderDetail extends Component {
     }
 
     navigator.setTitle({
-      title: i18n.gettext('Order Detail').toUpperCase(),
+      title: i18n.t('Order Detail').toUpperCase(),
     });
   }
 
@@ -184,40 +184,40 @@ class OrderDetail extends Component {
     return (
       <React.Fragment>
         <FormBlock
-          title={i18n.gettext('Contact information')}
+          title={i18n.t('Contact information')}
           style={styles.formBlockWraper}
         >
           <View>
-            {this.renderFieldRow(i18n.gettext('Email:'), order.email)}
-            {this.renderFieldRow(i18n.gettext('Phone:'), order.phone)}
+            {this.renderFieldRow(i18n.t('Email:'), order.email)}
+            {this.renderFieldRow(i18n.t('Phone:'), order.phone)}
           </View>
         </FormBlock>
         <FormBlock
-          title={i18n.gettext('Billing address')}
+          title={i18n.t('Billing address')}
           style={styles.formBlockWraper}
         >
           <View>
-            {this.renderFieldRow(i18n.gettext('First name:'), order.b_firstname)}
-            {this.renderFieldRow(i18n.gettext('Last name:'), order.b_lastname)}
-            {this.renderFieldRow(i18n.gettext('Address:'), order.b_address)}
-            {this.renderFieldRow(i18n.gettext('City:'), order.b_city)}
-            {this.renderFieldRow(i18n.gettext('State:'), order.b_state_descr)}
-            {this.renderFieldRow(i18n.gettext('Country:'), order.b_country_descr)}
-            {this.renderFieldRow(i18n.gettext('Zip code:'), order.b_zipcode)}
+            {this.renderFieldRow(i18n.t('First name:'), order.b_firstname)}
+            {this.renderFieldRow(i18n.t('Last name:'), order.b_lastname)}
+            {this.renderFieldRow(i18n.t('Address:'), order.b_address)}
+            {this.renderFieldRow(i18n.t('City:'), order.b_city)}
+            {this.renderFieldRow(i18n.t('State:'), order.b_state_descr)}
+            {this.renderFieldRow(i18n.t('Country:'), order.b_country_descr)}
+            {this.renderFieldRow(i18n.t('Zip code:'), order.b_zipcode)}
           </View>
         </FormBlock>
         <FormBlock
-          title={i18n.gettext('Shipping address')}
+          title={i18n.t('Shipping address')}
           style={styles.formBlockWraper}
         >
           <View>
-            {this.renderFieldRow(i18n.gettext('First name:'), order.s_firstname)}
-            {this.renderFieldRow(i18n.gettext('Last name:'), order.s_lastname)}
-            {this.renderFieldRow(i18n.gettext('Address:'), order.s_address)}
-            {this.renderFieldRow(i18n.gettext('City:'), order.s_city)}
-            {this.renderFieldRow(i18n.gettext('State:'), order.s_state_descr)}
-            {this.renderFieldRow(i18n.gettext('Country:'), order.sb_country_descr)}
-            {this.renderFieldRow(i18n.gettext('Zip code:'), order.s_zipcode)}
+            {this.renderFieldRow(i18n.t('First name:'), order.s_firstname)}
+            {this.renderFieldRow(i18n.t('Last name:'), order.s_lastname)}
+            {this.renderFieldRow(i18n.t('Address:'), order.s_address)}
+            {this.renderFieldRow(i18n.t('City:'), order.s_city)}
+            {this.renderFieldRow(i18n.t('State:'), order.s_state_descr)}
+            {this.renderFieldRow(i18n.t('Country:'), order.sb_country_descr)}
+            {this.renderFieldRow(i18n.t('Zip code:'), order.s_zipcode)}
           </View>
         </FormBlock>
       </React.Fragment>
@@ -231,7 +231,7 @@ class OrderDetail extends Component {
     return (
       <FormBlock style={styles.formBlockWraper}>
         <View>
-          {this.renderFieldRow(i18n.gettext('Status'), status.text)}
+          {this.renderFieldRow(i18n.t('Status'), status.text)}
         </View>
       </FormBlock>
     );
@@ -258,15 +258,15 @@ class OrderDetail extends Component {
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           <Text style={styles.mainHeader}>
-            {i18n.gettext('Order')} #{order.order_id}
+            {i18n.t('Order')} #{order.order_id}
           </Text>
           <Text style={styles.subHeader}>
-            {i18n.gettext('Placed on')} {format(date, 'MM/DD/YYYY')}
+            {i18n.t('Placed on')} {format(date, 'MM/DD/YYYY')}
           </Text>
 
           <FormBlock>
             <Text style={styles.header}>
-              {i18n.gettext('Products information').toUpperCase()}
+              {i18n.t('Products information').toUpperCase()}
             </Text>
             <View style={styles.productsWrapper}>
               {productsList}
@@ -277,22 +277,22 @@ class OrderDetail extends Component {
 
           <FormBlock>
             <Text style={styles.header}>
-              {i18n.gettext('Summary').toUpperCase()}
+              {i18n.t('Summary').toUpperCase()}
             </Text>
             <View style={styles.formBlockWraper}>
-              <FormBlockField title={`${i18n.gettext('Payment method')}:`}>
+              <FormBlockField title={`${i18n.t('Payment method')}:`}>
                 {order.payment_method.payment}
               </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Shipping method')}:`}>
+              <FormBlockField title={`${i18n.t('Shipping method')}:`}>
                 {shippingMethodsList}
               </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Subtotal')}:`}>
+              <FormBlockField title={`${i18n.t('Subtotal')}:`}>
                 {formatPrice(order.subtotal)}
               </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Shipping cost')}:`}>
+              <FormBlockField title={`${i18n.t('Shipping cost')}:`}>
                 {formatPrice(order.shipping_cost)}
               </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Total')}:`}>
+              <FormBlockField title={`${i18n.t('Total')}:`}>
                 {formatPrice(order.total)}
               </FormBlockField>
             </View>

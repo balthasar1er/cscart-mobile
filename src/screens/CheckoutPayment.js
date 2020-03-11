@@ -448,7 +448,7 @@ class CheckoutStepThree extends Component {
         </KeyboardAwareScrollView>
         <CartFooter
           totalPrice={formatPrice(cart.total_formatted.price)}
-          btnText={i18n.gettext('Place order').toUpperCase()}
+          btnText={i18n.t('Place order').toUpperCase()}
           isBtnDisabled={false}
           onBtnPress={() => this.handlePlaceOrder()}
         />

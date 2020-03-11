@@ -142,25 +142,25 @@ export function getProductStatus(status) {
   switch (status) {
     case 'A':
       return {
-        text: i18n.gettext('Active'),
+        text: i18n.t('Active'),
         style: { color: '#97cf4d' }
       };
 
     case 'H':
       return {
-        text: i18n.gettext('Hidden'),
+        text: i18n.t('Hidden'),
         style: { color: '#000000' }
       };
 
     case 'D':
       return {
-        text: i18n.gettext('Disabled'),
+        text: i18n.t('Disabled'),
         style: { color: '#ff0000' }
       };
 
     default:
       return {
-        text: i18n.gettext(''),
+        text: i18n.t(''),
         style: { color: '#000000' }
       };
   }
@@ -169,42 +169,42 @@ export function getProductStatus(status) {
 export const orderStatuses = [
   {
     code: 'P',
-    text: i18n.gettext('Processed'),
+    text: i18n.t('Processed'),
     style: { color: '#97cf4d' }
   },
   {
     code: 'C',
-    text: i18n.gettext('Complete'),
+    text: i18n.t('Complete'),
     style: { color: '#97cf4d' }
   },
   {
     code: 'O',
-    text: i18n.gettext('Open'),
+    text: i18n.t('Open'),
     style: { color: '#ff9522' }
   },
   {
     code: 'F',
-    text: i18n.gettext('Failed'),
+    text: i18n.t('Failed'),
     style: { color: '#ff5215' }
   },
   {
     code: 'D',
-    text: i18n.gettext('Declined'),
+    text: i18n.t('Declined'),
     style: { color: '#ff5215' }
   },
   {
     code: 'B',
-    text: i18n.gettext('Backordered'),
+    text: i18n.t('Backordered'),
     style: { color: '#28abf6' }
   },
   {
     code: 'I',
-    text: i18n.gettext('Canceled'),
+    text: i18n.t('Canceled'),
     style: { color: '#c2c2c2' }
   },
   {
     code: 'Y',
-    text: i18n.gettext('Awaiting call'),
+    text: i18n.t('Awaiting call'),
     style: { color: '#b63a21' }
   }
 ];

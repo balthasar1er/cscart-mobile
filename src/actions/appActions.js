@@ -2,7 +2,7 @@ import { AsyncStorage, I18nManager } from 'react-native';
 import { STORE_KEY, RESTORE_STATE } from '../constants';
 import API from '../services/api';
 import store from '../store';
-import trans, { deviceLanguage } from '../utils/trans';
+import i18n, { deviceLanguage } from '../utils/i18n';
 
 const covertLangCodes = (translations = []) => {
   const result = {};
@@ -31,7 +31,7 @@ export async function initApp() {
 
   try {
     const transResult = await API.get(`/sra_translations/?name=mobile_app.mobile_&lang_code=${deviceLanguage}`);
-    trans.addResourceBundle(
+    i18n.addResourceBundle(
       deviceLanguage,
       'translations',
       covertLangCodes(transResult.data.langvars),
