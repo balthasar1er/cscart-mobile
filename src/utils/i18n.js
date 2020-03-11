@@ -12,8 +12,9 @@ export const deviceLanguage = platformLanguage.split('_')[0];
 i18n
   .use(initReactI18next)
   .init({
-    lng: 'en',
-    fallbackLng: 'en',
+    debug: false,
+    lng: deviceLanguage,
+    fallbackLng: deviceLanguage,
     resources: {
       en: {
         translation: {
