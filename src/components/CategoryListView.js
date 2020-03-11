@@ -10,35 +10,41 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 import { getImagePath } from '../utils';
 
-// Components
-import Icon from './Icon';
-
 const styles = EStyleSheet.create({
   container: {
     width: '33.33333%',
     padding: 5,
+    shadowColor: '#E0E0E0',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 1,
+    elevation: 2,
   },
   wrapper: {
-    height: 150,
-    position: 'relative',
-    marginTop: 5,
-    backgroundColor: '$categoryBlockBackgroundColor',
-    borderBottomWidth: 1,
-    borderRightWidth: 1,
-    borderColor: '#dadada',
+    flex: 1,
+    minHeight: 70,
     overflow: 'hidden',
+    position: 'relative',
     borderRadius: '$categoryBorderRadius',
+    backgroundColor: '$categoryBlockBackgroundColor',
   },
   categoryImage: {
     height: 100,
     width: '100%',
-    resizeMode: 'cover',
+    resizeMode: 'contain',
   },
   categoryTitleWrapper: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: 6,
+    paddingBottom: 6,
+    paddingLeft: 4,
+    paddingRight: 4,
   },
   categoryTitle: {
     textAlign: 'center',
@@ -48,34 +54,18 @@ const styles = EStyleSheet.create({
     backgroundColor: '$categoryBlockBackgroundColor',
     color: '$categoryBlockTextColor',
   },
-  noImage: {
-    backgroundColor: '#ececec',
-    height: 100,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyImage: {
-    color: '$categoryEmptyImage',
-    fontSize: '3rem',
-  },
 });
 
 const CategoryListView = ({ category, onPress }) => {
   const imageUri = getImagePath(category);
+
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={() => onPress(category)}
     >
       <View style={styles.wrapper}>
-        {imageUri ? (<Image source={{ uri: imageUri }} style={styles.categoryImage} />)
-          : (
-            <View style={styles.noImage}>
-              <Icon name="shopping-basket" style={styles.emptyImage} />
-            </View>
-          )
-        }
+        {imageUri ? (<Image source={{ uri: imageUri }} style={styles.categoryImage} />) : null}
         <View style={styles.categoryTitleWrapper}>
           <Text numberOfLines={2} style={styles.categoryTitle}>
             {category.category}
