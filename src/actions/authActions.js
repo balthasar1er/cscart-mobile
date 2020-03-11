@@ -36,7 +36,6 @@ import {
 } from '../constants';
 import Api from '../services/api';
 import i18n, { deviceLanguage } from '../utils/i18n';
-import config from '../config';
 import store from '../store';
 
 import * as cartActions from './cartActions';
@@ -258,7 +257,7 @@ export function login(data) {
         }, 1000);
       })
       .then(() => fetchProfile()(dispatch))
-      .then(() => layoutsActions.fetch(config.layoutId, 'index.index')(dispatch))
+      .then(() => layoutsActions.fetch()(dispatch))
       .catch((error) => {
         dispatch({
           type: AUTH_LOGIN_FAIL,

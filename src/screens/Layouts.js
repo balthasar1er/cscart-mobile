@@ -116,7 +116,7 @@ class Layouts extends Component {
     navigator.setTitle({
       title: config.shopName.toUpperCase(),
     });
-    layoutsActions.fetch(config.layoutId, 'index.index');
+    layoutsActions.fetch();
     navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
 
     if (config.pushNotifications) {
@@ -128,6 +128,8 @@ class Layouts extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { navigator } = nextProps;
+    const { notificationsActions } = this.props;
+
     if (nextProps.notifications.items.length) {
       const notify = nextProps.notifications.items[nextProps.notifications.items.length - 1];
       if (notify.closeLastModal) {
@@ -143,7 +145,7 @@ class Layouts extends Component {
           text: notify.text,
         },
       });
-      this.props.notificationsActions.hide(notify.id);
+      notificationsActions.hide(notify.id);
     }
   }
 
