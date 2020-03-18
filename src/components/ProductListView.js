@@ -9,6 +9,7 @@ import {
 import toInteger from 'lodash/toInteger';
 import get from 'lodash/get';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import Rating from './Rating';
 import { PRODUCT_IMAGE_WIDTH, formatPrice, getImagePath } from '../utils';
 import i18n from '../utils/i18n';
 
@@ -72,6 +73,11 @@ const styles = EStyleSheet.create({
   listDiscountText: {
     color: '#fff',
     textAlign: 'left',
+  },
+  rating: {
+    marginLeft: -10,
+    marginRight: -10,
+    marginTop: -4
   },
 });
 
@@ -139,6 +145,16 @@ class ProductListView extends PureComponent {
     );
   }
 
+  renderRating = () => {
+    const { product: { item } } = this.props;
+    return (
+      <Rating
+        containerStyle={styles.rating}
+        value={item.average_rating}
+      />
+    );
+  }
+
   render() {
     const { product, onPress } = this.props;
     const { item } = product;
@@ -167,6 +183,7 @@ class ProductListView extends PureComponent {
           >
             {item.product}
           </Text>
+          {this.renderRating()}
           {this.renderPrice()}
         </View>
       </TouchableOpacity>
