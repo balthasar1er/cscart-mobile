@@ -23,7 +23,8 @@ const styles = EStyleSheet.create({
     flex: 1,
   },
   rating: {
-    marginTop: -10,
+    marginTop: -2,
+    marginBottom: 10,
   },
   msg: {
     color: '$discussionMessageColor',
