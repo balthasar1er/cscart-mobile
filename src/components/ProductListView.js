@@ -21,7 +21,7 @@ const styles = EStyleSheet.create({
     padding: 15,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     height: 240,
     flex: 2,
     maxWidth: '50%',
@@ -31,11 +31,8 @@ const styles = EStyleSheet.create({
     height: PRODUCT_IMAGE_WIDTH,
   },
   description: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 8,
+    paddingTop: 8,
+    paddingBottom: 8,
   },
   productName: {
     color: 'black',
@@ -77,7 +74,7 @@ const styles = EStyleSheet.create({
   rating: {
     marginLeft: -10,
     marginRight: -10,
-    marginTop: -4
+    marginTop: 0
   },
 });
 
