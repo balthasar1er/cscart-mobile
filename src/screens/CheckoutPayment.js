@@ -216,20 +216,30 @@ class CheckoutStepThree extends Component {
       };
     }
 
-    ordersActions.create(orderInfo, (orderId) => {
-      this.setState({
-        fetching: false,
-      });
-      cartActions.clear();
-      navigator.push({
-        screen: 'CheckoutComplete',
-        backButtonTitle: '',
-        backButtonHidden: true,
-        passProps: {
-          orderId: orderId.order_id,
+    ordersActions
+      .create(orderInfo)
+      .then(({ data }) => {
+        this.setState({
+          fetching: false,
+        });
+        if (!data) {
+          return;
         }
+        cartActions.clear();
+        navigator.push({
+          screen: 'CheckoutComplete',
+          backButtonTitle: '',
+          backButtonHidden: true,
+          passProps: {
+            orderId: data.order_id,
+          }
+        });
+      })
+      .catch(() => {
+        this.setState({
+          fetching: false,
+        });
       });
-    });
     return null;
   }
 
@@ -262,28 +272,40 @@ class CheckoutStepThree extends Component {
       fetching: true,
     });
 
-    ordersActions.create(orderInfo, (orderId) => {
-      this.setState({
-        fetching: false,
-      });
-      const data = {
-        order_id: orderId.order_id,
-        replay: false,
-      };
-      paymentsActions.settlements(data)
-        .then((response) => {
-          navigator.push({
-            screen: 'SettlementsCompleteWebView',
-            backButtonTitle: '',
-            title: this.state.selectedItem.payment,
-            // backButtonHidden: true,
-            passProps: {
-              orderId: orderId.order_id,
-              ...response.data.data,
-            },
-          });
+    ordersActions
+      .create(orderInfo)
+      .then(({ data }) => {
+        this.setState({
+          fetching: false,
         });
-    });
+
+        if (!data) {
+          return;
+        }
+
+        const settlementData = {
+          order_id: data.order_id,
+          replay: false,
+        };
+        paymentsActions.settlements(settlementData)
+          .then((response) => {
+            navigator.push({
+              screen: 'SettlementsCompleteWebView',
+              backButtonTitle: '',
+              title: this.state.selectedItem.payment,
+              // backButtonHidden: true,
+              passProps: {
+                orderId: data.order_id,
+                ...response.data.data,
+              },
+            });
+          });
+      })
+      .catch(() => {
+        this.setState({
+          fetching: false,
+        });
+      });
     return null;
   }
 
