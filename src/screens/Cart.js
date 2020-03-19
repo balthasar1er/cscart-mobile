@@ -402,7 +402,13 @@ class Cart extends Component {
   };
 
   renderOrderDetail = () => {
+    const { products } = this.state;
     const { cart } = this.props;
+
+    if (!products.length) {
+      return null;
+    }
+
     return (
       <View style={styles.totalWrapper}>
         <Text style={styles.totalText}>
