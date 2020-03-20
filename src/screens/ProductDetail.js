@@ -19,7 +19,7 @@ import format from 'date-fns/format';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 import get from 'lodash/get';
-import { stripTags, formatPrice, getProductImagesPaths } from '../utils';
+import { stripTags, formatPrice, getProductImagesPaths, isPriceIncludesTax } from '../utils';
 
 // Import actions.
 import * as cartActions from '../actions/cartActions';
@@ -650,6 +650,7 @@ class ProductDetail extends Component {
     const isProductPriceZero = Math.ceil(product.price) !== 0;
     const productTaxedPrice = get(product, 'taxed_price_formatted.price', '');
     const productPrice = productTaxedPrice || get(product, 'price_formatted.price', '');
+    const showTaxedPrice = isPriceIncludesTax(product);
 
     return (
       <View>
@@ -665,7 +666,7 @@ class ProductDetail extends Component {
           <>
             <Text style={styles.priceText}>
               {formatPrice(productPrice)}
-              {productTaxedPrice !== '' && (
+              {showTaxedPrice && (
                 <Text style={styles.smallText}>
                   {` (${i18n.gettext('Including tax')})`}
                 </Text>

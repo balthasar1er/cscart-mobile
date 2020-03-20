@@ -29,7 +29,7 @@ import theme from '../config/theme';
 // links
 import { registerDrawerDeepLinks } from '../utils/deepLinks';
 import i18n from '../utils/i18n';
-import { formatPrice, getImagePath } from '../utils';
+import { formatPrice, getImagePath, isPriceIncludesTax } from '../utils';
 
 import {
   iconsMap,
@@ -284,6 +284,7 @@ class Cart extends Component {
 
     const productTaxedPrice = get(item, 'taxed_price_formatted.price', '');
     const productPrice = productTaxedPrice || get(item, 'price_formatted.price', '');
+    const showTaxedPrice = isPriceIncludesTax(item);
 
     return (
       <View style={styles.productItemWrapper}>
@@ -303,7 +304,7 @@ class Cart extends Component {
               </Text>
               <Text style={styles.productItemPrice}>
                 {`${item.amount} x ${productPrice}`}
-                {productTaxedPrice !== '' && (
+                {showTaxedPrice && (
                   <Text style={styles.smallText}>
                     {` (${i18n.gettext('Including tax')})`}
                   </Text>
