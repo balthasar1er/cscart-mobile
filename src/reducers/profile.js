@@ -1,5 +1,6 @@
 import {
   FETCH_PROFILE_SUCCESS,
+  AUTH_LOGOUT,
 } from '../constants';
 
 const initialState = {
@@ -13,6 +14,9 @@ export default function (state = initialState, action) {
         ...state,
         ...action.payload,
       };
+
+    case AUTH_LOGOUT:
+      return initialState;
 
     default:
       return state;
