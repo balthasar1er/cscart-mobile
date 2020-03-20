@@ -153,7 +153,7 @@ class CheckoutShipping extends Component {
 
     this.setState({
       items,
-      total: cart.subtotal_formatted.price,
+      total: cart.total_formatted.price,
       isNextDisabled: shippings.length === 0,
     });
   }
