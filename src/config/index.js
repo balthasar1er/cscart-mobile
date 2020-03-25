@@ -9,7 +9,7 @@ export default {
   // SHOP NAME
   shopName: 'CS-Cart Mobile',
   // SHOP DEFAULT LAYOUT ID
-  layoutId: 3, // Default www.mobile.demo.cs-cart.com layout id
+  layoutId: 2, // Default www.mobile.demo.cs-cart.com layout id
   // VERSION MVE OR ULT
   version: 'MVE',
   // Enable push notifications
