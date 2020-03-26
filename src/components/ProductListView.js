@@ -9,6 +9,7 @@ import {
 import toInteger from 'lodash/toInteger';
 import get from 'lodash/get';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import Rating from './Rating';
 import { PRODUCT_IMAGE_WIDTH, formatPrice, getImagePath } from '../utils';
 import i18n from '../utils/i18n';
 
@@ -20,7 +21,7 @@ const styles = EStyleSheet.create({
     padding: 15,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     height: 240,
     flex: 2,
     maxWidth: '50%',
@@ -30,11 +31,8 @@ const styles = EStyleSheet.create({
     height: PRODUCT_IMAGE_WIDTH,
   },
   description: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 8,
+    paddingTop: 8,
+    paddingBottom: 8,
   },
   productName: {
     color: 'black',
@@ -72,6 +70,11 @@ const styles = EStyleSheet.create({
   listDiscountText: {
     color: '#fff',
     textAlign: 'left',
+  },
+  rating: {
+    marginLeft: -10,
+    marginRight: -10,
+    marginTop: 0
   },
 });
 
@@ -139,6 +142,16 @@ class ProductListView extends PureComponent {
     );
   }
 
+  renderRating = () => {
+    const { product: { item } } = this.props;
+    return (
+      <Rating
+        containerStyle={styles.rating}
+        value={item.average_rating}
+      />
+    );
+  }
+
   render() {
     const { product, onPress } = this.props;
     const { item } = product;
@@ -167,6 +180,7 @@ class ProductListView extends PureComponent {
           >
             {item.product}
           </Text>
+          {this.renderRating()}
           {this.renderPrice()}
         </View>
       </TouchableOpacity>

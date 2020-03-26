@@ -19,7 +19,7 @@ import format from 'date-fns/format';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 import get from 'lodash/get';
-import { stripTags, formatPrice, getProductImagesPaths } from '../utils';
+import { stripTags, formatPrice, getProductImagesPaths, isPriceIncludesTax } from '../utils';
 
 // Import actions.
 import * as cartActions from '../actions/cartActions';
@@ -97,6 +97,11 @@ const styles = EStyleSheet.create({
     fontWeight: 'bold',
     color: '$darkColor',
     textAlign: 'left'
+  },
+  smallText: {
+    fontSize: '0.8rem',
+    fontWeight: 'normal',
+    color: '$darkColor',
   },
   outOfStockText: {
     color: '$dangerColor',
@@ -645,6 +650,7 @@ class ProductDetail extends Component {
     const isProductPriceZero = Math.ceil(product.price) !== 0;
     const productTaxedPrice = get(product, 'taxed_price_formatted.price', '');
     const productPrice = productTaxedPrice || get(product, 'price_formatted.price', '');
+    const showTaxedPrice = isPriceIncludesTax(product);
 
     return (
       <View>
@@ -657,9 +663,16 @@ class ProductDetail extends Component {
           </Text>
         )}
         {isProductPriceZero ? (
-          <Text style={styles.priceText}>
-            {formatPrice(productPrice)}
-          </Text>
+          <>
+            <Text style={styles.priceText}>
+              {formatPrice(productPrice)}
+              {showTaxedPrice && (
+                <Text style={styles.smallText}>
+                  {` (${i18n.gettext('Including tax')})`}
+                </Text>
+              )}
+            </Text>
+          </>
         ) : (
           <Text style={styles.zeroPrice}>
             {i18n.t('Contact us for a price')}

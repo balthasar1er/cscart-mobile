@@ -12,7 +12,10 @@ import Icon from './Icon';
 
 const styles = EStyleSheet.create({
   container: {
-    padding: 10,
+    paddingTop: 2,
+    paddingBottom: 2,
+    paddingLeft: 8,
+    paddingRight: 8,
     flexDirection: 'row',
   },
   checkIcon: {

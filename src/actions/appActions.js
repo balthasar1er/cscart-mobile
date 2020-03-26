@@ -37,7 +37,7 @@ export async function initApp() {
     );
   } catch (error) {
     let translation;
-    const AVAILABLE_LANGS = ['ar', 'ru', 'en', 'fr', 'it', 'es'];
+    const AVAILABLE_LANGS = ['ar', 'ru', 'en', 'fr', 'it', 'es', 'pt'];
 
     if (AVAILABLE_LANGS.includes(deviceLanguage)) {
       switch (deviceLanguage) {
@@ -55,6 +55,9 @@ export async function initApp() {
           break;
         case 'es':
           translation = require('../config/locales/es.json');
+          break;
+        case 'pt':
+          translation = require('../config/locales/pt.json');
           break;
         default:
           translation = require('../config/locales/en.json');

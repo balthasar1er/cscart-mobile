@@ -21,6 +21,7 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginBottom: 5,
+    alignItems: 'stretch',
   },
   header: {
     fontWeight: 'bold',
@@ -45,23 +46,21 @@ export default class CategoriesBlocks extends Component {
     items: []
   }
 
-  renderCategory = (item, index) => (
-    <CategoryListView
-      category={item}
-      onPress={() => this.props.onPress(item)}
-      key={index}
-    />
-  );
-
   render() {
-    const { items, wrapper } = this.props;
+    const { items, wrapper, onPress } = this.props;
 
     if (!items.length) {
       return null;
     }
 
     const itemsList = orderBy(items, (i => parseInt(i.position, 10)), ['asc'])
-      .map((item, index) => this.renderCategory(item, index));
+      .map((item, index) => (
+        <CategoryListView
+          category={item}
+          onPress={() => onPress(item)}
+          key={index}
+        />
+      ));
 
     return (
       <View style={styles.container}>

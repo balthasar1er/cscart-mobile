@@ -105,6 +105,12 @@ export function getStates(code) {
   return result;
 }
 
+export function isPriceIncludesTax(data) {
+  const taxes = values(get(data, 'taxes', {}));
+
+  return taxes.some(item => get(item, 'price_includes_tax', 'N') === 'Y');
+}
+
 export function getCountryByCode(code) {
   const country = countries.find(i => i.code === code);
   if (!country) {
