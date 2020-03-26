@@ -13,7 +13,7 @@ import {
 import Api from '../services/api';
 import i18n from '../utils/i18n';
 
-export function create(data, cb = null) {
+export function create(data) {
   return (dispatch) => {
     dispatch({ type: ORDER_CREATE_REQUEST });
     return Api.post('/sra_orders/', data)
@@ -22,10 +22,6 @@ export function create(data, cb = null) {
           type: ORDER_CREATE_SUCCESS,
           payload: response.data,
         });
-        if (cb) {
-          cb(response.data);
-        }
-
         return response;
       })
       .catch((error) => {
