@@ -15,14 +15,6 @@ i18n
     debug: false,
     lng: deviceLanguage,
     fallbackLng: deviceLanguage,
-    resources: {
-      en: {
-        translation: {
-          'Test val': 'Тестовое свойство',
-          dd: 'Тестовое свойство',
-        }
-      }
-    }
   });
 
 export default i18n;
