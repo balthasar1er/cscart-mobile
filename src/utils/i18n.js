@@ -12,7 +12,7 @@ export const deviceLanguage = platformLanguage.split('_')[0];
 i18n
   .use(initReactI18next)
   .init({
-    debug: true,
+    debug: false,
     lng: deviceLanguage,
     fallbackLng: deviceLanguage,
   });
