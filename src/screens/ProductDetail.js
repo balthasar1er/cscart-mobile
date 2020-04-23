@@ -668,7 +668,7 @@ class ProductDetail extends Component {
               {formatPrice(productPrice)}
               {showTaxedPrice && (
                 <Text style={styles.smallText}>
-                  {` (${i18n.gettext('Including tax')})`}
+                  {` (${i18n.t('Including tax')})`}
                 </Text>
               )}
             </Text>
@@ -702,7 +702,7 @@ class ProductDetail extends Component {
     const masMore = discussion.search.total_items > 10;
     let title = i18n.t('Reviews');
     if (discussion.search.total_items != 0) { // eslint-disable-line
-      title = i18n.t('Reviews (%1)', discussion.search.total_items);
+      title = i18n.t('Reviews ({{count}})', { count: discussion.search.total_items});
     }
     return (
       <Section
@@ -880,7 +880,7 @@ class ProductDetail extends Component {
             {vendor.company}
           </Text>
           <Text style={styles.vendorProductCount}>
-            {i18n.t('%1 item(s)', vendor.products_count)}
+            {i18n.t('{{count}} item(s)', { count: vendor.products_count })}
           </Text>
           <Text style={styles.vendorDescription}>
             {stripTags(vendor.description)}

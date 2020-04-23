@@ -306,7 +306,7 @@ class Cart extends Component {
                 {`${item.amount} x ${productPrice}`}
                 {showTaxedPrice && (
                   <Text style={styles.smallText}>
-                    {` (${i18n.gettext('Including tax')})`}
+                    {` (${i18n.t('Including tax')})`}
                   </Text>
                 )}
               </Text>
@@ -376,7 +376,7 @@ class Cart extends Component {
     return (
       <CartFooter
         totalPrice={formatPrice(cart.total_formatted.price)}
-        btnText={i18n.gettext('Checkout').toUpperCase()}
+        btnText={i18n.t('Checkout').toUpperCase()}
         onBtnPress={() => this.handlePlaceOrder()}
       />
     );
@@ -413,13 +413,13 @@ class Cart extends Component {
     return (
       <View style={styles.totalWrapper}>
         <Text style={styles.totalText}>
-          {`${i18n.gettext('Subtotal')}: ${get(cart, 'subtotal_formatted.price', '')}`}
+          {`${i18n.t('Subtotal')}: ${get(cart, 'subtotal_formatted.price', '')}`}
         </Text>
         <Text style={styles.totalText}>
-          {`${i18n.gettext('Shipping')}: ${get(cart, 'shipping_cost_formatted.price', '')}`}
+          {`${i18n.t('Shipping')}: ${get(cart, 'shipping_cost_formatted.price', '')}`}
         </Text>
         <Text style={styles.totalText}>
-          {`${i18n.gettext('Taxes')}: ${get(cart, 'tax_subtotal_formatted.price', '')}`}
+          {`${i18n.t('Taxes')}: ${get(cart, 'tax_subtotal_formatted.price', '')}`}
         </Text>
       </View>
     );

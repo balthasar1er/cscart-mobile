@@ -292,7 +292,7 @@ export class VendorDetail extends Component {
 
     let title = i18n.t('Reviews');
     if (discussion.search.total_items != 0) { // eslint-disable-line
-      title = i18n.t('Reviews (%1)', discussion.search.total_items);
+      title = i18n.t('Reviews ({{count}})', { count: discussion.search.total_items });
     }
 
     return (

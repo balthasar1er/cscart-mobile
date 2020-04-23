@@ -418,7 +418,7 @@ class EditProduct extends Component {
               )}
               {this.renderMenuItem(
                 i18n.t('Pricing / Inventory'),
-                i18n.t('%1, List price: %2, In stock: %3', product.product_code, product.list_price, product.amount),
+                i18n.t('{{code}}, List price: {{list}}, In stock: {{stock}}', { code: product.product_code, list: product.list_price, stock: product.amount }),
                 () => {
                   navigator.push({
                     screen: 'VendorManagePricingInventory',
@@ -446,7 +446,7 @@ class EditProduct extends Component {
               )}
               {this.renderMenuItem(
                 i18n.t('Shipping properties'),
-                `${i18n.t('Weight: %1 ', product.weight)} ${product.free_shipping ? i18n.t('Free shipping') : ''}`,
+                `${i18n.t('Weight: {{count}} ', { count: product.weight })} ${product.free_shipping ? i18n.t('Free shipping') : ''}`,
                 () => {
                   navigator.push({
                     screen: 'VendorManageShippingProperties',

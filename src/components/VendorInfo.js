@@ -53,7 +53,7 @@ const VendorInfo = ({ onViewDetailPress, logoUrl, productsCount }) => (
     </View>
     <View style={styles.vendorWrapper}>
       <Text style={styles.vendorTotalItemsText}>
-        {i18n.t('Products found: %1', productsCount)}
+        {i18n.t('Products found: {{count}}', { count: productsCount })}
       </Text>
       <TouchableOpacity
         onPress={() => onViewDetailPress()}
