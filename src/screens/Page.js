@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  View,
-  WebView,
-} from 'react-native';
+import { View } from 'react-native';
+import { WebView } from 'react-native-webview';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // theme
