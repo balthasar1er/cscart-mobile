@@ -929,7 +929,7 @@ class ProductDetail extends Component {
         text={i18n.gettext('Share product')}
         onPress={() => {
           Share.share({
-            message: `${url} ${product.full_description}`,
+            message: url,
             title: product.product,
             url,
           }, {
