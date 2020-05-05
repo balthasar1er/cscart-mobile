@@ -39,10 +39,10 @@ const formOptions = {
   disableOrder: true,
   fields: {
     weight: {
-      label: i18n.gettext('Weight (lbs)'),
+      label: i18n.t('Weight (lbs)'),
     },
     free_shipping: {
-      label: i18n.gettext('Free shipping'),
+      label: i18n.t('Free shipping'),
     },
   }
 };
@@ -72,7 +72,7 @@ class ShippingProperties extends Component {
     super(props);
 
     props.navigator.setTitle({
-      title: i18n.gettext('Shipping Properties').toUpperCase(),
+      title: i18n.t('Shipping Properties').toUpperCase(),
     });
 
     this.formRef = React.createRef();

@@ -41,7 +41,7 @@ const formOptions = {
   disableOrder: true,
   fields: {
     description: {
-      label: i18n.gettext('Description'),
+      label: i18n.t('Description'),
       clearButtonMode: 'while-editing',
       multiline: true,
       returnKeyType: 'done',
@@ -83,7 +83,7 @@ class AddProductStep2 extends Component {
     super(props);
 
     props.navigator.setTitle({
-      title: i18n.gettext('Enter the name').toUpperCase(),
+      title: i18n.t('Enter the name').toUpperCase(),
     });
 
     this.formRef = React.createRef();
@@ -136,7 +136,7 @@ class AddProductStep2 extends Component {
         </ScrollView>
         <BottomActions
           onBtnPress={this.handleGoNext}
-          btnText={i18n.gettext('Next')}
+          btnText={i18n.t('Next')}
         />
       </View>
     );

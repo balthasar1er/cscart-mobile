@@ -117,7 +117,7 @@ class CheckoutComplete extends Component {
   componentWillMount() {
     const { orderId, navigator } = this.props;
     navigator.setTitle({
-      title: i18n.gettext('Checkout complete').toUpperCase(),
+      title: i18n.t('Checkout complete').toUpperCase(),
     });
     iconsLoaded.then(() => {
       navigator.setButtons({
@@ -303,15 +303,15 @@ class CheckoutComplete extends Component {
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           <Text style={styles.mainHeader}>
-            {i18n.gettext('Congratulations!')}
+            {i18n.t('Congratulations!')}
           </Text>
           <Text style={styles.subHeader}>
-            {i18n.gettext('Your order has been successfully placed.')}
+            {i18n.t('Your order has been successfully placed.')}
           </Text>
           <FormBlock>
             <View style={styles.flexWrap}>
               <Text style={styles.header}>
-                {i18n.gettext('order').toUpperCase()} #{orderDetail.order_id}
+                {i18n.t('order').toUpperCase()} #{orderDetail.order_id}
               </Text>
               <Text style={styles.date}>
                 {`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()}`}
@@ -320,7 +320,7 @@ class CheckoutComplete extends Component {
 
             <View style={styles.productsContainer}>
               <Text style={styles.header}>
-                {i18n.gettext('Products information').toUpperCase()}
+                {i18n.t('Products information').toUpperCase()}
               </Text>
               <View style={styles.productsWrapper}>
                 {productsList}

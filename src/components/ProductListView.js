@@ -99,7 +99,7 @@ class ProductListView extends PureComponent {
     return (
       <View style={styles.listDiscountWrapper}>
         <Text style={styles.listDiscountText}>
-          {i18n.gettext('Discount')} {`${discount}%`}
+          {i18n.t('Discount')} {`${discount}%`}
         </Text>
       </View>
     );
@@ -130,7 +130,7 @@ class ProductListView extends PureComponent {
             </Text>
           )
         }
-        {isProductPriceZero ? <Text>{i18n.gettext('Contact us for a price')}</Text> : (
+        {isProductPriceZero ? <Text>{i18n.t('Contact us for a price')}</Text> : (
           <Text
             numberOfLines={1}
             style={styles.productPrice}

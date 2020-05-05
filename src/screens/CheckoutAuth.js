@@ -41,12 +41,12 @@ const options = {
   disableOrder: true,
   fields: {
     email: {
-      label: i18n.gettext('Email'),
+      label: i18n.t('Email'),
       keyboardType: 'email-address',
       clearButtonMode: 'while-editing',
     },
     password: {
-      label: i18n.gettext('Password'),
+      label: i18n.t('Password'),
       secureTextEntry: true,
       clearButtonMode: 'while-editing',
     },
@@ -85,7 +85,7 @@ class CheckoutAuth extends Component {
   componentDidMount() {
     const { navigator } = this.props;
     navigator.setTitle({
-      title: i18n.gettext('Login').toUpperCase(),
+      title: i18n.t('Login').toUpperCase(),
     });
   }
 
@@ -103,8 +103,8 @@ class CheckoutAuth extends Component {
         screen: 'Notification',
         passProps: {
           type: 'warning',
-          title: i18n.gettext('Error'),
-          text: i18n.gettext('Wrong password.')
+          title: i18n.t('Error'),
+          text: i18n.t('Wrong password.')
         }
       });
     }
@@ -124,14 +124,14 @@ class CheckoutAuth extends Component {
 
   renderLoginForm() {
     return (
-      <FormBlock title={i18n.gettext('Auth')}>
+      <FormBlock title={i18n.t('Auth')}>
         <Form
           ref={'form'}
           type={FormFields}
           options={options}
         />
         <Button type="primary" onPress={() => this.handleLogin()}>
-          {i18n.gettext('Sign in')}
+          {i18n.t('Sign in')}
         </Button>
       </FormBlock>
     );
@@ -140,7 +140,7 @@ class CheckoutAuth extends Component {
   renderReLogin() {
     return (
       <Button type="primary" onPress={() => this.handleLogout()}>
-        {i18n.gettext('Sign in as a different user')}
+        {i18n.t('Sign in as a different user')}
       </Button>
     );
   }

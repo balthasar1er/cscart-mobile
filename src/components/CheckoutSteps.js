@@ -104,10 +104,10 @@ export default class extends Component {
 
   static defaultProps = {
     steps: [
-      i18n.gettext('Authentication'),
-      i18n.gettext('Delivery'),
-      i18n.gettext('Shipping'),
-      i18n.gettext('Payment method'),
+      i18n.t('Authentication'),
+      i18n.t('Delivery'),
+      i18n.t('Shipping'),
+      i18n.t('Payment method'),
     ]
   }
 

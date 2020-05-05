@@ -67,7 +67,7 @@ class Registration extends Component {
     const { navigator, showClose } = this.props;
 
     navigator.setTitle({
-      title: i18n.gettext('Registration')
+      title: i18n.t('Registration')
     });
     navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
 
@@ -88,7 +88,7 @@ class Registration extends Component {
   componentDidMount() {
     const { navigator, authActions } = this.props;
     navigator.setTitle({
-      title: i18n.gettext('Registration').toUpperCase(),
+      title: i18n.t('Registration').toUpperCase(),
     });
     authActions
       .profileFields()

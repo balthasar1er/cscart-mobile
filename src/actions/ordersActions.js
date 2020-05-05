@@ -29,8 +29,8 @@ export function create(data) {
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'error',
-            title: i18n.gettext('Error'),
-            text: i18n.gettext('Something went wrong. Please try again later.'),
+            title: i18n.t('Error'),
+            text: i18n.t('Something went wrong. Please try again later.'),
           },
         });
         dispatch({

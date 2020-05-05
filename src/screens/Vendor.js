@@ -130,7 +130,7 @@ class Vendor extends Component {
           },
           {
             id: 'search',
-            title: i18n.gettext('Search'),
+            title: i18n.t('Search'),
             icon: iconsMap.search,
           },
         ],
@@ -173,7 +173,7 @@ class Vendor extends Component {
       } else if (event.id === 'search') {
         navigator.showModal({
           screen: 'Search',
-          title: i18n.gettext('Search'),
+          title: i18n.t('Search'),
         });
       }
     }

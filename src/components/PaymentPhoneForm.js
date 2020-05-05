@@ -24,18 +24,18 @@ const formOptions = {
   disableOrder: true,
   fields: {
     phone: {
-      label: i18n.gettext('Phone'),
+      label: i18n.t('Phone'),
       clearButtonMode: 'while-editing',
       returnKeyType: 'done',
       keyboardType: 'phone-pad',
     },
     notes: {
-      label: i18n.gettext('Comment'),
+      label: i18n.t('Comment'),
       i18n: {
         optional: '',
         required: '',
       },
-      help: `${i18n.gettext('(Optional)')}`,
+      help: `${i18n.t('(Optional)')}`,
       clearButtonMode: 'while-editing',
       returnKeyType: 'done',
       multiline: true,

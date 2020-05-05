@@ -79,7 +79,7 @@ class AddProductStep4 extends Component {
     };
 
     props.navigator.setTitle({
-      title: i18n.gettext('Enter the price').toUpperCase(),
+      title: i18n.t('Enter the price').toUpperCase(),
     });
     this.formRef = React.createRef();
 
@@ -154,7 +154,7 @@ class AddProductStep4 extends Component {
         </ScrollView>
         <BottomActions
           onBtnPress={this.handleCreate}
-          btnText={i18n.gettext('Create')}
+          btnText={i18n.t('Create')}
           disabled={loading}
         />
         <Spinner visible={loading} />

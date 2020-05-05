@@ -154,7 +154,7 @@ class CategoriesPicker extends Component {
         navigator.push({
           screen: 'VendorManageCategoriesPicker',
           backButtonTitle: '',
-          title: i18n.gettext(item.category).toUpperCase(),
+          title: i18n.t(item.category).toUpperCase(),
           passProps: {
             parent: item.category_id,
             categories: response.data.categories,
@@ -189,7 +189,7 @@ class CategoriesPicker extends Component {
 
   renderEmptyList = () => (
     <Text style={styles.emptyList}>
-      {i18n.gettext('There are no categories')}
+      {i18n.t('There are no categories')}
     </Text>
   );
 

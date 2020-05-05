@@ -58,8 +58,8 @@ export function add(data) {
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'success',
-            title: i18n.gettext('Success'),
-            text: i18n.gettext('The product was added to your Wish list.'),
+            title: i18n.t('Success'),
+            text: i18n.t('The product was added to your Wish list.'),
             closeLastModal: true,
           },
         });
@@ -71,8 +71,8 @@ export function add(data) {
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'error',
-            title: i18n.gettext('Error'),
-            text: i18n.gettext('This product is already in the wish list.'),
+            title: i18n.t('Error'),
+            text: i18n.t('This product is already in the wish list.'),
             closeLastModal: true,
           },
         });

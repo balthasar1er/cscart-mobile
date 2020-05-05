@@ -90,7 +90,7 @@ class AddProductStep1 extends Component {
     };
 
     props.navigator.setTitle({
-      title: i18n.gettext('Select product image').toUpperCase(),
+      title: i18n.t('Select product image').toUpperCase(),
     });
 
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -133,15 +133,15 @@ class AddProductStep1 extends Component {
         granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
           {
-            title: i18n.gettext('Allow to access photos, media on your device?'),
-            buttonNegative: i18n.gettext('Cancel'),
-            buttonPositive: i18n.gettext('OK'),
+            title: i18n.t('Allow to access photos, media on your device?'),
+            buttonNegative: i18n.t('Cancel'),
+            buttonPositive: i18n.t('OK'),
           },
         );
         if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          Alert.alert(i18n.gettext('Photo gallery permission denied'), [
+          Alert.alert(i18n.t('Photo gallery permission denied'), [
             {
-              text: i18n.gettext('OK'),
+              text: i18n.t('OK'),
               onPress: () => {},
             },
           ]);
@@ -260,7 +260,7 @@ class AddProductStep1 extends Component {
             imagePickerActions.toggle(selected);
             navigator.dismissModal();
           }}
-          btnText={i18n.gettext('Select')}
+          btnText={i18n.t('Select')}
         />
       </View>
     );

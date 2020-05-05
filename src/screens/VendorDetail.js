@@ -159,7 +159,7 @@ export class VendorDetail extends Component {
     });
 
     navigator.setTitle({
-      title: i18n.gettext('Vendor Detail').toUpperCase(),
+      title: i18n.t('Vendor Detail').toUpperCase(),
     });
   }
 
@@ -247,21 +247,21 @@ export class VendorDetail extends Component {
   renderContacts() {
     const { vendor } = this.state;
     return (
-      <Section title={i18n.gettext('Contact Information')}>
+      <Section title={i18n.t('Contact Information')}>
         <SectionRow
-          name={i18n.gettext('E-mail')}
+          name={i18n.t('E-mail')}
           value={vendor.contact_information.email}
         />
         <SectionRow
-          name={i18n.gettext('Phone')}
+          name={i18n.t('Phone')}
           value={vendor.contact_information.phone}
         />
         <SectionRow
-          name={i18n.gettext('Fax')}
+          name={i18n.t('Fax')}
           value={vendor.contact_information.fax}
         />
         <SectionRow
-          name={i18n.gettext('Website')}
+          name={i18n.t('Website')}
           value={vendor.contact_information.url}
           last
         />
@@ -272,7 +272,7 @@ export class VendorDetail extends Component {
   renderShipping() {
     const { vendor } = this.state;
     return (
-      <Section title={i18n.gettext('Shipping address')}>
+      <Section title={i18n.t('Shipping address')}>
         <Text style={styles.address}>
           {vendor.shipping_address.address},
         </Text>
@@ -290,9 +290,9 @@ export class VendorDetail extends Component {
     const { discussion, vendor } = this.state;
     const { auth, navigator } = this.props;
 
-    let title = i18n.gettext('Reviews');
+    let title = i18n.t('Reviews');
     if (discussion.search.total_items != 0) { // eslint-disable-line
-      title = i18n.gettext('Reviews (%1)', discussion.search.total_items);
+      title = i18n.t('Reviews ({{count}})', { count: discussion.search.total_items });
     }
 
     return (
@@ -300,7 +300,7 @@ export class VendorDetail extends Component {
         title={title}
         wrapperStyle={styles.noPadding}
         showRightButton={!discussion.disable_adding && auth.logged}
-        rightButtonText={i18n.gettext('Write a Review')}
+        rightButtonText={i18n.t('Write a Review')}
         onRightButtonPress={() => {
           navigator.push({
             screen: 'WriteReview',

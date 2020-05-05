@@ -40,7 +40,7 @@ const styles = EStyleSheet.create({
 
 const itemsList = [
   ...orderStatuses.map(item => item.text),
-  i18n.gettext('Cancel'),
+  i18n.t('Cancel'),
 ];
 
 const CANCEL_INDEX = itemsList.length - 1;
@@ -88,7 +88,7 @@ class Orders extends Component {
     this.orderID = 0;
 
     props.navigator.setTitle({
-      title: i18n.gettext('Vendor Orders').toUpperCase(),
+      title: i18n.t('Vendor Orders').toUpperCase(),
     });
 
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -186,7 +186,7 @@ class Orders extends Component {
     const { navigator } = this.props;
     const swipeoutBtns = [
       {
-        text: i18n.gettext('Status'),
+        text: i18n.t('Status'),
         type: 'delete',
         onPress: () => this.showActionSheet(item.order_id),
       },

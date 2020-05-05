@@ -116,7 +116,7 @@ class CouponCodes extends Component {
     return (
       <View style={styles.wrapper}>
         <FormBlock
-          title={i18n.gettext('Coupon code')}
+          title={i18n.t('Coupon code')}
         >
           <View style={styles.inputWrapper}>
             <TextInput
@@ -129,7 +129,7 @@ class CouponCodes extends Component {
               style={styles.inputBtn}
             >
               <Text style={styles.inputBtnText}>
-                {i18n.gettext('Add')}
+                {i18n.t('Add')}
               </Text>
             </TouchableOpacity>
           </View>

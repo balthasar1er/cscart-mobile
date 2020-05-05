@@ -28,41 +28,41 @@ const formOptions = {
   disableOrder: true,
   fields: {
     cardNumber: {
-      label: i18n.gettext('Card Number'),
+      label: i18n.t('Card Number'),
       clearButtonMode: 'while-editing',
       keyboardType: 'numeric',
       returnKeyType: 'done',
     },
     expiryMonth: {
-      label: i18n.gettext('Valid thru (mm)'),
+      label: i18n.t('Valid thru (mm)'),
       clearButtonMode: 'while-editing',
       keyboardType: 'numeric',
       returnKeyType: 'done',
     },
     expiryYear: {
-      label: i18n.gettext('Valid thru (yy)'),
+      label: i18n.t('Valid thru (yy)'),
       clearButtonMode: 'while-editing',
       keyboardType: 'numeric',
       returnKeyType: 'done',
     },
     cardholderName: {
-      label: i18n.gettext('Cardholder\'s name'),
+      label: i18n.t('Cardholder\'s name'),
       clearButtonMode: 'while-editing',
       returnKeyType: 'done',
     },
     ccv: {
-      label: i18n.gettext('CVV/CVC'),
+      label: i18n.t('CVV/CVC'),
       clearButtonMode: 'while-editing',
       keyboardType: 'numeric',
       returnKeyType: 'done',
     },
     notes: {
-      label: i18n.gettext('Comment'),
+      label: i18n.t('Comment'),
       i18n: {
         optional: '',
         required: '',
       },
-      help: `${i18n.gettext('(Optional)')}`,
+      help: `${i18n.t('(Optional)')}`,
       clearButtonMode: 'while-editing',
       multiline: true,
       blurOnSubmit: true,

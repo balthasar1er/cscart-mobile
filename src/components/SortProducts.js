@@ -178,49 +178,49 @@ const DESTRUCTIVE_INDEX = 5;
 
 const itemsList = [
   {
-    name: i18n.gettext('Sorting: Newest items first'),
+    name: i18n.t('Sorting: Newest items first'),
     params: {
       sort_by: 'timestamp',
       sort_order: 'desc'
     },
   },
   {
-    name: i18n.gettext('Sorting: A to Z'),
+    name: i18n.t('Sorting: A to Z'),
     params: {
       sort_by: 'product',
       sort_order: 'asc'
     },
   },
   {
-    name: i18n.gettext('Sorting: Z to A'),
+    name: i18n.t('Sorting: Z to A'),
     params: {
       sort_by: 'product',
       sort_order: 'desc'
     },
   },
   {
-    name: i18n.gettext('Sorting: Lowest prices first'),
+    name: i18n.t('Sorting: Lowest prices first'),
     params: {
       sort_by: 'price',
       sort_order: 'asc'
     },
   },
   {
-    name: i18n.gettext('Sorting: Highest prices first'),
+    name: i18n.t('Sorting: Highest prices first'),
     params: {
       sort_by: 'price',
       sort_order: 'desc'
     },
   },
   {
-    name: i18n.gettext('Sorting: Most popular first'),
+    name: i18n.t('Sorting: Most popular first'),
     params: {
       sort_by: 'popularity',
       sort_order: 'desc'
     },
   },
   {
-    name: i18n.gettext('Cancel'),
+    name: i18n.t('Cancel'),
     params: {
       sort_by: '',
       sort_order: ''
@@ -474,7 +474,7 @@ class SortProducts extends Component {
             type="ghost"
             onPress={this.clearAllFilter}
           >
-            {i18n.gettext('Clear all')}
+            {i18n.t('Clear all')}
           </Button>
           {selectedItems.map(item => (
             <Button
@@ -607,7 +607,7 @@ class SortProducts extends Component {
   renderFooter = () => (
     <View style={styles.filterFooterSection}>
       <Button type="primary" onPress={this.handleChangeFilter}>
-        {i18n.gettext('Apply')}
+        {i18n.t('Apply')}
       </Button>
     </View>
   );
@@ -674,7 +674,7 @@ class SortProducts extends Component {
           >
             <Icon name="filter-list" style={styles.filterIcon} />
             <Text style={styles.text} numberOfLines={2}>
-              {i18n.gettext('Filter')}
+              {i18n.t('Filter')}
             </Text>
             {activeFiltersCount !== 0 && (
               <View style={styles.badge}>
