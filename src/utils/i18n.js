@@ -13,6 +13,7 @@ i18n
   .use(initReactI18next)
   .init({
     debug: false,
+    nsSeparator: ':::',
     lng: deviceLanguage,
     fallbackLng: deviceLanguage,
   });
