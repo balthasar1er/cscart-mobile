@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   View,
   Text,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
@@ -26,6 +27,7 @@ const styles = EStyleSheet.create({
     paddingRight: 10,
     paddingTop: 10,
     paddingBottom: 10,
+    textAlign: I18nManager.isRTL ? 'right' : 'left',
     color: '$categoriesHeaderColor',
   },
   chunk: {
