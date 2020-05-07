@@ -7,6 +7,7 @@
     "build-android": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.android.js --bundle-output iOS/main.jsbundle --platform 'android' --assets-dest ./  --dev false --reset-cache",
     "test": "jest",
     "test:watch": "npm run test -- --watch",
+    "postinstall": "./postinstall.sh",
     "extractLangs": "react-gettext-parser --output messages.pot 'src/**/*.js'"
   },
   "dependencies": {
@@ -30,6 +31,7 @@
     "react-native-swipeout": "2.3.6",
     "react-native-swiper": "1.5.14",
     "react-native-vector-icons": "6.4.2",
+    "react-native-webview": "^9.3.0",
     "react-redux": "5.1.0",
     "redux": "4.0.1",
     "redux-logger": "3.0.6",
