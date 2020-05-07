@@ -1,9 +1,15 @@
 #!/bin/bash
+BASE_DIR=`pwd`;
+function remove_rctwebview() {
+  echo "Remove old react webview"
+  local dir="${BASE_DIR}/node_modules/react-native/React";
 
-echo "Remove old react webview"
-if [ -e ./node_modules/react-native/React/Views/RCTWebView.h ] ; then
-  rm -rf ./node_modules/react-native/React/Views/RCTWebView.h
-  rm -rf ./node_modules/react-native/React/Views/RCTWebView.m
-  rm -rf ./node_modules/react-native/React/Views/RCTWebViewManager.h
-  rm -rf ./node_modules/react-native/React/Views/RCTWebViewManager.m
-fi
+  sed -i'.bak' '/RCTWebView/d' "${dir}/React.xcodeproj/project.pbxproj"
+  rm -f "${dir}/React.xcodeproj/project.pbxproj.bak"
+  rm -f "${dir}/Views/RCTWebView.m"
+  rm -f "${dir}/Views/RCTWebView.h"
+  rm -f "${dir}/Views/RCTWebViewManager.m"
+  rm -f "${dir}/Views/RCTWebViewManager.h"
+}
+
+remove_rctwebview;
