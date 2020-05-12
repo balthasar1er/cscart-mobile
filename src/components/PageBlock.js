@@ -4,6 +4,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  I18nManager,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -18,6 +19,7 @@ const styles = EStyleSheet.create({
     marginLeft: 14,
     marginRight: 14,
     marginBottom: 10,
+    textAlign: I18nManager.isRTL ? 'right' : 'left',
   },
   btn: {
     paddingLeft: 14,

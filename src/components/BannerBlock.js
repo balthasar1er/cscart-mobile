@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Image,
+  I18nManager,
   TouchableOpacity,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -28,6 +29,7 @@ const styles = EStyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     color: '$categoriesHeaderColor',
+    textAlign: I18nManager.isRTL ? 'right' : 'left',
   }
 });
 
