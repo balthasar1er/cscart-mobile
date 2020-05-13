@@ -1,8 +1,8 @@
-import { compose, applyMiddleware, createStore } from 'redux';
-import { autoRehydrate } from 'redux-persist';
-// import { AsyncStorage } from 'react-native';
+import { applyMiddleware, createStore } from 'redux';
+import { AsyncStorage } from 'react-native';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
+import { STORE_KEY } from './constants';
 
 import rootReducer from './reducers';
 
@@ -18,12 +18,17 @@ if (__DEV__) {
 const store = createStore(
   rootReducer,
   undefined,
-  compose(
-    applyMiddleware(...middlewares),
-    autoRehydrate(),
-  ),
+  applyMiddleware(...middlewares),
 );
 
-// AsyncStorage.clear();
+store.subscribe(() => {
+  AsyncStorage.setItem(
+    STORE_KEY,
+    JSON.stringify({
+      auth: store.getState().auth,
+      cart: store.getState().cart,
+    })
+  );
+});
 
 export default store;

@@ -30,7 +30,7 @@ export function create(data) {
           payload: {
             type: 'error',
             title: i18n.gettext('Error'),
-            text: get(error, 'response.data.message', i18n.gettext('Something went wrong. Please try again later.')),
+            text: get(error, 'response.data.message', i18n.t('Something went wrong. Please try again later.')),
           },
         });
         dispatch({

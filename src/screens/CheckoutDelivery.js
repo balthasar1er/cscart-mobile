@@ -101,7 +101,7 @@ class Checkout extends Component {
     navigator.push({
       screen: 'CheckoutShipping',
       backButtonTitle: '',
-      title: i18n.gettext('Checkout').toUpperCase(),
+      title: i18n.t('Checkout').toUpperCase(),
       passProps: {
         total: cart.subtotal,
       },
@@ -131,7 +131,7 @@ class Checkout extends Component {
           cartFooterEnabled={true}
           showTitles={true}
           totalPrice={formatPrice(cart.total_formatted.price)}
-          btnText={i18n.gettext('Next').toUpperCase()}
+          btnText={i18n.t('Next').toUpperCase()}
           onBtnPress={(values, validateCb) => { validateCb(); }}
           onSubmit={(values) => { this.handleNextPress(values); }}
         />

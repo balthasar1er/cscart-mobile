@@ -170,7 +170,7 @@ class Categories extends Component {
       if (event.id === 'search') {
         navigator.showModal({
           screen: 'Search',
-          title: i18n.gettext('Search'),
+          title: i18n.t('Search'),
         });
       } else if (event.id === 'back') {
         navigator.pop();
@@ -305,7 +305,7 @@ class Categories extends Component {
 
   renderEmptyList = () => (
     <Text style={styles.emptyList}>
-      {i18n.gettext('There are no products in this section')}
+      {i18n.t('There are no products in this section')}
     </Text>
   );
 

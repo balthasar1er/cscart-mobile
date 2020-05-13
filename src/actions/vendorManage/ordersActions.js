@@ -57,8 +57,8 @@ export function fetchOrder(id) {
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'info',
-            title: i18n.gettext('Information'),
-            text: i18n.gettext('Order not found.'),
+            title: i18n.t('Information'),
+            text: i18n.t('Order not found.'),
             closeLastModal: false,
           },
         });
@@ -74,8 +74,8 @@ export function fetchOrder(id) {
         type: NOTIFICATION_SHOW,
         payload: {
           type: 'info',
-          title: i18n.gettext('Error'),
-          text: i18n.gettext(error.errors.join('\n')),
+          title: i18n.t('Error'),
+          text: i18n.t(error.errors.join('\n')),
           closeLastModal: false,
         },
       });
@@ -110,8 +110,8 @@ export function updateStatus(id, status) {
         type: NOTIFICATION_SHOW,
         payload: {
           type: 'success',
-          title: i18n.gettext('Success'),
-          text: i18n.gettext('Status has been changed.'),
+          title: i18n.t('Success'),
+          text: i18n.t('Status has been changed.'),
           closeLastModal: false,
         },
       });
@@ -120,8 +120,8 @@ export function updateStatus(id, status) {
         type: NOTIFICATION_SHOW,
         payload: {
           type: 'info',
-          title: i18n.gettext('Error'),
-          text: i18n.gettext(error.errors.join('\n')),
+          title: i18n.t('Error'),
+          text: i18n.t(error.errors.join('\n')),
           closeLastModal: false,
         },
       });

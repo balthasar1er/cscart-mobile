@@ -33,9 +33,9 @@ AxiosInstance.interceptors.request.use((conf) => {
 const gql = (query, variables) => AxiosInstance.post('', { query, variables });
 
 export const steps = [
-  i18n.gettext('Image'),
-  i18n.gettext('Enter the name'),
-  i18n.gettext('Enter the price'),
+  i18n.t('Image'),
+  i18n.t('Enter the name'),
+  i18n.t('Enter the price'),
 ];
 
 export const getProductDetail = (id) => {

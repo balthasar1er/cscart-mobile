@@ -40,13 +40,13 @@ const formOptions = {
   disableOrder: true,
   fields: {
     product_code: {
-      label: i18n.gettext('CODE'),
+      label: i18n.t('CODE'),
     },
     list_price: {
-      label: i18n.gettext('List price ($)'),
+      label: i18n.t('List price ($)'),
     },
     amount: {
-      label: i18n.gettext('In stock'),
+      label: i18n.t('In stock'),
     }
   }
 };
@@ -76,7 +76,7 @@ class PricingInventory extends Component {
     super(props);
 
     props.navigator.setTitle({
-      title: i18n.gettext('Pricing / inventory').toUpperCase(),
+      title: i18n.t('Pricing / inventory').toUpperCase(),
     });
     this.formRef = React.createRef();
 

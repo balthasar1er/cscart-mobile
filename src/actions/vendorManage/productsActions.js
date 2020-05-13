@@ -91,8 +91,8 @@ export function deleteProduct(id = null) {
         type: NOTIFICATION_SHOW,
         payload: {
           type: 'success',
-          title: i18n.gettext('Success'),
-          text: i18n.gettext('The product was deleted.'),
+          title: i18n.t('Success'),
+          text: i18n.t('The product was deleted.'),
           closeLastModal: false,
         },
       });
@@ -128,8 +128,8 @@ export function updateProduct(id = null, product = {}) {
         type: NOTIFICATION_SHOW,
         payload: {
           type: 'success',
-          title: i18n.gettext('Success'),
-          text: i18n.gettext('The product was updated.'),
+          title: i18n.t('Success'),
+          text: i18n.t('The product was updated.'),
           closeLastModal: false,
         },
       });
@@ -156,8 +156,8 @@ export function createProduct(product) {
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'info',
-            title: i18n.gettext('Error'),
-            text: i18n.gettext(result.errors.join('\n')),
+            title: i18n.t('Error'),
+            text: i18n.t(result.errors.join('\n')),
             closeLastModal: false,
           },
         });
@@ -168,8 +168,8 @@ export function createProduct(product) {
         type: NOTIFICATION_SHOW,
         payload: {
           type: 'success',
-          title: i18n.gettext('Success'),
-          text: i18n.gettext('The product was created.'),
+          title: i18n.t('Success'),
+          text: i18n.t('The product was created.'),
           closeLastModal: false,
         },
       });

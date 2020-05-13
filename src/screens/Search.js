@@ -146,7 +146,7 @@ class Search extends Component {
     return (
       <View style={styles.emptyContainer}>
         <Text style={styles.emptyText}>
-          {i18n.gettext('List is empty')}
+          {i18n.t('List is empty')}
         </Text>
       </View>
     );
@@ -186,7 +186,7 @@ class Search extends Component {
             onChangeText={debounce(t => this.handleInputChange(t), 600)}
             style={(Platform.os === 'ios') ? styles.input : styles.inputAndroid}
             clearButtonMode="while-editing"
-            placeholder={i18n.gettext('Search')}
+            placeholder={i18n.t('Search')}
           />
         </View>
         <View style={styles.content}>

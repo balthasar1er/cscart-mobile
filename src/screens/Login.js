@@ -62,12 +62,12 @@ const options = {
   disableOrder: true,
   fields: {
     email: {
-      label: i18n.gettext('Email'),
+      label: i18n.t('Email'),
       keyboardType: 'email-address',
       clearButtonMode: 'while-editing',
     },
     password: {
-      label: i18n.gettext('Password'),
+      label: i18n.t('Password'),
       secureTextEntry: true,
       clearButtonMode: 'while-editing',
     },
@@ -111,7 +111,7 @@ class Login extends Component {
   componentWillMount() {
     const { navigator } = this.props;
     navigator.setTitle({
-      title: i18n.gettext('Login').toUpperCase(),
+      title: i18n.t('Login').toUpperCase(),
     });
     iconsLoaded.then(() => {
       navigator.setButtons({
@@ -134,8 +134,8 @@ class Login extends Component {
         screen: 'Notification',
         passProps: {
           type: 'warning',
-          title: i18n.gettext('Error'),
-          text: i18n.gettext('Wrong password.')
+          title: i18n.t('Error'),
+          text: i18n.t('Wrong password.')
         }
       });
     }
@@ -181,7 +181,7 @@ class Login extends Component {
           disabled={auth.fetching}
         >
           <Text style={styles.btnText}>
-            {i18n.gettext('Login')}
+            {i18n.t('Login')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -192,7 +192,7 @@ class Login extends Component {
           })}
         >
           <Text style={styles.btnRegistrationText}>
-            {i18n.gettext('Registration')}
+            {i18n.t('Registration')}
           </Text>
         </TouchableOpacity>
         <Spinner visible={auth.fetching} />

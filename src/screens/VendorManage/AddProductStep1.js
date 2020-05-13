@@ -84,7 +84,7 @@ class AddProductStep1 extends Component {
     super(props);
 
     props.navigator.setTitle({
-      title: i18n.gettext('Select product image').toUpperCase(),
+      title: i18n.t('Select product image').toUpperCase(),
     });
 
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -147,7 +147,7 @@ class AddProductStep1 extends Component {
             }}
           >
             <Text style={styles.sectionText}>
-              {i18n.gettext('Select image')}
+              {i18n.t('Select image')}
             </Text>
           </TouchableOpacity>
         </Section>
@@ -157,7 +157,7 @@ class AddProductStep1 extends Component {
 
   renderEmptyList = () => (
     <Text style={styles.emptyList}>
-      {i18n.gettext('There are no images')}
+      {i18n.t('There are no images')}
     </Text>
   );
 
@@ -207,7 +207,7 @@ class AddProductStep1 extends Component {
         />
         <BottomActions
           onBtnPress={this.handleGoNext}
-          btnText={i18n.gettext('Next')}
+          btnText={i18n.t('Next')}
         />
       </View>
     );

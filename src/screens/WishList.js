@@ -162,7 +162,7 @@ export class WishList extends Component {
     });
 
     navigator.setTitle({
-      title: i18n.gettext('Wish List').toUpperCase(),
+      title: i18n.t('Wish List').toUpperCase(),
     });
   }
 
@@ -187,16 +187,16 @@ export class WishList extends Component {
         navigator.dismissModal();
       } else if (event.id === 'clearWishList') {
         Alert.alert(
-          i18n.gettext('Clear wish list?'),
+          i18n.t('Clear wish list?'),
           '',
           [
             {
-              text: i18n.gettext('Cancel'),
+              text: i18n.t('Cancel'),
               onPress: () => {},
               style: 'cancel'
             },
             {
-              text: i18n.gettext('Ok'),
+              text: i18n.t('Ok'),
               onPress: () => this.props.wishListActions.clear(),
             },
           ],
@@ -232,7 +232,7 @@ export class WishList extends Component {
 
     const swipeoutBtns = [
       {
-        text: i18n.gettext('Delete'),
+        text: i18n.t('Delete'),
         type: 'delete',
         onPress: () => this.handleRemoveProduct(item),
       },
@@ -285,7 +285,7 @@ export class WishList extends Component {
           <Icon name="favorite" style={styles.emptyListIcon} />
         </View>
         <Text style={styles.emptyListHeader}>
-          {i18n.gettext('Your Wish Lists will love here.')}
+          {i18n.t('Your Wish Lists will love here.')}
         </Text>
       </View>
     );

@@ -66,7 +66,7 @@ class Orders extends Component {
     super(props);
 
     props.navigator.setTitle({
-      title: i18n.gettext('Orders').toUpperCase(),
+      title: i18n.t('Orders').toUpperCase(),
     });
 
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -117,7 +117,7 @@ class Orders extends Component {
       } else if (event.id === 'search') {
         navigator.showModal({
           screen: 'Search',
-          title: i18n.gettext('Search'),
+          title: i18n.t('Search'),
         });
       }
     }

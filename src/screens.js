@@ -1,3 +1,4 @@
+import { Provider } from 'react-redux';
 import { Navigation } from 'react-native-navigation';
 
 import Cart from './screens/Cart';
@@ -39,7 +40,7 @@ import VendorManageCategoriesPicker from './screens/VendorManage/CategoriesPicke
 import VendorManageOrderDetail from './screens/VendorManage/OrderDetail';
 
 // register all screens of the app (including internal ones)
-export default function registerScreens(store, Provider) {
+export default function registerScreens(store) {
   Navigation.registerComponent('Page', () => Page, store, Provider);
   Navigation.registerComponent('Cart', () => Cart, store, Provider);
   Navigation.registerComponent('Login', () => Login, store, Provider);

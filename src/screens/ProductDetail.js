@@ -546,7 +546,7 @@ class ProductDetail extends Component {
     return (
       <View style={styles.listDiscountWrapper}>
         <Text style={styles.listDiscountText}>
-          {`${i18n.gettext('Discount')} ${discount}%`}
+          {`${i18n.t('Discount')} ${discount}%`}
         </Text>
       </View>
     );
@@ -638,11 +638,11 @@ class ProductDetail extends Component {
 
     if (toInteger(product.discount)) {
       discountPrice = product.base_price_formatted.price;
-      discountTitle = `${i18n.gettext('Old price')}: `;
+      discountTitle = `${i18n.t('Old price')}: `;
       showDiscount = true;
     } else if (toInteger(product.list_price)) {
       discountPrice = product.list_price_formatted.price;
-      discountTitle = `${i18n.gettext('List price')}: `;
+      discountTitle = `${i18n.t('List price')}: `;
       showDiscount = true;
     }
 
@@ -668,19 +668,19 @@ class ProductDetail extends Component {
               {formatPrice(productPrice)}
               {showTaxedPrice && (
                 <Text style={styles.smallText}>
-                  {` (${i18n.gettext('Including tax')})`}
+                  {` (${i18n.t('Including tax')})`}
                 </Text>
               )}
             </Text>
           </>
         ) : (
           <Text style={styles.zeroPrice}>
-            {i18n.gettext('Contact us for a price')}
+            {i18n.t('Contact us for a price')}
           </Text>
         )}
         {inStock && (
           <Text style={styles.outOfStockText}>
-            {i18n.gettext('Out of stock')}
+            {i18n.t('Out of stock')}
           </Text>
         )}
       </View>
@@ -700,16 +700,16 @@ class ProductDetail extends Component {
     }
 
     const masMore = discussion.search.total_items > 10;
-    let title = i18n.gettext('Reviews');
+    let title = i18n.t('Reviews');
     if (discussion.search.total_items != 0) { // eslint-disable-line
-      title = i18n.gettext('Reviews (%1)', discussion.search.total_items);
+      title = i18n.t('Reviews ({{count}})', { count: discussion.search.total_items});
     }
     return (
       <Section
         title={title}
         wrapperStyle={styles.noPadding}
         showRightButton={canWriteComments}
-        rightButtonText={i18n.gettext('Write a Review')}
+        rightButtonText={i18n.t('Write a Review')}
         onRightButtonPress={() => {
           navigator.showModal({
             screen: 'WriteReview',
@@ -736,7 +736,7 @@ class ProductDetail extends Component {
             }}
           >
             <Text style={styles.sectionBtnText}>
-              {i18n.gettext('View All')}
+              {i18n.t('View All')}
             </Text>
           </TouchableOpacity>
         )}
@@ -829,7 +829,7 @@ class ProductDetail extends Component {
         newValue = format(value_int * 1000, 'MM/DD/YYYY'); // eslint-disable-line
         break;
       case FEATURE_TYPE_CHECKBOX:
-        newValue = feature.value === 'Y' ? i18n.gettext('Yes') : i18n.gettext('No');
+        newValue = feature.value === 'Y' ? i18n.t('Yes') : i18n.t('No');
         break;
       default:
         newValue = value || variant;
@@ -850,12 +850,12 @@ class ProductDetail extends Component {
       .map(k => product.product_features[k]);
 
     return (
-      <Section title={i18n.gettext('Features')}>
+      <Section title={i18n.t('Features')}>
         {(features.length !== 0)
           ? features.map((item, index) => this.renderFeatureItem(item, index))
           : (
             <Text style={styles.noFeaturesText}>
-              {` ${i18n.gettext('There are no features.')} `}
+              {` ${i18n.t('There are no features.')} `}
             </Text>
           )}
       </Section>
@@ -872,7 +872,7 @@ class ProductDetail extends Component {
 
     return (
       <Section
-        title={i18n.gettext('Vendor')}
+        title={i18n.t('Vendor')}
         wrapperStyle={styles.noPadding}
       >
         <View style={styles.vendorWrapper}>
@@ -880,7 +880,7 @@ class ProductDetail extends Component {
             {vendor.company}
           </Text>
           <Text style={styles.vendorProductCount}>
-            {i18n.gettext('%1 item(s)', vendor.products_count)}
+            {i18n.t('{{count}} item(s)', { count: vendor.products_count })}
           </Text>
           <Text style={styles.vendorDescription}>
             {stripTags(vendor.description)}
@@ -897,7 +897,7 @@ class ProductDetail extends Component {
             }}
           >
             <Text style={styles.sectionBtnText}>
-              {i18n.gettext('Details')}
+              {i18n.t('Details')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -914,7 +914,7 @@ class ProductDetail extends Component {
           }}
         >
           <Text style={styles.sectionBtnText}>
-            {i18n.gettext('Go To Store')}
+            {i18n.t('Go To Store')}
           </Text>
         </TouchableOpacity>
       </Section>
@@ -926,7 +926,7 @@ class ProductDetail extends Component {
     const url = `${config.siteUrl}index.php?dispatch=products.view&product_id=${product.product_id}`;
     return (
       <SectionButton
-        text={i18n.gettext('Share product')}
+        text={i18n.t('Share product')}
         onPress={() => {
           Share.share({
             message: `${url} ${product.full_description}`,
@@ -972,7 +972,7 @@ class ProductDetail extends Component {
           }}
         >
           <Text style={styles.addToCartBtnText}>
-            {i18n.gettext('Add to cart').toUpperCase()}
+            {i18n.t('Add to cart').toUpperCase()}
           </Text>
         </TouchableOpacity>
       </View>

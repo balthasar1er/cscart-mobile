@@ -35,10 +35,10 @@ import {
 } from '../../utils/navIcons';
 
 const STATUS_ACTIONS_LIST = [
-  i18n.gettext('Make Product Active'),
-  i18n.gettext('Make Product Hidden'),
-  i18n.gettext('Make Product Disabled'),
-  i18n.gettext('Cancel'),
+  i18n.t('Make Product Active'),
+  i18n.t('Make Product Hidden'),
+  i18n.t('Make Product Disabled'),
+  i18n.t('Cancel'),
 ];
 
 const styles = EStyleSheet.create({
@@ -115,7 +115,7 @@ class Products extends Component {
     };
 
     props.navigator.setTitle({
-      title: i18n.gettext('Vendor products').toUpperCase(),
+      title: i18n.t('Vendor products').toUpperCase(),
     });
 
     props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -183,7 +183,7 @@ class Products extends Component {
         navigator.showModal({
           screen: 'VendorManageCategoriesPicker',
           backButtonTitle: '',
-          title: i18n.gettext('Categories').toUpperCase(),
+          title: i18n.t('Categories').toUpperCase(),
           passProps: {
             parent: 0,
           },
@@ -229,7 +229,7 @@ class Products extends Component {
     const { navigator, productsActions } = this.props;
     const swipeoutBtns = [
       {
-        text: i18n.gettext('Status'),
+        text: i18n.t('Status'),
         type: 'status',
         backgroundColor: '#ff6002',
         onPress: () => {
@@ -238,7 +238,7 @@ class Products extends Component {
         },
       },
       {
-        text: i18n.gettext('Delete'),
+        text: i18n.t('Delete'),
         type: 'delete',
         backgroundColor: '#ff362b',
         onPress: () => productsActions.deleteProduct(item.product_id),
@@ -293,7 +293,7 @@ class Products extends Component {
                   {item.product_code}
                 </Text>
                 <Text style={styles.listItemText}>
-                  {`${i18n.gettext('Price')}: ${item.price} ${item.amount !== 0 && '|'} ${i18n.gettext('In stock')}: ${item.amount}`}
+                  {`${i18n.t('Price')}: ${item.price} ${item.amount !== 0 && '|'} ${i18n.t('In stock')}: ${item.amount}`}
                 </Text>
               </View>
             </View>

@@ -148,8 +148,8 @@ class OrderDetail extends Component {
       .catch(() => {
         notificationsActions.show({
           type: 'info',
-          title: i18n.gettext('Information'),
-          text: i18n.gettext('Order not found.'),
+          title: i18n.t('Information'),
+          text: i18n.t('Order not found.'),
           closeLastModal: false,
         });
         setTimeout(() => {
@@ -161,7 +161,7 @@ class OrderDetail extends Component {
       });
 
     navigator.setTitle({
-      title: i18n.gettext('Order Detail').toUpperCase(),
+      title: i18n.t('Order Detail').toUpperCase(),
     });
   }
 
@@ -271,15 +271,15 @@ class OrderDetail extends Component {
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           <Text style={styles.mainHeader}>
-            {i18n.gettext('Order')} #{orderDetail.order_id}
+            {i18n.t('Order')} #{orderDetail.order_id}
           </Text>
           <Text style={styles.subHeader}>
-            {i18n.gettext('Placed on')} {format(date, 'MM/DD/YYYY')}
+            {i18n.t('Placed on')} {format(date, 'MM/DD/YYYY')}
           </Text>
 
           <FormBlock>
             <Text style={styles.header}>
-              {i18n.gettext('Products information').toUpperCase()}
+              {i18n.t('Products information').toUpperCase()}
             </Text>
             <View style={styles.productsWrapper}>
               {productsList}
@@ -288,22 +288,22 @@ class OrderDetail extends Component {
 
           <FormBlock>
             <Text style={styles.header}>
-              {i18n.gettext('Summary').toUpperCase()}
+              {i18n.t('Summary').toUpperCase()}
             </Text>
             <View style={styles.formBlockWraper}>
-              <FormBlockField title={`${i18n.gettext('Payment method')}:`}>
+              <FormBlockField title={`${i18n.t('Payment method')}:`}>
                 {orderDetail.payment_method.payment}
               </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Shipping method')}:`}>
+              <FormBlockField title={`${i18n.t('Shipping method')}:`}>
                 {shippingMethodsList}
               </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Subtotal')}:`}>
+              <FormBlockField title={`${i18n.t('Subtotal')}:`}>
                 {formatPrice(orderDetail.subtotal_formatted.price)}
               </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Shipping cost')}:`}>
+              <FormBlockField title={`${i18n.t('Shipping cost')}:`}>
                 {formatPrice(orderDetail.shipping_cost_formatted.price)}
               </FormBlockField>
-              <FormBlockField title={`${i18n.gettext('Total')}:`}>
+              <FormBlockField title={`${i18n.t('Total')}:`}>
                 {formatPrice(orderDetail.total_formatted.price)}
               </FormBlockField>
             </View>
