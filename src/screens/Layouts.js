@@ -137,7 +137,7 @@ class Layouts extends Component {
       }
       navigator.showInAppNotification({
         screen: 'Notification',
-        autoDismissTimerSec: 1,
+        autoDismissTimerSec: 3,
         passProps: {
           dismissWithSwipe: true,
           title: notify.title,

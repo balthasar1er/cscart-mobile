@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import {
   FETCH_ORDERS_REQUEST,
   FETCH_ORDERS_FAIL,
@@ -9,7 +10,6 @@ import {
 
   NOTIFICATION_SHOW,
 } from '../constants';
-
 import Api from '../services/api';
 import i18n from '../utils/i18n';
 
@@ -30,7 +30,7 @@ export function create(data) {
           payload: {
             type: 'error',
             title: i18n.t('Error'),
-            text: i18n.t('Something went wrong. Please try again later.'),
+            text: get(error, 'response.data.message', i18n.t('Something went wrong. Please try again later.')),
           },
         });
         dispatch({
