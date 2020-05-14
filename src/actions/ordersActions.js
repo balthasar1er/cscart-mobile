@@ -29,7 +29,7 @@ export function create(data) {
           type: NOTIFICATION_SHOW,
           payload: {
             type: 'error',
-            title: i18n.gettext('Error'),
+            title: i18n.t('Error'),
             text: get(error, 'response.data.message', i18n.t('Something went wrong. Please try again later.')),
           },
         });
