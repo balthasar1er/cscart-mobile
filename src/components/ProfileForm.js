@@ -272,6 +272,9 @@ export default class ProfileForm extends Component {
       }
 
       if (item.field_type === FIELD_COUNTRY) {
+        if (!item.values[formValues[item.field_id]]) {
+          formValues[item.field_id] = '';
+        }
         countryCache = item;
       }
     });
