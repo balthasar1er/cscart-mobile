@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Platform, AsyncStorage } from 'react-native';
 import isDate from 'date-fns/is_date';
 import format from 'date-fns/format';
 import pickBy from 'lodash/pickBy';
@@ -31,6 +31,7 @@ import {
   UPDATE_PROFILE_REQUEST,
   UPDATE_PROFILE_SUCCESS,
   UPDATE_PROFILE_FAIL,
+  STORE_KEY,
 
   AUTH_LOGOUT,
 } from '../constants';
@@ -294,6 +295,8 @@ export function logout() {
     dispatch({
       type: AUTH_LOGOUT,
     });
+
+    AsyncStorage.removeItem(STORE_KEY);
   };
 }
 

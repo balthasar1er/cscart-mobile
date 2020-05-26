@@ -61,9 +61,9 @@ t.form.Form.defaultProps.stylesheet = {
 };
 
 async function Start() {
-  await appActions.initApp();
-
   registerScreens(store);
+
+  await appActions.initApp();
 
   Navigation.startSingleScreenApp({
     screen: {

@@ -45,7 +45,7 @@ const getLocalTranslations = () => {
   }
 
   return translation;
-}
+};
 
 // eslint-disable-next-line import/prefer-default-export
 export async function initApp() {
