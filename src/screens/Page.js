@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View } from 'react-native';
-import { WebView } from 'react-native-webview';
+import { View, Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 // theme
 import theme from '../config/theme';
+
+const WebView = Platform.OS === 'ios' ? require('react-native-webview').WebView : require('react-native').WebView;
 
 const styles = EStyleSheet.create({
   container: {
