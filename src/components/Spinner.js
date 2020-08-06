@@ -34,7 +34,7 @@ class Spinner extends Component {
   };
 
   static defaultProps = {
-    mode: 'modal',
+    mode: 'content',
     visible: false,
   };
 

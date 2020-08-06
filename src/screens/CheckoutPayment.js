@@ -448,7 +448,7 @@ class CheckoutStepThree extends Component {
   renderSpinner = () => {
     const { fetching } = this.state;
     return (
-      <Spinner visible={fetching} />
+      <Spinner visible={fetching} mode="modal" />
     );
   };
 

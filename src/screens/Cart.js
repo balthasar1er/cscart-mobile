@@ -457,7 +457,7 @@ class Cart extends Component {
     }
 
     return (
-      <Spinner visible={cart.fetching} mode="content" />
+      <Spinner visible={cart.fetching} />
     );
   };
 

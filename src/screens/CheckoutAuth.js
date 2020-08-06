@@ -155,7 +155,7 @@ class CheckoutAuth extends Component {
           <CheckoutSteps step={0} />
           {auth.logged ? this.renderReLogin() : this.renderLoginForm()}
         </ScrollView>
-        <Spinner visible={auth.fetching} />
+        <Spinner visible={auth.fetching} mode="modal" />
       </View>
     );
   }

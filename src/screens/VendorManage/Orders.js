@@ -221,7 +221,7 @@ class Orders extends Component {
 
     if (orders.loading) {
       return (
-        <Spinner visible mode="content" />
+        <Spinner visible />
       );
     }
 

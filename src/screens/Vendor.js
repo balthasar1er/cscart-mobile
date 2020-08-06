@@ -269,7 +269,7 @@ class Vendor extends Component {
 
     if (vendorCategories.fetching || vendors.fetching) {
       return (
-        <Spinner visible mode="content" />
+        <Spinner visible />
       );
     }
 

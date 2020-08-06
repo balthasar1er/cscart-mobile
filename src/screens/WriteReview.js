@@ -280,7 +280,7 @@ class WriteReview extends Component {
         <Button type="primary" onPress={() => this.handleSend()}>
           {i18n.t('Send review').toUpperCase()}
         </Button>
-        <Spinner visible={discussion.fetching} />
+        <Spinner visible={discussion.fetching} mode="modal" />
       </ScrollView>
     );
   }

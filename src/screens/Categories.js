@@ -300,7 +300,7 @@ class Categories extends Component {
   }
 
   renderSpinner = () => (
-    <Spinner visible mode="content" />
+    <Spinner visible />
   );
 
   renderEmptyList = () => (

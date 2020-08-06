@@ -309,7 +309,7 @@ class Products extends Component {
 
     if (loading) {
       return (
-        <Spinner visible mode="content" />
+        <Spinner visible />
       );
     }
 
