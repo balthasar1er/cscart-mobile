@@ -364,21 +364,24 @@ export default class ProfileForm extends Component {
     return (
       <Fragment>
         <KeyboardAwareScrollView contentContainerStyle={styles.contentContainer}>
-          {forms.map((form, index) => (
-            <View key={form.type} style={styles.form}>
-              <FormBlock
-                title={(isEdit || showTitles) ? form.description : null}
-              >
-                <Form
-                  ref={(ref) => { this.formsRef[form.type] = ref; }}
-                  type={form.formFields}
-                  options={form.formOptions}
-                  value={form.formValues}
-                  onChange={values => this.handleChange(values, index)}
-                />
-              </FormBlock>
-            </View>
-          ))}
+          {forms.map((form, index) => {
+            console.log(isEdit, showTitles, form.description);
+            return (
+              <View key={form.type} style={styles.form}>
+                <FormBlock
+                  title={(isEdit || showTitles) ? form.description : null}
+                >
+                  <Form
+                    ref={(ref) => { this.formsRef[form.type] = ref; }}
+                    type={form.formFields}
+                    options={form.formOptions}
+                    value={form.formValues}
+                    onChange={values => this.handleChange(values, index)}
+                  />
+                </FormBlock>
+              </View>
+            );
+          })}
         </KeyboardAwareScrollView>
         {
           this.props.cartFooterEnabled

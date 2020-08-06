@@ -130,6 +130,7 @@ class Registration extends Component {
     return (
       <View style={styles.container}>
         <ProfileForm
+          showTitles
           fields={forms}
           onSubmit={values => this.handleRegister(values)}
         />

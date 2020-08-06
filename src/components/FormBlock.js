@@ -64,32 +64,42 @@ export default class FormBlock extends Component {
   }
 
   renderTitle() {
-    if (!this.props.title) {
+    const { title } = this.props;
+    console.log(title);
+    if (!title) {
       return null;
     }
 
     return (
       <Text style={styles.header}>
-        {this.props.title.toUpperCase()}
+        {title.toUpperCase()}
       </Text>
     );
   }
 
   renderContent() {
-    if (this.props.buttonText && !this.state.showMore) {
+    const {
+      buttonText,
+      children,
+      simpleView,
+      onShowMorePress,
+    } = this.props;
+    const { showMore } = this.state;
+
+    if (buttonText && !showMore) {
       return (
         <View>
-          {this.props.simpleView}
+          {simpleView}
           <View style={styles.btnWrapper}>
             <Button
               onPress={() => {
-                this.props.onShowMorePress();
+                onShowMorePress();
                 this.setState({
-                  showMore: !this.state.showMore,
+                  showMore: !showMore,
                 });
               }}
             >
-              {this.props.buttonText.toUpperCase()}
+              {buttonText.toUpperCase()}
             </Button>
           </View>
         </View>
@@ -97,15 +107,16 @@ export default class FormBlock extends Component {
     }
     return (
       <View>
-        {this.props.children}
+        {children}
       </View>
     );
   }
 
   render() {
+    const { noContainerStyle } = this.props;
     return (
       <View
-        style={[styles.container, this.props.noContainerStyle && styles.containerSimple]}
+        style={[styles.container, noContainerStyle && styles.containerSimple]}
       >
         {this.renderTitle()}
         {this.renderContent()}
