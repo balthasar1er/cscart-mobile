@@ -184,7 +184,6 @@ class Login extends Component {
         >
           <Text style={styles.btnText}>
             {i18n.t('Login')}
-            {i18n.t('Password')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
