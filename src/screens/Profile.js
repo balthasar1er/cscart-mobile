@@ -117,7 +117,7 @@ class Profile extends Component {
     if (fetching) {
       return (
         <View style={styles.container}>
-          <Spinner visible mode="content" />
+          <Spinner visible />
         </View>
       );
     }

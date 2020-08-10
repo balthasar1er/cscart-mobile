@@ -285,7 +285,7 @@ class Layouts extends Component {
     const blocksList = layouts.blocks.map((block, index) => this.renderBlock(block, index));
 
     if (layouts.fetching) {
-      return (<Spinner visible mode="content" />);
+      return (<Spinner visible />);
     }
 
     return (

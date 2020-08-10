@@ -195,7 +195,7 @@ class Login extends Component {
             {i18n.t('Registration')}
           </Text>
         </TouchableOpacity>
-        <Spinner visible={auth.fetching} />
+        <Spinner visible={auth.fetching} mode="modal" />
       </View>
     );
   }

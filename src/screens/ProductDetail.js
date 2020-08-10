@@ -981,10 +981,9 @@ class ProductDetail extends Component {
 
   render() {
     const { fetching } = this.state;
-    const { cart } = this.props;
 
     if (fetching) {
-      return (<Spinner visible mode="content" />);
+      return (<Spinner visible />);
     }
 
     return (
@@ -1009,7 +1008,6 @@ class ProductDetail extends Component {
           </ScrollView>
           {this.renderAddToCart()}
         </KeyboardAvoidingView>
-        <Spinner visible={cart.fetching} />
       </View>
     );
   }

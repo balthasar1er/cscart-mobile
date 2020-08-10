@@ -157,7 +157,7 @@ class AddProductStep4 extends Component {
           btnText={i18n.t('Create')}
           disabled={loading}
         />
-        <Spinner visible={loading} />
+        <Spinner visible={loading} mode="modal" />
       </View>
     );
   }

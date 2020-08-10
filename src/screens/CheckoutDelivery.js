@@ -115,7 +115,7 @@ class Checkout extends Component {
     if (fieldsFetching) {
       return (
         <View style={styles.container}>
-          <Spinner visible mode="content" />
+          <Spinner visible />
         </View>
       );
     }

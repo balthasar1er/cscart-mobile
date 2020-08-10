@@ -153,7 +153,7 @@ class Search extends Component {
   };
 
   renderSpinner = () => (
-    <Spinner visible mode="content" />
+    <Spinner visible />
   );
 
   renderFooter() {

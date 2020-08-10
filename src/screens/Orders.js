@@ -158,7 +158,7 @@ class Orders extends Component {
     const { orders } = this.props;
     if (orders.fetching) {
       return (
-        <Spinner visible mode="content" />
+        <Spinner visible />
       );
     }
 

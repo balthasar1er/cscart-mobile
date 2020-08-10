@@ -303,7 +303,7 @@ class CheckoutShipping extends Component {
 
     if (cart.fetching) {
       return (
-        <Spinner visible mode="content" />
+        <Spinner visible />
       );
     }
 
