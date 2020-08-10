@@ -175,6 +175,7 @@ const styles = EStyleSheet.create({
     color: '$primaryColor',
     fontSize: '0.9rem',
     textAlign: 'left',
+    maxWidth: 100,
   },
   vendorWrapper: {
     paddingLeft: 14,
@@ -187,6 +188,7 @@ const styles = EStyleSheet.create({
     fontSize: '1rem',
     fontWeight: 'bold',
     textAlign: 'left',
+    marginRight: 100,
   },
   vendorProductCount: {
     fontSize: '0.7rem',
@@ -896,7 +898,7 @@ class ProductDetail extends Component {
               });
             }}
           >
-            <Text style={styles.sectionBtnText}>
+            <Text style={styles.sectionBtnText} numberOfLines={1} ellipsizeMode="tail">
               {i18n.t('Details')}
             </Text>
           </TouchableOpacity>
