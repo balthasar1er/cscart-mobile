@@ -58,21 +58,6 @@ const FormFields = t.struct({
   email: t.String,
   password: t.String,
 });
-const options = {
-  disableOrder: true,
-  fields: {
-    email: {
-      label: i18n.t('Email'),
-      keyboardType: 'email-address',
-      clearButtonMode: 'while-editing',
-    },
-    password: {
-      label: i18n.t('Password'),
-      secureTextEntry: true,
-      clearButtonMode: 'while-editing',
-    },
-  }
-};
 
 class Login extends Component {
   static navigatorStyle = {
@@ -126,11 +111,12 @@ class Login extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const { navigator } = this.props;
     if (nextProps.auth.logged) {
-      setTimeout(() => this.props.navigator.dismissModal(), 1500);
+      setTimeout(() => navigator.dismissModal(), 1500);
     }
     if (nextProps.auth.error && !nextProps.auth.fetching) {
-      this.props.navigator.showInAppNotification({
+      navigator.showInAppNotification({
         screen: 'Notification',
         passProps: {
           type: 'warning',
@@ -166,6 +152,22 @@ class Login extends Component {
       values.email = config.demoUsername;
       values.password = config.demoPassword;
     }
+
+    const options = {
+      disableOrder: true,
+      fields: {
+        email: {
+          label: i18n.t('Email'),
+          keyboardType: 'email-address',
+          clearButtonMode: 'while-editing',
+        },
+        password: {
+          label: i18n.t('Password'),
+          secureTextEntry: true,
+          clearButtonMode: 'while-editing',
+        },
+      }
+    };
 
     return (
       <View style={styles.container}>
