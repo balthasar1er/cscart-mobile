@@ -15,9 +15,9 @@ Other requirements include nodejs 8.6 or newer and npm 5.0 or newer.
     * Google APIs Intel x86 Atom_64 System Image,
 4. Write this in bash_profile:
     ```
-    export ANDROID_HOME = $HOME/Android/Sdk
-    export PATH = $PATH:$ANDROID_HOME/tools
-    export PATH = $PATH:$ANDROID_HOME/platform-tools
+    export ANDROID_HOME=$HOME/Android/Sdk
+    export PATH=$PATH:$ANDROID_HOME/tools
+    export PATH=$PATH:$ANDROID_HOME/platform-tools
     ```
 5. Create a signing key and run in the shell
     ```
