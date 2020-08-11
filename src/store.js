@@ -27,6 +27,7 @@ store.subscribe(() => {
     JSON.stringify({
       auth: store.getState().auth,
       cart: store.getState().cart,
+      profile: store.getState().profile,
     })
   );
 });
