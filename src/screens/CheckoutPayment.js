@@ -197,7 +197,7 @@ class CheckoutStepThree extends Component {
       shipping_id,
       payment_id: this.state.selectedItem.payment_id,
       user_data: cart.user_data,
-      ...values,
+      // ...values, здесь нужна информация по оплате?
     };
     Object.keys(cart.products).map((key) => {
       const p = cart.products[key];
@@ -211,8 +211,13 @@ class CheckoutStepThree extends Component {
 
     if (values.phone) {
       orderInfo.payment_info = {
+        // зачем делать spread, если payment_info ещё не существует?
         ...orderInfo.payment_info,
         customer_phone: values.phone,
+      };
+    } else if (values.cardNumber) { // нормальное условие?
+      orderInfo.payment_info = {
+        ...values
       };
     }
 

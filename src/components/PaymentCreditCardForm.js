@@ -15,7 +15,7 @@ const styles = EStyleSheet.create({
   },
 });
 
-const Form = t.form.Form;
+const { Form } = t.form;
 const formFields = t.struct({
   cardNumber: t.Number,
   expiryMonth: t.Number,
