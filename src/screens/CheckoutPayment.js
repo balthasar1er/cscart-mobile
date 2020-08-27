@@ -197,7 +197,7 @@ class CheckoutStepThree extends Component {
       shipping_id,
       payment_id: this.state.selectedItem.payment_id,
       user_data: cart.user_data,
-      // ...values, здесь нужна информация по оплате?
+      ...values
     };
     Object.keys(cart.products).map((key) => {
       const p = cart.products[key];
@@ -211,13 +211,17 @@ class CheckoutStepThree extends Component {
 
     if (values.phone) {
       orderInfo.payment_info = {
-        // зачем делать spread, если payment_info ещё не существует?
         ...orderInfo.payment_info,
         customer_phone: values.phone,
       };
-    } else if (values.cardNumber) { // нормальное условие?
+    } else if (values.cardNumber) {
       orderInfo.payment_info = {
-        ...values
+        ...orderInfo.payment_info,
+        card_number: values.cardNumber,
+        expiry_month: values.expiryMonth,
+        expiry_year: values.expiryYear,
+        cardholder_name: values.cardholderName,
+        cvv2: values.cvv
       };
     }
 
@@ -230,6 +234,7 @@ class CheckoutStepThree extends Component {
         if (!data) {
           return;
         }
+
         cartActions.clear();
         navigator.push({
           screen: 'CheckoutComplete',
