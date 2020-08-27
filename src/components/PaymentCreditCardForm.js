@@ -15,9 +15,12 @@ const styles = EStyleSheet.create({
   },
 });
 
+// Validating length for card number
+const cardNumber = t.refinement(t.String, cardNumber => cardNumber.length >= 16);
+
 const { Form } = t.form;
 const formFields = t.struct({
-  cardNumber: t.Number,
+  cardNumber,
   expiryMonth: t.Number,
   expiryYear: t.Number,
   cardholderName: t.String,
