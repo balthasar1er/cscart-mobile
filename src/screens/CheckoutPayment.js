@@ -221,7 +221,7 @@ class CheckoutStepThree extends Component {
         expiry_month: values.expiryMonth,
         expiry_year: values.expiryYear,
         cardholder_name: values.cardholderName,
-        cvv2: values.cvv
+        cvv2: values.ccv
       };
     }
 
