@@ -197,7 +197,7 @@ class CheckoutStepThree extends Component {
       shipping_id,
       payment_id: this.state.selectedItem.payment_id,
       user_data: cart.user_data,
-      ...values,
+      ...values
     };
     Object.keys(cart.products).map((key) => {
       const p = cart.products[key];
@@ -214,6 +214,15 @@ class CheckoutStepThree extends Component {
         ...orderInfo.payment_info,
         customer_phone: values.phone,
       };
+    } else if (values.cardNumber) {
+      orderInfo.payment_info = {
+        ...orderInfo.payment_info,
+        card_number: values.cardNumber,
+        expiry_month: values.expiryMonth,
+        expiry_year: values.expiryYear,
+        cardholder_name: values.cardholderName,
+        cvv2: values.ccv
+      };
     }
 
     ordersActions
@@ -225,6 +234,7 @@ class CheckoutStepThree extends Component {
         if (!data) {
           return;
         }
+
         cartActions.clear();
         navigator.push({
           screen: 'CheckoutComplete',
