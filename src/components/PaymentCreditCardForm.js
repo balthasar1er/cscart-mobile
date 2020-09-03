@@ -17,7 +17,7 @@ const styles = EStyleSheet.create({
 
 // Validating length
 const cardNumber = t.refinement(t.Number, cardNumber => String(cardNumber).length >= 13);
-const expiryYear = t.refinement(t.String, cardNumber => cardNumber.length >= 2);
+const expiryYear = t.refinement(t.String, expiryYear => expiryYear.length >= 2);
 
 const { Form } = t.form;
 const formFields = t.struct({
