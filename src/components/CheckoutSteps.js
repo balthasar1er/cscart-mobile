@@ -10,7 +10,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import i18n from '../utils/i18n';
 
 // Component
-import Icon from '../components/Icon';
+import Icon from './Icon';
 
 const styles = EStyleSheet.create({
   container: {
