@@ -21,6 +21,9 @@ const styles = EStyleSheet.create({
     height: '100%',
     resizeMode: 'contain'
   },
+  textBanner: {
+    
+  },
   header: {
     fontWeight: 'bold',
     fontSize: '1.3rem',
@@ -47,19 +50,20 @@ export default class BannerBlocks extends Component {
 
   renderImage = (item, index) => {
     const imageUri = get(item, 'main_pair.icon.http_image_path');
-
+    console.log('imageURI: ', imageUri);
     return (
       <TouchableOpacity
         key={index}
         onPress={() => this.props.onPress(item)}
       >
-        <Image source={{ uri: imageUri }} style={styles.img} />
+        {imageUri ? <Image source={{ uri: imageUri }} style={styles.img} /> : <Text>{item.description}</Text>}
       </TouchableOpacity>
     );
   }
 
   render() {
     const { items, name, wrapper } = this.props;
+    console.log('Banners: ', items);
     const itemsList = items.map((item, index) => this.renderImage(item, index));
     return (
       <View style={styles.container}>
