@@ -10,6 +10,7 @@ import {
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Swiper from 'react-native-swiper';
 import { get } from 'lodash';
+import { stripTags } from '../utils';
 
 const styles = EStyleSheet.create({
   container: {
@@ -21,8 +22,14 @@ const styles = EStyleSheet.create({
     height: '100%',
     resizeMode: 'contain'
   },
+  textBannerWrapper: {
+    height: '100%',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
   textBanner: {
-    
+    textAlign: 'center',
+    fontSize: '1.3rem',
   },
   header: {
     fontWeight: 'bold',
@@ -50,20 +57,20 @@ export default class BannerBlocks extends Component {
 
   renderImage = (item, index) => {
     const imageUri = get(item, 'main_pair.icon.http_image_path');
-    console.log('imageURI: ', imageUri);
     return (
       <TouchableOpacity
         key={index}
         onPress={() => this.props.onPress(item)}
       >
-        {imageUri ? <Image source={{ uri: imageUri }} style={styles.img} /> : <Text>{item.description}</Text>}
+        {imageUri
+          ? <Image source={{ uri: imageUri }} style={styles.img} />
+          : <View style={styles.textBannerWrapper}><Text style={styles.textBanner}>{stripTags(item.description)}</Text></View>}
       </TouchableOpacity>
     );
   }
 
   render() {
     const { items, name, wrapper } = this.props;
-    console.log('Banners: ', items);
     const itemsList = items.map((item, index) => this.renderImage(item, index));
     return (
       <View style={styles.container}>
