@@ -8,7 +8,14 @@
     "test": "jest",
     "test:watch": "npm run test -- --watch",
     "postinstall": "./postinstall.sh",
-    "extractLangs": "react-gettext-parser --output messages.pot 'src/**/*.js'"
+    "extractLangs": "react-gettext-parser --output messages.pot 'src/**/*.js'",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "ios-ipad": "react-native run-ios --simulator=\"iPad Pro (12.9-inch) (3rd generation)\"",
+    "reset-cache": "npm start -- --reset-cache",
+    "gradle-clean": "cd android && ./gradlew clean",
+    "android-release-test": "react-native run-android --variant=release",
+    "apk": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@ptomasroos/react-native-multi-slider": "^1.0.0",

@@ -2,6 +2,7 @@ import {
   Dimensions,
   Platform,
   I18nManager,
+  AsyncStorage,
 } from 'react-native';
 import * as t from 'tcomb-form-native';
 import { Navigation } from 'react-native-navigation';
@@ -12,6 +13,7 @@ import store from './store';
 import theme from './config/theme';
 import * as appActions from './actions/appActions';
 import registerScreens from './screens';
+import { STORE_KEY } from './constants';
 
 // Calcuate styles
 const { width } = Dimensions.get('window');
@@ -64,10 +66,19 @@ async function Start() {
   registerScreens(store);
 
   await appActions.initApp();
+  const storage = JSON.parse(await AsyncStorage.getItem(STORE_KEY));
 
+  if (storage.auth && storage.auth.token) {
+    return startMainStack();
+  }
+
+  startLoginStack();
+}
+
+function startLoginStack() {
   Navigation.startSingleScreenApp({
     screen: {
-      screen: 'Layouts',
+      screen: 'Login',
       navigatorStyle: {
         navBarBackgroundColor: theme.$navBarBackgroundColor,
         navBarButtonColor: theme.$navBarButtonColor,
@@ -90,6 +101,49 @@ async function Start() {
         contentOverlayColor: theme.$contentOverlayColor,
       },
     },
+  });
+}
+
+function startMainStack() {
+  Navigation.startTabBasedApp({
+    tabs: [
+      {
+        label: 'Home', 
+        screen: 'Orders',
+        icon: 'home',
+        title: 'Home', 
+        navigatorStyle: {
+          color: 'black'
+        }, 
+        navigatorButtons: {
+          color: 'black'
+        } 
+      },
+      {
+        label: 'Category',
+        screen: 'Search',
+        icon: 'home',
+        title: 'Category'
+      },
+       {
+        label: 'On Sale',
+        screen: 'Orders',
+        icon: 'home',
+        title: 'On Sale'
+      },
+      {
+        label: 'Grocery',
+        screen: 'Orders',
+        icon: 'home',
+        title: 'Grocery'
+      },
+      {
+        label: 'More',
+        screen: 'Orders',
+        icon: 'home',
+        title: 'More'
+      },
+    ]
   });
 }
 

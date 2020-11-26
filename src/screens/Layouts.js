@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import get from 'lodash/get';
+import { Navigation } from 'react-native-navigation';
 
 // Constants
 import {
